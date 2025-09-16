@@ -48,6 +48,36 @@ coverage.xml
 *.cover
 *.py.cover
 .hypothesis/
+
+# Environment Variables
+.env
+.env.local
+
+# Model Cache
+models_cache/
+*.bin
+*.safetensors
+
+# Audio Files
+uploads/
+temp_audio/
+*.wav
+*.mp3
+*.flac
+*.m4a
+*.ogg
+
+# Node.js (for frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/
+
+# Build outputs
+frontend/build/
+frontend/dist/
 .pytest_cache/
 cover/
 
