@@ -11,5 +11,25 @@ This project will explore modern deep learning methods for building a speech and
 - Read the model's papers 
 - Decide some test and evaluating metrics
 
+
+## Todos:
+- System Architecture Design
+- Input and Output System
+- Pipeline System 
+- Models Manager (Placeholder)
+- Evaluation System
+- Data System for Evaluation 
+- Local Dev Env for Models
+- Setup Baseline Models 
+
 Goal: **Sep 28**
 
+
+
+BlueScore - Translation
+WordErrorRate - For ASR
+Commet
+CHRF
+
+Blaser 2.0 paper - TTS evaluation
+text to speech quality metrics - find papers
