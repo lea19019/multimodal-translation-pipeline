@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-slate-700;
+  }
+  body {
+    @apply bg-dark-950 text-slate-100;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-dark-800 border border-dark-700 rounded-lg shadow-lg;
+  }
+  
+  .card-header {
+    @apply px-6 py-4 border-b border-dark-700;
+  }
+  
+  .card-content {
+    @apply px-6 py-4;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-950;
+  }
+  
+  .btn-primary {
+    @apply btn bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-dark-700 hover:bg-dark-600 text-slate-200 border border-dark-600 focus:ring-dark-500;
+  }
+  
+  .btn-danger {
+    @apply btn bg-red-600 hover:bg-red-700 text-white focus:ring-red-500;
+  }
+  
+  .input {
+    @apply w-full px-3 py-2 bg-dark-800 border border-dark-600 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  
+  .select {
+    @apply input;
+  }
+  
+  .textarea {
+    @apply input resize-none;
+  }
+  
+  .label {
+    @apply block text-sm font-medium text-slate-200 mb-2;
+  }
+  
+  .form-group {
+    @apply mb-4;
+  }
+  
+  .status-success {
+    @apply text-green-400 bg-green-400/10 border border-green-400/20;
+  }
+  
+  .status-error {
+    @apply text-red-400 bg-red-400/10 border border-red-400/20;
+  }
+  
+  .status-warning {
+    @apply text-yellow-400 bg-yellow-400/10 border border-yellow-400/20;
+  }
+  
+  .metric-card {
+    @apply card p-4 text-center;
+  }
+  
+  .metric-value {
+    @apply text-2xl font-bold text-blue-400;
+  }
+  
+  .metric-label {
+    @apply text-sm text-slate-400 mt-1;
+  }
+  
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-dark-600 border-t-blue-500;
+  }
+  
+  .file-upload-zone {
+    @apply border-2 border-dashed border-dark-600 rounded-lg p-8 text-center hover:border-dark-500 transition-colors cursor-pointer;
+  }
+  
+  .file-upload-zone.dragover {
+    @apply border-blue-500 bg-blue-500/5;
+  }
+}
