@@ -1,0 +1,41 @@
+.next/
+node_modules/
+out/
+build/
+dist/
+
+
+node_modules/
+
+yarn-error.log*
+
+.next/
+out/
+
+
+*.tsbuildinfo
+
+
+.env
+
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.pem

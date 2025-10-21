@@ -1,0 +1,33 @@
+# Core evaluation metrics
+sacrebleu
+unbabel-comet
+mel-cepstral-distance
+sonar-space
+
+# Deep learning
+torch
+torchaudio
+transformers
+
+# Visualization
+matplotlib
+seaborn
+plotly
+kaleido  # for plotly static image export
+
+# Data processing
+pandas
+numpy
+
+# CLI and utilities
+tqdm
+click>=8.0
+python-dotenv
+pyyaml
+jinja2
+
+# Optional: For Japanese tokenization in sacrebleu
+# mecab-python3
+
+# Optional: For Korean tokenization in sacrebleu
+# pymecab-ko

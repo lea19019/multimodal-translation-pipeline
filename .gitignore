@@ -1,0 +1,44 @@
+# Global ignores
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+*.tsbuildinfo
+.env
+.DS_Store
+Thumbs.db
+
+# Ignore model and checkpoint folders
+services/*/models/
+services/*/checkpoints/
+services/*/reference_audio/
+services/*/recipes/
+services/*/TTS/
+
+# Ignore logs
+services/_logs/
+services/*/archive/
+
+# Ignore environment and lock files
+services/*/uv.lock
+services/*/.env
+
+# Ignore data folders
+services/data/
+
+# Node modules (client)
+client/node_modules/
+
+# Build output (client)
+client/.next/
+client/out/
+
+
+# Ignore Python virtual environments
+.venv/
+.vscode/
