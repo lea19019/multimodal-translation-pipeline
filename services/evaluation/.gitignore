@@ -45,8 +45,7 @@ results/
 !examples/*.yaml
 results/
 examples/
-blaser/
-comet/
+comet/models/*
 comet/checkpoints/*
 !comet/checkpoints/.gitkeep
 blaser/models/*

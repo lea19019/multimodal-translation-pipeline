@@ -1,0 +1,29 @@
+[project]
+name = "blaser-evaluation"
+version = "0.1.0"
+description = "BLASER 2.0 speech-to-speech translation evaluation (isolated environment)"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "torch==2.8.0",
+    "torchaudio==2.8.0",
+    "sonar-space>=0.2.0",
+    "click>=8.0",
+    "tqdm",
+    "numpy<2.0",
+    "python-dotenv",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+# IMPORTANT: fairseq2 must be installed separately with exact PyTorch version match
+# This environment uses PyTorch 2.8.0 (main evaluation env uses 2.9.0)
+#
+# Installation order:
+# 1. uv pip install torch==2.8.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+# 2. uv pip install fairseq2 --extra-index-url https://fair.pkg.atmeta.com/fairseq2/whl/pt2.8.0/cu128
+# 3. uv sync
