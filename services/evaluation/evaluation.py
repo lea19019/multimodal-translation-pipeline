@@ -226,18 +226,30 @@ class EvaluationPipeline:
         # Compute MCD
         if 'mcd' in metrics and target_audio_paths:
             logger.info("Computing MCD scores...")
-            try:
-                # For MCD, we need reference audio - here we use target as both
-                # In practice, you'd have separate reference audio
-                mcd_result = self.audio_metrics.compute_mcd_batch(
-                    target_audio_paths,
-                    target_audio_paths,  # Using same as reference for now
-                )
-                results['aggregate_scores']['mcd'] = mcd_result['mean_mcd']
-                results['mcd_details'] = mcd_result
-            except Exception as e:
-                logger.error(f"MCD evaluation failed: {e}")
-                results['aggregate_scores']['mcd'] = -1.0
+            # TODO: MCD requires separate reference audio files for proper evaluation.
+            # Currently skipping MCD as comparing generated audio to itself (target_audio_paths)
+            # produces meaningless results (MCD=0). Need to update data schema to include
+            # reference_audio.wav files for each sample.
+            logger.warning("MCD computation skipped: requires separate reference audio files")
+            logger.warning("Data schema needs reference_audio.wav in addition to target_audio.wav")
+            results['aggregate_scores']['mcd'] = None
+            results['mcd_details'] = {
+                'error': 'MCD requires reference audio - data schema update needed',
+                'mean_mcd': None,
+                'mcd_scores': [],
+            }
+
+            # Uncomment when reference audio is available:
+            # try:
+            #     mcd_result = self.audio_metrics.compute_mcd_batch(
+            #         target_audio_paths,       # Generated audio
+            #         reference_audio_paths,    # Reference audio (needs to be added)
+            #     )
+            #     results['aggregate_scores']['mcd'] = mcd_result['mean_mcd']
+            #     results['mcd_details'] = mcd_result
+            # except Exception as e:
+            #     logger.error(f"MCD evaluation failed: {e}")
+            #     results['aggregate_scores']['mcd'] = None
         
         # Compute BLASER
         if 'blaser' in metrics and source_audio_paths and target_audio_paths:
@@ -338,11 +350,27 @@ class EvaluationPipeline:
     def generate_visualizations(self, results: Dict):
         """Generate all visualizations."""
         logger.info("Generating visualizations...")
-        
+
         if results.get('per_sample_results'):
             df = pd.DataFrame(results['per_sample_results'])
-            generate_all_visualizations(results, df, self.viz_dir)
-            
+
+            # Auto-detect primary metric based on translation type
+            translation_type = results.get('translation_type')
+            metrics_computed = results.get('metrics_computed', [])
+
+            if translation_type == 'audio_to_audio' and 'blaser' in metrics_computed:
+                primary_metric = 'blaser'
+            elif 'comet' in metrics_computed:
+                primary_metric = 'comet'
+            elif 'bleu' in metrics_computed:
+                primary_metric = 'bleu'
+            else:
+                primary_metric = None
+
+            logger.info(f"Using primary metric for quality categorization: {primary_metric}")
+
+            generate_all_visualizations(results, df, self.viz_dir, primary_metric=primary_metric)
+
             # Generate HTML report
             html_path = self.results_dir / 'summary_report.html'
             generate_html_report(results, self.viz_dir, html_path)

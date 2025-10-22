@@ -178,6 +178,151 @@ async def get_evaluation_stats():
         )
 
 
+@app.get("/evaluations")
+async def list_evaluations():
+    """List all evaluation runs from the results directory"""
+    try:
+        from pathlib import Path
+        import json
+
+        results_dir = Path(__file__).parent.parent / 'evaluation' / 'results'
+
+        if not results_dir.exists():
+            return []
+
+        evaluations = []
+        for eval_dir in sorted(results_dir.iterdir(), reverse=True):
+            if eval_dir.is_dir():
+                summary_path = eval_dir / 'summary.json'
+                if summary_path.exists():
+                    try:
+                        with open(summary_path, 'r') as f:
+                            summary = json.load(f)
+
+                        evaluations.append({
+                            'run_id': eval_dir.name,
+                            'timestamp': summary.get('timestamp'),
+                            'translation_type': summary.get('translation_type'),
+                            'language_pair': summary.get('language_pair'),
+                            'total_samples': summary.get('total_samples', 0),
+                            'valid_samples': summary.get('valid_samples', 0),
+                            'metrics_computed': summary.get('metrics_computed', []),
+                            'aggregate_scores': summary.get('aggregate_scores', {}),
+                        })
+                    except Exception as e:
+                        logger.warning(f"Could not load evaluation {eval_dir.name}: {e}")
+
+        return evaluations
+
+    except Exception as e:
+        logger.error(f"Error listing evaluations: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Could not list evaluations: {str(e)}"
+        )
+
+
+@app.get("/evaluations/{run_id}")
+async def get_evaluation(run_id: str):
+    """Get detailed results for a specific evaluation run"""
+    try:
+        from pathlib import Path
+        import json
+
+        results_dir = Path(__file__).parent.parent / 'evaluation' / 'results'
+        eval_dir = results_dir / run_id
+
+        if not eval_dir.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Evaluation run '{run_id}' not found"
+            )
+
+        # Load summary
+        summary_path = eval_dir / 'summary.json'
+        if not summary_path.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Summary not found for evaluation '{run_id}'"
+            )
+
+        with open(summary_path, 'r') as f:
+            summary = json.load(f)
+
+        # Load per-sample results
+        per_sample_path = eval_dir / 'per_sample_results.json'
+        per_sample_results = None
+        if per_sample_path.exists():
+            with open(per_sample_path, 'r') as f:
+                full_results = json.load(f)
+                per_sample_results = full_results.get('per_sample_results', [])
+
+        # List available visualizations
+        viz_dir = eval_dir / 'visualizations'
+        visualizations = []
+        if viz_dir.exists():
+            for viz_file in viz_dir.glob('*.png'):
+                visualizations.append(viz_file.name)
+
+        return {
+            **summary,
+            'per_sample_results': per_sample_results,
+            'visualizations': visualizations,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting evaluation {run_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Could not get evaluation: {str(e)}"
+        )
+
+
+@app.get("/evaluations/{run_id}/files/{filename}")
+async def get_evaluation_file(run_id: str, filename: str):
+    """Serve visualization files for an evaluation run"""
+    try:
+        from pathlib import Path
+        from fastapi.responses import FileResponse
+        import os
+
+        # Validate filename to prevent directory traversal
+        if '..' in filename or '/' in filename or '\\' in filename:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid filename"
+            )
+
+        results_dir = Path(__file__).parent.parent / 'evaluation' / 'results'
+        eval_dir = results_dir / run_id
+
+        # Try visualizations directory first
+        viz_file = eval_dir / 'visualizations' / filename
+        if viz_file.exists() and viz_file.is_file():
+            return FileResponse(viz_file)
+
+        # Try main results directory
+        results_file = eval_dir / filename
+        if results_file.exists() and results_file.is_file():
+            return FileResponse(results_file)
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"File '{filename}' not found for evaluation '{run_id}'"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error serving file {filename} for evaluation {run_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Could not serve file: {str(e)}"
+        )
+
+
 @app.post("/translate", response_model=TranslationResponse)
 async def translate(request: TranslationRequest):
     """

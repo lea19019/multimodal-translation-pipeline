@@ -21,6 +21,100 @@ logger = logging.getLogger(__name__)
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (12, 6)
 
+# Quality thresholds for COMET/BLASER-based classification
+QUALITY_THRESHOLDS = {
+    'excellent': 0.75,
+    'good': 0.60,
+    'fair': 0.40,
+    'poor': 0.0,
+}
+
+# Metric characteristics for normalization and interpretation
+METRIC_INFO = {
+    'bleu': {
+        'name': 'BLEU',
+        'scale': (0, 100),
+        'higher_is_better': True,
+        'description': 'N-gram overlap with reference',
+        'good_range': (20, 40),
+        'excellent_threshold': 50,
+    },
+    'chrf': {
+        'name': 'chrF',
+        'scale': (0, 100),
+        'higher_is_better': True,
+        'description': 'Character n-gram F-score',
+        'good_range': (40, 60),
+        'excellent_threshold': 70,
+    },
+    'comet': {
+        'name': 'COMET',
+        'scale': (0, 1),
+        'higher_is_better': True,
+        'description': 'Neural semantic quality',
+        'good_range': (0.6, 0.8),
+        'excellent_threshold': 0.8,
+    },
+    'mcd': {
+        'name': 'MCD',
+        'scale': (0, 20),
+        'higher_is_better': False,
+        'description': 'Mel-cepstral distortion (dB)',
+        'good_range': (4, 6),
+        'excellent_threshold': 4,
+    },
+    'blaser': {
+        'name': 'BLASER',
+        'scale': (0, 5),
+        'higher_is_better': True,
+        'description': 'Speech translation quality',
+        'good_range': (3.5, 4.5),
+        'excellent_threshold': 4.5,
+    },
+}
+
+
+def categorize_quality(score: float, metric: str = 'comet') -> str:
+    """
+    Categorize translation quality based on score.
+
+    Args:
+        score: Metric score
+        metric: Metric name (for threshold adjustment)
+
+    Returns:
+        Quality category: 'excellent', 'good', 'fair', or 'poor'
+    """
+    if metric == 'comet' or metric == 'blaser':
+        if score >= QUALITY_THRESHOLDS['excellent']:
+            return 'excellent'
+        elif score >= QUALITY_THRESHOLDS['good']:
+            return 'good'
+        elif score >= QUALITY_THRESHOLDS['fair']:
+            return 'fair'
+        else:
+            return 'poor'
+    elif metric == 'mcd':
+        # For MCD, lower is better
+        if score <= 4:
+            return 'excellent'
+        elif score <= 6:
+            return 'good'
+        elif score <= 8:
+            return 'fair'
+        else:
+            return 'poor'
+    else:
+        # BLEU/chrF
+        if score >= 70:
+            return 'excellent'
+        elif score >= 50:
+            return 'good'
+        elif score >= 30:
+            return 'fair'
+        else:
+            return 'poor'
+
 
 def create_metrics_comparison_chart(
     results: Dict[str, float],
@@ -342,10 +436,30 @@ def generate_html_report(
     
     <div class="section">
         <h2>Visualizations</h2>
-        
+
+        {% if vis_files.quality_dashboard %}
+        <div class="visualization">
+            <h3>Quality Dashboard</h3>
+            <img src="{{ vis_files.quality_dashboard }}" alt="Quality Dashboard">
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                Comprehensive quality analysis showing distribution, trends, and categorization of translation quality.
+            </p>
+        </div>
+        {% endif %}
+
+        {% if vis_files.normalized_metrics %}
+        <div class="visualization">
+            <h3>Normalized Metrics Comparison</h3>
+            <img src="{{ vis_files.normalized_metrics }}" alt="Normalized Metrics">
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                All metrics normalized to 0-1 scale with expected quality ranges indicated.
+            </p>
+        </div>
+        {% endif %}
+
         {% if vis_files.comparison %}
         <div class="visualization">
-            <h3>Metrics Comparison</h3>
+            <h3>Metrics Comparison (Original Scale)</h3>
             <img src="{{ vis_files.comparison }}" alt="Metrics Comparison">
         </div>
         {% endif %}
@@ -407,15 +521,21 @@ def generate_html_report(
         
         # Collect visualization files
         vis_files = {
+            'quality_dashboard': None,
+            'normalized_metrics': None,
             'comparison': None,
             'table': None,
             'distributions': {},
             'heatmap': None,
         }
-        
+
         for f in visualization_dir.glob('*.png'):
             rel_path = f.name
-            if 'comparison' in f.name:
+            if 'quality_dashboard' in f.name:
+                vis_files['quality_dashboard'] = rel_path
+            elif 'normalized_metrics' in f.name:
+                vis_files['normalized_metrics'] = rel_path
+            elif 'comparison' in f.name:
                 vis_files['comparison'] = rel_path
             elif 'table' in f.name:
                 vis_files['table'] = rel_path
@@ -446,33 +566,312 @@ def generate_html_report(
         logger.error(f"Error generating HTML report: {e}")
 
 
+def create_quality_dashboard(
+    df: pd.DataFrame,
+    primary_metric: str,
+    output_path: Path,
+):
+    """
+    Create a comprehensive quality dashboard with categorization and insights.
+
+    Args:
+        df: DataFrame with per-sample results
+        primary_metric: Primary metric for quality categorization
+        output_path: Path to save the dashboard
+    """
+    try:
+        fig = plt.figure(figsize=(16, 10))
+        gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+
+        metric_col = f'{primary_metric}_score'
+        if metric_col not in df.columns:
+            logger.warning(f"Metric {metric_col} not found in data")
+            return
+
+        # Categorize samples
+        df['quality_category'] = df[metric_col].apply(
+            lambda x: categorize_quality(x, primary_metric)
+        )
+
+        # 1. Quality Distribution (Pie Chart)
+        ax1 = fig.add_subplot(gs[0, 0])
+        quality_counts = df['quality_category'].value_counts()
+        colors = {'excellent': '#4CAF50', 'good': '#8BC34A',
+                  'fair': '#FFC107', 'poor': '#F44336'}
+        ax1.pie(quality_counts.values, labels=quality_counts.index, autopct='%1.1f%%',
+                colors=[colors.get(cat, '#999') for cat in quality_counts.index],
+                startangle=90)
+        ax1.set_title('Quality Distribution', fontweight='bold', fontsize=12)
+
+        # 2. Score Distribution (Histogram with quality zones)
+        ax2 = fig.add_subplot(gs[0, 1:])
+        scores = df[metric_col].dropna()
+        ax2.hist(scores, bins=min(30, len(scores)), color='skyblue', edgecolor='black', alpha=0.7)
+
+        # Add quality zone shading
+        if primary_metric in ['comet', 'blaser']:
+            ax2.axvspan(0, QUALITY_THRESHOLDS['fair'], alpha=0.1, color='red', label='Poor')
+            ax2.axvspan(QUALITY_THRESHOLDS['fair'], QUALITY_THRESHOLDS['good'],
+                       alpha=0.1, color='orange', label='Fair')
+            ax2.axvspan(QUALITY_THRESHOLDS['good'], QUALITY_THRESHOLDS['excellent'],
+                       alpha=0.1, color='lightgreen', label='Good')
+            ax2.axvspan(QUALITY_THRESHOLDS['excellent'], scores.max(),
+                       alpha=0.1, color='green', label='Excellent')
+
+        ax2.axvline(scores.mean(), color='red', linestyle='--', linewidth=2,
+                   label=f'Mean: {scores.mean():.3f}')
+        ax2.set_xlabel(f'{METRIC_INFO.get(primary_metric, {}).get("name", primary_metric.upper())} Score', fontsize=11)
+        ax2.set_ylabel('Frequency', fontsize=11)
+        ax2.set_title(f'{METRIC_INFO.get(primary_metric, {}).get("name", primary_metric.upper())} Distribution',
+                     fontweight='bold', fontsize=12)
+        ax2.legend(fontsize=8)
+
+        # 3. Statistics Table
+        ax3 = fig.add_subplot(gs[1, 0])
+        ax3.axis('off')
+        stats_data = [
+            ['Total Samples', f"{len(df)}"],
+            ['Mean Score', f"{scores.mean():.3f}"],
+            ['Median Score', f"{scores.median():.3f}"],
+            ['Std Dev', f"{scores.std():.3f}"],
+            ['Min Score', f"{scores.min():.3f}"],
+            ['Max Score', f"{scores.max():.3f}"],
+            ['Excellent', f"{quality_counts.get('excellent', 0)} ({quality_counts.get('excellent', 0)/len(df)*100:.1f}%)"],
+            ['Good', f"{quality_counts.get('good', 0)} ({quality_counts.get('good', 0)/len(df)*100:.1f}%)"],
+            ['Fair', f"{quality_counts.get('fair', 0)} ({quality_counts.get('fair', 0)/len(df)*100:.1f}%)"],
+            ['Poor', f"{quality_counts.get('poor', 0)} ({quality_counts.get('poor', 0)/len(df)*100:.1f}%)"],
+        ]
+        table = ax3.table(cellText=stats_data, cellLoc='left', loc='center',
+                         colWidths=[0.5, 0.5])
+        table.auto_set_font_size(False)
+        table.set_fontsize(9)
+        table.scale(1, 2)
+        ax3.set_title('Statistics', fontweight='bold', fontsize=12, pad=20)
+
+        # 4. All Metrics Comparison (if available)
+        ax4 = fig.add_subplot(gs[1, 1:])
+        metric_cols = [col for col in df.columns if col.endswith('_score')]
+        if metric_cols:
+            metric_data = []
+            metric_names = []
+            for col in metric_cols:
+                metric_name = col.replace('_score', '')
+                if metric_name in METRIC_INFO:
+                    scores_norm = df[col].dropna()
+                    if METRIC_INFO[metric_name]['higher_is_better']:
+                        scale_max = METRIC_INFO[metric_name]['scale'][1]
+                        normalized = scores_norm / scale_max
+                    else:
+                        scale_max = METRIC_INFO[metric_name]['scale'][1]
+                        normalized = 1 - (scores_norm / scale_max)
+
+                    metric_data.append(normalized.tolist())
+                    metric_names.append(METRIC_INFO[metric_name]['name'])
+
+            if metric_data:
+                bp = ax4.boxplot(metric_data, labels=metric_names, patch_artist=True)
+                for patch, color in zip(bp['boxes'], sns.color_palette("husl", len(metric_data))):
+                    patch.set_facecolor(color)
+                ax4.set_ylabel('Normalized Score (0-1)', fontsize=11)
+                ax4.set_title('All Metrics Comparison (Normalized)', fontweight='bold', fontsize=12)
+                ax4.tick_params(axis='x', rotation=45)
+
+        # 5. Score Trend (if uuid or index available)
+        ax5 = fig.add_subplot(gs[2, :])
+        sample_indices = range(len(df))
+        ax5.plot(sample_indices, df[metric_col], marker='o', linestyle='-',
+                linewidth=1, markersize=4, alpha=0.7)
+        ax5.axhline(scores.mean(), color='red', linestyle='--', linewidth=1.5,
+                   label=f'Mean: {scores.mean():.3f}', alpha=0.7)
+
+        # Color-code points by quality
+        for idx, (score, quality) in enumerate(zip(df[metric_col], df['quality_category'])):
+            ax5.scatter(idx, score, c=colors.get(quality, '#999'),
+                       s=50, alpha=0.6, edgecolors='black', linewidth=0.5)
+
+        ax5.set_xlabel('Sample Index', fontsize=11)
+        ax5.set_ylabel(f'{METRIC_INFO.get(primary_metric, {}).get("name", primary_metric.upper())} Score', fontsize=11)
+        ax5.set_title('Score Trend Across Samples', fontweight='bold', fontsize=12)
+        ax5.legend(fontsize=9)
+        ax5.grid(alpha=0.3)
+
+        plt.suptitle(f'Translation Quality Dashboard - {METRIC_INFO.get(primary_metric, {}).get("name", primary_metric.upper())}',
+                    fontsize=16, fontweight='bold', y=0.98)
+
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"Saved quality dashboard to {output_path}")
+
+    except Exception as e:
+        logger.error(f"Error creating quality dashboard: {e}", exc_info=True)
+
+
+def create_normalized_metrics_comparison(
+    summary: Dict,
+    output_path: Path,
+):
+    """
+    Create a normalized comparison chart showing all metrics on a 0-1 scale
+    with context about what "good" means for each metric.
+
+    Args:
+        summary: Summary dictionary with aggregate scores
+        output_path: Path to save the chart
+    """
+    try:
+        fig, ax = plt.subplots(figsize=(12, 7))
+
+        metrics_data = []
+        for metric, score in summary.get('aggregate_scores', {}).items():
+            if metric in METRIC_INFO:
+                info = METRIC_INFO[metric]
+
+                # Normalize score to 0-1
+                if info['higher_is_better']:
+                    normalized = score / info['scale'][1]
+                else:
+                    # For MCD, invert and normalize
+                    normalized = 1 - (score / info['scale'][1])
+
+                # Normalize good range
+                if info['higher_is_better']:
+                    good_min = info['good_range'][0] / info['scale'][1]
+                    good_max = info['good_range'][1] / info['scale'][1]
+                else:
+                    good_min = 1 - (info['good_range'][1] / info['scale'][1])
+                    good_max = 1 - (info['good_range'][0] / info['scale'][1])
+
+                metrics_data.append({
+                    'metric': info['name'],
+                    'normalized_score': normalized,
+                    'original_score': score,
+                    'good_min': good_min,
+                    'good_max': good_max,
+                    'description': info['description'],
+                })
+
+        if not metrics_data:
+            return
+
+        # Sort by normalized score
+        metrics_data = sorted(metrics_data, key=lambda x: x['normalized_score'], reverse=True)
+
+        y_pos = np.arange(len(metrics_data))
+        normalized_scores = [m['normalized_score'] for m in metrics_data]
+        metric_names = [m['metric'] for m in metrics_data]
+
+        # Create bars
+        bars = ax.barh(y_pos, normalized_scores, height=0.6, color='skyblue',
+                      edgecolor='black', linewidth=1.5)
+
+        # Color bars based on quality
+        for i, (bar, data) in enumerate(zip(bars, metrics_data)):
+            if data['good_min'] <= data['normalized_score'] <= data['good_max']:
+                bar.set_color('#4CAF50')  # Good - green
+            elif data['normalized_score'] >= data['good_max']:
+                bar.set_color('#2E7D32')  # Excellent - dark green
+            elif data['normalized_score'] >= 0.5:
+                bar.set_color('#FFC107')  # Fair - yellow
+            else:
+                bar.set_color('#F44336')  # Poor - red
+
+        # Add "good range" shading
+        for i, data in enumerate(metrics_data):
+            ax.barh(i, data['good_max'] - data['good_min'], left=data['good_min'],
+                   height=0.6, color='lightgreen', alpha=0.3, edgecolor='green',
+                   linewidth=1, linestyle='--')
+
+        # Add value labels
+        for i, data in enumerate(metrics_data):
+            ax.text(data['normalized_score'] + 0.02, i,
+                   f"{data['original_score']:.2f}",
+                   va='center', fontsize=10, fontweight='bold')
+
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(metric_names, fontsize=11)
+        ax.set_xlabel('Normalized Score (0 = Worst, 1 = Best)', fontsize=12)
+        ax.set_xlim(0, 1.15)
+        ax.set_title('Metrics Comparison (Normalized with Quality Ranges)',
+                    fontsize=14, fontweight='bold')
+
+        # Add legend
+        from matplotlib.patches import Rectangle
+        legend_elements = [
+            Rectangle((0, 0), 1, 1, fc='#2E7D32', label='Excellent'),
+            Rectangle((0, 0), 1, 1, fc='#4CAF50', label='Good'),
+            Rectangle((0, 0), 1, 1, fc='#FFC107', label='Fair'),
+            Rectangle((0, 0), 1, 1, fc='#F44336', label='Poor'),
+            Rectangle((0, 0), 1, 1, fc='lightgreen', alpha=0.3,
+                     edgecolor='green', linestyle='--', label='Expected Range'),
+        ]
+        ax.legend(handles=legend_elements, loc='lower right', fontsize=9)
+
+        # Add grid
+        ax.grid(axis='x', alpha=0.3)
+
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"Saved normalized metrics comparison to {output_path}")
+
+    except Exception as e:
+        logger.error(f"Error creating normalized comparison: {e}", exc_info=True)
+
+
 def generate_all_visualizations(
     summary: Dict,
     detailed_results: pd.DataFrame,
     output_dir: Path,
+    primary_metric: str = None,
 ):
     """
     Generate all visualizations for evaluation results.
-    
+
     Args:
         summary: Summary dictionary
         detailed_results: DataFrame with per-sample results
         output_dir: Directory to save visualizations
+        primary_metric: Primary metric for quality categorization (auto-detected if None)
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    
-    # 1. Metrics comparison
+
+    # Auto-detect primary metric if not specified
+    if primary_metric is None:
+        translation_type = summary.get('translation_type')
+        if translation_type == 'audio_to_audio':
+            primary_metric = 'blaser' if 'blaser' in summary.get('metrics_computed', []) else 'comet'
+        else:
+            primary_metric = 'comet'
+
+    # 1. Quality Dashboard (NEW)
+    if f'{primary_metric}_score' in detailed_results.columns:
+        create_quality_dashboard(
+            detailed_results,
+            primary_metric,
+            output_dir / 'quality_dashboard.png',
+        )
+
+    # 2. Normalized Metrics Comparison (NEW)
+    if summary.get('aggregate_scores'):
+        create_normalized_metrics_comparison(
+            summary,
+            output_dir / 'normalized_metrics.png',
+        )
+
+    # 3. Original Metrics comparison
     if summary.get('aggregate_scores'):
         create_metrics_comparison_chart(
             summary['aggregate_scores'],
             output_dir / 'metrics_comparison.png',
         )
-    
-    # 2. Metrics table
+
+    # 4. Metrics table
     create_metrics_table_image(summary, output_dir / 'metrics_table.png')
-    
-    # 3. Score distributions
+
+    # 5. Score distributions
     for metric in summary.get('metrics_computed', []):
         if f'{metric}_score' in detailed_results.columns:
             scores = detailed_results[f'{metric}_score'].dropna().tolist()
@@ -482,8 +881,8 @@ def generate_all_visualizations(
                     metric.upper(),
                     output_dir / f'{metric}_distribution.png',
                 )
-    
-    # 4. Per-sample heatmap (limit to first 50 samples for readability)
+
+    # 6. Per-sample heatmap (limit to first 50 samples for readability)
     score_columns = [col for col in detailed_results.columns if col.endswith('_score')]
     if score_columns:
         sample_scores = detailed_results[score_columns].head(50).copy()
@@ -493,5 +892,5 @@ def generate_all_visualizations(
                 sample_scores,
                 output_dir / 'per_sample_heatmap.png',
             )
-    
+
     logger.info(f"All visualizations saved to {output_dir}")
