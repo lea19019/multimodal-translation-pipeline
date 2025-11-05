@@ -37,14 +37,16 @@ def create_xtts_trainer_parser():
                         help="Learning rate")
     parser.add_argument("--save_step", type=int, default=5000,
                         help="Save step")
+    parser.add_argument("--run_name", type=str, default="GPT_XTTS_FT",
+                        help="Run name for the training")
 
     return parser
 
 
 
-def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_audio_length, max_text_length, lr, weight_decay, save_step):
+def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_audio_length, max_text_length, lr, weight_decay, save_step, run_name):
     #  Logging parameters
-    RUN_NAME = "GPT_XTTS_FT"
+    RUN_NAME = run_name
     PROJECT_NAME = "XTTS_trainer"
     DASHBOARD_LOGGER = "tensorboard"
     LOGGER_URI = None
@@ -54,7 +56,7 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     OUT_PATH = output_path
 
     # Training Parameters
-    OPTIMIZER_WD_ONLY_ON_WEIGHTS = True  # for multi-gpu training please make it False
+    OPTIMIZER_WD_ONLY_ON_WEIGHTS = False  # for multi-gpu training please make it False
     START_WITH_EVAL = False  # if True it will star with evaluation
     BATCH_SIZE = batch_size  # set here the batch size
     GRAD_ACUMM_STEPS = grad_acumm  # set here the grad accumulation steps
@@ -102,9 +104,14 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     XTTS_CONFIG_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/config.json"
 
     # XTTS transfer learning parameters: You we need to provide the paths of XTTS model checkpoint that you want to do the fine tuning.
-    TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
-    XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
-    XTTS_CONFIG_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CONFIG_LINK))  # config.json file
+    # TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
+    # XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
+    # XTTS_CONFIG_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CONFIG_LINK))  # config.json file
+
+    # Resume training from your most recent checkpoint
+    TOKENIZER_FILE = os.path.join("/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/checkpoints/MULTILINGUAL_TRAINING-July-14-2025_01+14PM-8e59ec3/vocab.json")
+    XTTS_CHECKPOINT = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/MULTILINGUAL_TRAINING_11_3-November-03-2025_09+04PM-259c55f/best_model_33200.pth")
+    XTTS_CONFIG_FILE = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/MULTILINGUAL_TRAINING_11_3-November-03-2025_09+04PM-259c55f/config.json")
 
     # download XTTS v2.0 files if needed
     if not os.path.isfile(TOKENIZER_FILE):
@@ -149,6 +156,7 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     config.load_json(XTTS_CONFIG_FILE)
 
     config.epochs = num_epochs
+    config.mixed_precision = True
     config.output_path = OUT_PATH
     config.model_args = model_args
     config.run_name = RUN_NAME
@@ -160,14 +168,17 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     config.logger_uri = LOGGER_URI
     config.audio = audio_config
     config.batch_size = BATCH_SIZE
-    config.num_loader_workers = 8
+    config.num_loader_workers = 2
     config.eval_split_max_size = 256
     config.print_step = 50
     config.plot_step = 100
     config.log_model_step = 100
+    config.save_all_best = False # Don't do this, it saves every best model found during training, which can be a lot of checkpoints
     config.save_step = save_step
-    config.save_n_checkpoints = 1
+    config.save_n_checkpoints = 3
     config.save_checkpoints = True
+    # Early stopping if validation loss doesn't improve for 10 epochs
+    config.early_stop_patience = 10
     config.print_eval = False
     config.optimizer = "AdamW"
     config.optimizer_wd_only_on_weights = OPTIMIZER_WD_ONLY_ON_WEIGHTS
@@ -187,6 +198,14 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
         eval_split_max_size=config.eval_split_max_size,
         eval_split_size=config.eval_split_size,
     )
+
+    print(f"✅ Found {len(train_samples)} training samples and {len(eval_samples)} evaluation samples.")
+    print("\n--- PREVIEWING FIRST 3 TRAINING SAMPLES ---")
+    for i, sample in enumerate(train_samples[:3]):
+        print(f"Sample {i+1}: {sample}")
+    print("--- END OF PREVIEW ---\n")
+
+    #model.train(train_samples=train_samples, eval_samples=eval_samples)
 
     # init the trainer and 🚀
     trainer = Trainer(
@@ -219,7 +238,9 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
 
 if __name__ == "__main__":
     parser = create_xtts_trainer_parser()
-    args = parser.parse_args()
+    # Modified to parse known arguments
+    # This allows the script to ignore any additional arguments that are not defined in the parser
+    args, _ = parser.parse_known_args()
 
     trainer_out_path = train_gpt(
         metadatas=args.metadatas,
@@ -231,7 +252,8 @@ if __name__ == "__main__":
         lr=args.lr,
         max_text_length=args.max_text_length,
         max_audio_length=args.max_audio_length,
-        save_step=args.save_step
+        save_step=args.save_step,
+        run_name=args.run_name
     )
 
     print(f"Checkpoint saved in dir: {trainer_out_path}")

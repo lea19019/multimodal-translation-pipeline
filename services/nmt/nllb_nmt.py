@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 import torch
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Seq2SeqTrainer, Seq2SeqTrainingArguments, DataCollatorForSeq2Seq
+from datasets import Dataset
 
 # Load environment variables
 load_dotenv()
@@ -12,7 +13,7 @@ print(f"CUDA available: {torch.cuda.is_available()}")
 
 # Model configuration
 model_name = "facebook/nllb-200-distilled-600M"
-local_model_path = "./nllb-200-distilled-600M-local"
+local_model_path = "./checkpoints/base"
 
 # Check if model exists locally
 if os.path.exists(local_model_path):
@@ -30,85 +31,71 @@ else:
     model.save_pretrained(local_model_path)
     print(f"Model saved to: {local_model_path}")
 
-# Force CPU usage
-device = torch.device("cpu")
-model = model.to(device)
+# Add Efik token
+tokenizer.add_tokens(["efi_Latn"])
+model.resize_token_embeddings(len(tokenizer))
 
-print("Model loaded successfully!")
-print(f"Model device: {next(model.parameters()).device}")
-print(f"Model dtype: {next(model.parameters()).dtype}")
-print(f"Local model path: {local_model_path}")
+# Load your data files
+with open("/home/vacl2/groups/grp_mtlab/projects/project-multimodal-pipeline/src.txt", "r", encoding="utf-8") as f:
+    english = [line.strip() for line in f]
 
-# Translation function
-def translate_text(text, source_lang="eng_Latn", target_lang="fra_Latn"):
-    """
-    Translate text using NLLB model
-    
-    Args:
-        text (str): Text to translate
-        source_lang (str): Source language code (e.g., "eng_Latn" for English)
-        target_lang (str): Target language code (e.g., "fra_Latn" for French)
-    
-    Returns:
-        str: Translated text
-    """
-    try:
-        # Set source language
-        tokenizer.src_lang = source_lang
-        
-        # Encode the text
-        encoded = tokenizer(text, return_tensors="pt")
-        encoded = {k: v.to(device) for k, v in encoded.items()}
-        
-        # Get target language ID using the correct method
-        target_lang_id = tokenizer.convert_tokens_to_ids(target_lang)
-        
-        # Generate translation
-        with torch.no_grad():
-            generated_tokens = model.generate(
-                **encoded,
-                forced_bos_token_id=target_lang_id,
-                max_length=512
-            )
-        
-        # Decode the translation
-        translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)[0]
-        
-        return translation
-    
-    except Exception as e:
-        import traceback
-        error_details = traceback.format_exc()
-        print(f"Full error details:\n{error_details}")
-        return f"Error: {e}"
+with open("/home/vacl2/groups/grp_mtlab/projects/project-multimodal-pipeline/tgt.txt", "r", encoding="utf-8") as f:
+    efik = [line.strip() for line in f]
 
-print("\nModel is ready for translation!")
-print("Available functions:")
-print("1. translate_text(text, source_lang, target_lang)")
-print("\nExample language codes:")
-print("- English: eng_Latn")
-print("- French: fra_Latn") 
-print("- Spanish: spa_Latn")
-print("- German: deu_Latn")
-print("- Chinese: zho_Hans")
-print("- Arabic: arb_Arab")
+# Create full dataset
+full_dataset = Dataset.from_dict({"english": english, "efik": efik})
 
-if __name__ == "__main__":
-    # Test translation
-    print("\n" + "="*60)
-    print("TESTING NLLB TRANSLATION")
-    print("="*60)
-    
-    test_text = "Hello, how are you today?"
-    print(f"Original text: {test_text}")
-    
-    # Test English to French
-    french_translation = translate_text(test_text, "eng_Latn", "fra_Latn")
-    print(f"French translation: {french_translation}")
-    
-    # Test English to Spanish
-    spanish_translation = translate_text(test_text, "eng_Latn", "spa_Latn")
-    print(f"Spanish translation: {spanish_translation}")
-    
-    print("\n✅ NLLB model is working correctly!")
-    print("You can now use translate_text() for any supported language pair.")
+# Split into train (90%) and eval (10%)
+split_dataset = full_dataset.train_test_split(test_size=0.1, seed=42)
+train_dataset = split_dataset['train']
+eval_dataset = split_dataset['test']
+
+print(f"Training samples: {len(train_dataset)}")
+print(f"Evaluation samples: {len(eval_dataset)}")
+
+# Tokenize
+def preprocess(examples):
+    tokenizer.src_lang = "eng_Latn"
+    tokenizer.tgt_lang = "efi_Latn"
+    inputs = tokenizer(examples['english'], truncation=True, max_length=128)
+    with tokenizer.as_target_tokenizer():
+        labels = tokenizer(examples['efik'], truncation=True, max_length=128)
+    inputs['labels'] = labels['input_ids']
+    return inputs
+
+train_dataset = train_dataset.map(preprocess, batched=True)
+eval_dataset = eval_dataset.map(preprocess, batched=True)
+
+# Training arguments
+args = Seq2SeqTrainingArguments(
+    output_dir="./checkpoints/efik_finetuned",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=16,
+    save_steps=500,
+    eval_steps=500,                   # Evaluate every 500 steps
+    logging_steps=50,
+    logging_first_step=True,
+    eval_strategy="steps",
+    save_total_limit=2,
+    load_best_model_at_end=True,     # Load best checkpoint at end
+    metric_for_best_model="eval_loss", # Use eval loss to pick best
+    fp16=torch.cuda.is_available(),
+    dataloader_num_workers=4,
+)
+
+# Create trainer
+trainer = Seq2SeqTrainer(
+    model=model,
+    args=args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,         # Add eval dataset
+    data_collator=DataCollatorForSeq2Seq(tokenizer, model=model)
+)
+
+
+trainer.train()
+
+# Save
+model.save_pretrained("./checkpoints/efik_finetuned_v2")
+tokenizer.save_pretrained("./checkpoints/efik_finetuned_v2")
