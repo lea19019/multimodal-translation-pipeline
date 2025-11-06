@@ -508,18 +508,12 @@ export class AudioUtils {
  * Language utilities
  */
 export const SUPPORTED_LANGUAGES = [
-  { code: 'en', name: 'English', nllb: 'eng_Latn' },
-  { code: 'es', name: 'Spanish', nllb: 'spa_Latn' },
-  { code: 'fr', name: 'French', nllb: 'fra_Latn' },
-  { code: 'de', name: 'German', nllb: 'deu_Latn' },
-  { code: 'it', name: 'Italian', nllb: 'ita_Latn' },
-  { code: 'pt', name: 'Portuguese', nllb: 'por_Latn' },
-  { code: 'zh', name: 'Chinese (Simplified)', nllb: 'zho_Hans' },
-  { code: 'ja', name: 'Japanese', nllb: 'jpn_Jpan' },
-  { code: 'ko', name: 'Korean', nllb: 'kor_Hang' },
-  { code: 'ar', name: 'Arabic', nllb: 'arb_Arab' },
-  { code: 'ru', name: 'Russian', nllb: 'rus_Cyrl' },
-  { code: 'hi', name: 'Hindi', nllb: 'hin_Deva' },
+  { code: 'en', name: 'English', nllb: 'eng_Latn', tts: 'en' },
+  { code: 'es', name: 'Spanish', nllb: 'spa_Latn', tts: 'es' },
+  { code: 'efi', name: 'Efik', nllb: 'efi_Latn', tts: 'efi' },
+  { code: 'ibo', name: 'Igbo', nllb: 'ibo_Latn', tts: 'ibo' },
+  { code: 'xho', name: 'Xhosa', nllb: 'xho_Latn', tts: 'xho' },
+  { code: 'swa', name: 'Swahili', nllb: 'swh_Latn', tts: 'swa' },
 ];
 
 export function getLanguageName(code: string): string {

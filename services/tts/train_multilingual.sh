@@ -4,7 +4,7 @@
 
 # --- SLURM RESOURCE REQUESTS ---
 
-#SBATCH --time=72:00:00          # Walltime (3 days for 60 epochs)
+#SBATCH --time=24:00:00          # Walltime (1 days for 50 epochs)
 #SBATCH --partition=cs
 #SBATCH --nodes=1                # Number of nodes. YourTTS `distribute` script is for single-node.
 #SBATCH --ntasks-per-node=1      # Number of tasks. The python script is a single task.                
@@ -68,39 +68,22 @@ echo "-----------------------"
 
 # --- 4. Execute the Training Command ---
 
-# --- 4. Execute the Training Command ---
-
 echo "Starting distributed training on $SLURM_GPUS_ON_NODE GPUs..."
-
-# Use torchrun to launch one training process per GPU.
-# --nproc_per_node tells torchrun how many processes (and GPUs) to use.
-# torchrun handles setting CUDA_VISIBLE_DEVICES for each process automatically.
-# CUDA_VISIBLE_DEVICES=0 python train_gpt_xtts.py \
-# --output_path checkpoints/ \
-# --metadatas data/metadata_train.csv,data/metadata_eval.csv,efi \
-# --num_epochs 20 \
-# --batch_size 24 \
-# --grad_acumm 4 \
-# --max_text_length 400 \
-# --max_audio_length 330750 \
-# --weight_decay 1e-2 \
-# --lr 5e-6 \
-# --save_step 1000
 
 uv run python -m trainer.distribute \
     --script ${TRAIN_SCRIPT_PATH} \
     --gpus ${SLURM_GPUS_ON_NODE} \
     --output_path checkpoints/ \
-    --metadatas /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa \
-    --num_epochs 60 \
-    --batch_size 48 \
-    --grad_acumm 1 \
+    --metadatas /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo \
+    --num_epochs 20 \
+    --batch_size 24 \
+    --grad_acumm 2 \
     --max_text_length 300 \
     --max_audio_length 330750 \
     --weight_decay 1e-2 \
-    --lr 5e-6 \
+    --lr 2e-6 \
     --save_step 2000 \
-    --run_name "MULTILINGUAL_TRAINING_11_4_FAST"
+    --run_name "MULTILINGUAL_TRAINING_11_5"
 
 
 echo "========================================================="

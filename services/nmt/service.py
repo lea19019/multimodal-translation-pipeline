@@ -68,7 +68,7 @@ class ModelsResponse(BaseModel):
 
 def get_models_directory() -> Path:
     """Get the models directory path"""
-    return Path(__file__).parent / "models"
+    return Path(__file__).parent / "checkpoints"
 
 
 def list_available_models() -> List[str]:
@@ -193,16 +193,10 @@ async def translate(request: TranslateRequest):
             lang_map = {
                 'en': 'eng_Latn',
                 'es': 'spa_Latn',
-                'fr': 'fra_Latn',
-                'de': 'deu_Latn',
-                'it': 'ita_Latn',
-                'pt': 'por_Latn',
-                'zh': 'zho_Hans',
-                'ja': 'jpn_Jpan',
-                'ko': 'kor_Hang',
-                'ar': 'arb_Arab',
-                'ru': 'rus_Cyrl',
-                'hi': 'hin_Deva',
+                'efi': 'efi_Latn',
+                'ibo': 'ibo_Latn',
+                'xho': 'xho_Latn',
+                'swa': 'swh_Latn',
             }
             
             # If already in NLLB format, return as is

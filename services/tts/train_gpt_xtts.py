@@ -80,7 +80,7 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
         DATASETS_CONFIG_LIST.append(config_dataset)
 
     # Define the path where XTTS v2.0.1 files will be downloaded
-    CHECKPOINTS_OUT_PATH = os.path.join(OUT_PATH, "XTTS_v2.0_original_model_files/")
+    CHECKPOINTS_OUT_PATH = os.path.join(OUT_PATH, "base/")
     os.makedirs(CHECKPOINTS_OUT_PATH, exist_ok=True)
 
 
@@ -109,9 +109,9 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     # XTTS_CONFIG_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CONFIG_LINK))  # config.json file
 
     # Resume training from your most recent checkpoint
-    TOKENIZER_FILE = os.path.join("/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/checkpoints/MULTILINGUAL_TRAINING-July-14-2025_01+14PM-8e59ec3/vocab.json")
-    XTTS_CHECKPOINT = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/MULTILINGUAL_TRAINING_11_3-November-03-2025_09+04PM-259c55f/best_model_33200.pth")
-    XTTS_CONFIG_FILE = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/MULTILINGUAL_TRAINING_11_3-November-03-2025_09+04PM-259c55f/config.json")
+    TOKENIZER_FILE = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/base/vocab.json")
+    XTTS_CHECKPOINT = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/base/model.pth")
+    XTTS_CONFIG_FILE = os.path.join("/home/vacl2/multimodal_translation/services/tts/checkpoints/base/config.json")
 
     # download XTTS v2.0 files if needed
     if not os.path.isfile(TOKENIZER_FILE):
@@ -156,7 +156,7 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     config.load_json(XTTS_CONFIG_FILE)
 
     config.epochs = num_epochs
-    config.mixed_precision = True
+    config.mixed_precision = False  # Disable to prevent nan loss
     config.output_path = OUT_PATH
     config.model_args = model_args
     config.run_name = RUN_NAME
@@ -185,6 +185,8 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
     config.optimizer_params = {"betas": [0.9, 0.96], "eps": 1e-8, "weight_decay": weight_decay}
     config.lr = lr
     config.lr_scheduler = "MultiStepLR"
+    # Add gradient clipping to prevent nan loss
+    config.grad_clip = 1.0
     config.lr_scheduler_params = {"milestones": [50000 * 18, 150000 * 18, 300000 * 18], "gamma": 0.5, "last_epoch": -1}
     config.test_sentences = []
 

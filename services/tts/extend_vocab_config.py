@@ -41,7 +41,7 @@ def combine_tokenizers(old_tokenizer, new_tokenizer, save_dir):
 
 def extend_tokenizer(args):
     
-    root = os.path.join(args.output_path, "XTTS_v2.0_original_model_files/")
+    root = os.path.join(args.output_path, "base/")
 
     # save seperately vocab, merges
     existing_tokenizer = Tokenizer.from_file(os.path.join(root, "vocab.json"))
@@ -80,7 +80,7 @@ def extend_tokenizer(args):
     os.system(f'rm -rf {old_tokenizer_path} {new_tokenizer_path} {merged_tokenizer_path}')
 
 def adjust_config(args):
-    config_path = os.path.join(args.output_path, "XTTS_v2.0_original_model_files/config.json")
+    config_path = os.path.join(args.output_path, "base/config.json")
     with open(config_path, "r") as f:
         config = json.load(f)
     config["languages"] += [args.language]

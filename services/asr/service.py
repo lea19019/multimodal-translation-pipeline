@@ -70,7 +70,7 @@ class ModelsResponse(BaseModel):
 
 def get_models_directory() -> Path:
     """Get the models directory path"""
-    return Path(__file__).parent / "models"
+    return Path(__file__).parent / "checkpoints"
 
 
 def list_available_models() -> List[str]:

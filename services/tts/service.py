@@ -22,6 +22,8 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from TTS.api import TTS as CoquiTTS
+from TTS.tts.configs.xtts_config import XttsConfig
+from TTS.tts.models.xtts import Xtts
 import uvicorn
 
 # Configure logging
@@ -98,7 +100,7 @@ class ModelsResponse(BaseModel):
 
 def get_models_directory() -> Path:
     """Get the models directory path"""
-    return Path(__file__).parent / "models"
+    return Path(__file__).parent / "checkpoints"
 
 
 def list_available_models() -> List[str]:
@@ -130,37 +132,17 @@ def get_xtts_language_code(lang_code: str) -> str:
         # Simple codes (pass through)
         'en': 'en',
         'es': 'es',
-        'fr': 'fr',
-        'de': 'de',
-        'it': 'it',
-        'pt': 'pt',
-        'pl': 'pl',
-        'tr': 'tr',
-        'ru': 'ru',
-        'nl': 'nl',
-        'cs': 'cs',
-        'ar': 'ar',
-        'zh': 'zh-cn',
-        'ja': 'ja',
-        'ko': 'ko',
-        'hi': 'hi',
+        'efi': 'efi',
+        'ibo': 'ibo',
+        'xho': 'xho',
+        'swa': 'swa',
         # NLLB format to XTTS
         'eng_Latn': 'en',
         'spa_Latn': 'es',
-        'fra_Latn': 'fr',
-        'deu_Latn': 'de',
-        'ita_Latn': 'it',
-        'por_Latn': 'pt',
-        'pol_Latn': 'pl',
-        'tur_Latn': 'tr',
-        'rus_Cyrl': 'ru',
-        'nld_Latn': 'nl',
-        'ces_Latn': 'cs',
-        'arb_Arab': 'ar',
-        'zho_Hans': 'zh-cn',
-        'jpn_Jpan': 'ja',
-        'kor_Hang': 'ko',
-        'hin_Deva': 'hi',
+        'efi_Latn': 'efi',
+        'ibo_Latn': 'ibo',
+        'xho_Latn': 'xho',
+        'swh_Latn': 'swa',
     }
     
     # Try exact match first
@@ -210,19 +192,21 @@ def load_xtts_model(model_name: str):
                 f"Expected config.json and model.pth"
             )
         
-        # Load XTTS model - force CPU execution
-        tts_model = CoquiTTS(
-            model_path=str(model_dir),
-            config_path=str(config_path),
-            gpu=False  # Force CPU execution
-        )
+        # Load XTTS model directly (not through TTS API wrapper)
+        # This is necessary for custom trained models
+        config = XttsConfig()
+        config.load_json(str(config_path))
         
-        # Cache the loaded model
-        loaded_models[model_name] = tts_model
+        model = Xtts.init_from_config(config)
+        model.load_checkpoint(config, checkpoint_dir=str(model_dir), eval=True, use_deepspeed=False)
+        model.to(DEVICE)
+        
+        # Cache both config and model
+        loaded_models[model_name] = (config, model)
         
         logger.info(f"XTTS model '{model_name}' loaded successfully on {DEVICE}")
         
-        return tts_model
+        return config, model
         
     except Exception as e:
         logger.error(f"Error loading model '{model_name}': {e}")
@@ -274,7 +258,7 @@ async def synthesize(request: SynthesizeRequest):
         
         # Load model (lazy loading with caching)
         try:
-            tts_model = load_xtts_model(request.model_name)
+            config, model = load_xtts_model(request.model_name)
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -288,79 +272,68 @@ async def synthesize(request: SynthesizeRequest):
                 detail="Text cannot be empty"
             )
         
-        # Generate speech
-        # Note: XTTS supports multilingual synthesis
+        # Generate speech using XTTS inference
         # Convert language code to XTTS-compatible format
         xtts_language = get_xtts_language_code(request.language)
         logger.info(f"Using XTTS language code: {xtts_language} (from {request.language})")
         
-        # Check if model has built-in speakers or requires voice cloning
-        has_speakers = hasattr(tts_model, 'speakers') and tts_model.speakers is not None and len(tts_model.speakers) > 0
+        # Get reference audio for voice cloning
+        ref_audio = get_default_reference_audio()
+        if not ref_audio or not ref_audio.exists():
+            logger.error("XTTS model requires voice cloning but no reference audio available")
+            raise HTTPException(
+                status_code=status.HTTP_501_NOT_IMPLEMENTED,
+                detail=(
+                    "This XTTS model requires a reference speaker audio file for voice cloning. "
+                    "No default reference audio found. Please run: "
+                    "'python create_reference_audio.py' in the tts directory to set up a default voice."
+                )
+            )
+        
+        logger.info(f"Using reference audio for voice cloning: {ref_audio}")
         
         try:
-            if has_speakers:
-                # Use first available speaker for models with built-in speakers
-                speaker = tts_model.speakers[0]
-                logger.info(f"Using built-in speaker: {speaker}")
-                wav = tts_model.tts(
-                    text=request.text,
-                    speaker=speaker,
-                    language=xtts_language,
-                    split_sentences=True
-                )
+            # Compute speaker latents from reference audio
+            gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(
+                audio_path=str(ref_audio)
+            )
+            
+            # Generate speech
+            out = model.inference(
+                text=request.text,
+                language=xtts_language,
+                gpt_cond_latent=gpt_cond_latent,
+                speaker_embedding=speaker_embedding,
+                temperature=0.7,
+                length_penalty=1.0,
+                repetition_penalty=5.0,
+                top_k=50,
+                top_p=0.85,
+            )
+            
+            # Check if inference returned valid output
+            if out is None:
+                logger.error(f"Model inference returned None for text: {request.text[:100]}")
+                raise ValueError("Model inference returned None. This usually means the model is not properly loaded or initialized.")
+            
+            # Extract waveform
+            if isinstance(out, dict):
+                wav = out.get("wav")
             else:
-                # For voice cloning models (XTTS), try to use default reference audio
-                ref_audio = get_default_reference_audio()
-                if ref_audio and ref_audio.exists():
-                    logger.info(f"Using reference audio for voice cloning: {ref_audio}")
-                    wav = tts_model.tts(
-                        text=request.text,
-                        language=xtts_language,
-                        speaker_wav=str(ref_audio),
-                        split_sentences=True
-                    )
-                else:
-                    logger.error("XTTS model requires voice cloning but no reference audio available")
-                    raise HTTPException(
-                        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-                        detail=(
-                            "This XTTS model requires a reference speaker audio file for voice cloning. "
-                            "No default reference audio found. Please run: "
-                            "'python create_reference_audio.py' in the tts directory to set up a default voice."
-                        )
-                    )
-        except HTTPException:
-            raise
+                # Sometimes inference returns the wav directly
+                wav = out
+            
+            # Validate wav output
+            if wav is None:
+                logger.error(f"No 'wav' key in inference output. Output keys: {out.keys() if isinstance(out, dict) else type(out)}")
+                raise ValueError("Inference did not produce audio output")
+            
         except Exception as e:
-            logger.error(f"TTS synthesis failed: {e}")
-            # Try one more fallback without split_sentences
-            try:
-                if has_speakers:
-                    speaker = tts_model.speakers[0]
-                    wav = tts_model.tts(
-                        text=request.text,
-                        speaker=speaker,
-                        language=xtts_language
-                    )
-                else:
-                    ref_audio = get_default_reference_audio()
-                    if ref_audio and ref_audio.exists():
-                        wav = tts_model.tts(
-                            text=request.text,
-                            language=xtts_language,
-                            speaker_wav=str(ref_audio)
-                        )
-                    else:
-                        raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail=f"TTS synthesis failed: {str(e)}"
-                        )
-            except Exception as e2:
-                logger.error(f"TTS synthesis failed on retry: {e2}")
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"TTS synthesis failed: {str(e2)}"
-                )
+            logger.error(f"TTS synthesis failed: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"TTS synthesis failed: {str(e)}"
+            )
         
         # Convert to numpy array if not already
         if not isinstance(wav, np.ndarray):
