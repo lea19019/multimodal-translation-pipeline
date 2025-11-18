@@ -12,7 +12,7 @@ print(f"CUDA available: {torch.cuda.is_available()}")
 
 # Model configuration
 model_name = "openai/whisper-medium"
-local_model_path = "./whisper-medium-local"
+local_model_path = "../checkpoints/base"
 
 # Check if model exists locally
 if os.path.exists(local_model_path):

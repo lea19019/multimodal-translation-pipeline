@@ -13,7 +13,7 @@ print(f"CUDA available: {torch.cuda.is_available()}")
 
 # Model configuration
 model_name = "facebook/nllb-200-distilled-600M"
-local_model_path = "./checkpoints/base"
+local_model_path = "../checkpoints/base"
 
 # Check if model exists locally
 if os.path.exists(local_model_path):
@@ -132,7 +132,7 @@ eval_dataset = eval_dataset.map(
 
 # Training arguments
 args = Seq2SeqTrainingArguments(
-    output_dir="./checkpoints/multilang_finetuned_running",
+    output_dir="../checkpoints/multilang_finetuned_running",
     num_train_epochs=3,
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
@@ -162,7 +162,7 @@ print("\nStarting training...")
 trainer.train()
 
 # Save final model
-final_save_path = "./checkpoints/multilang_finetuned_final"
+final_save_path = "../checkpoints/multilang_finetuned_final"
 print(f"\nSaving final model to {final_save_path}...")
 model.save_pretrained(final_save_path)
 tokenizer.save_pretrained(final_save_path)
