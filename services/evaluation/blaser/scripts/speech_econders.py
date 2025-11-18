@@ -9,7 +9,7 @@ from pathlib import Path
 from sonar.inference_pipelines.speech import SpeechToEmbeddingModelPipeline
 
 DEVICE = torch.device("cpu")
-CHECKPOINT_DIR = Path("./checkpoints")
+CHECKPOINT_DIR = Path("../checkpoints")
 
 def get_default_cache():
     """Get fairseq2 default cache location"""
