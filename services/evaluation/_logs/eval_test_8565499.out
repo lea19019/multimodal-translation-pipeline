@@ -1,0 +1,31 @@
+=========================================================
+SLURM JOB ID: 8565499
+JOB NAME: eval_test
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+
+Balanced Batch Evaluation - First Run
+==========================================
+
+Models to test:
+  NMT: multilang_finetuned_final
+  TTS: MULTILINGUAL_TRAINING_11_5
+
+Data: 10 samples per language (quick test)
+  - Efik: 10 / 3,248
+  - Igbo: 10 / 2,948
+  - Swahili: 10 / 1,864
+  - Xhosa: 10 / 1,894
+
+This is a quick test to verify everything works!
+==========================================
+
+✓ Models found
+
+
+Starting quick test evaluation...
+Run ID: quick_test_10samples_20251117_194646
+Expected time: ~5-10 minutes
+
+/home/vacl2/.local/share/uv/python/cpython-3.13.7-linux-x86_64-gnu/bin/python3.13: can't open file '/var/spool/slurmd/job8565499/batch_evaluation.py': [Errno 2] No such file or directory

@@ -1,0 +1,176 @@
+=========================================================
+SLURM JOB ID: 8327984
+JOB NAME: train_multilingual_tts
+Running on nodes: cs-1-4
+Number of GPUs allocated: 2
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 2
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov  5 10:43:31 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:44:00.0 Off |                    0 |
+| N/A   26C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          On  |   00000000:4A:00.0 Off |                    0 |
+| N/A   30C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting distributed training on 2 GPUs...
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_05-104339', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '--num_epochs', '20', '--batch_size', '24', '--grad_acumm', '2', '--max_text_length', '300', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '2000', '--run_name', 'MULTILINGUAL_TRAINING_11_5', '--rank=0']
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_05-104339', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '--num_epochs', '20', '--batch_size', '24', '--grad_acumm', '2', '--max_text_length', '300', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '2000', '--run_name', 'MULTILINGUAL_TRAINING_11_5', '--rank=1']
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+ > Training Environment:
+ | > Backend: Torch
+ | > Mixed precision: True
+ | > Precision: fp16
+ | > Current device: 0
+ | > Num. of GPUs: 2
+ | > Num. of CPUs: 128
+ | > Num. of Torch Threads: 1
+ | > Torch seed: 54321
+ | > Torch CUDNN: True
+ | > Torch CUDNN deterministic: False
+ | > Torch CUDNN benchmark: False
+ | > Torch TF32 MatMul: False
+ > Start Tensorboard: tensorboard --logdir=checkpoints/MULTILINGUAL_TRAINING_11_5-November-05-2025_10+45AM-cc09632
+ > Using PyTorch DDP
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py:552: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler()
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py:552: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler()
+
+ > Model has 531188876 parameters
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+
+[4m[1m > EPOCH: 0/20[0m
+ --> checkpoints/MULTILINGUAL_TRAINING_11_5-November-05-2025_10+45AM-cc09632
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/utils/data/dataloader.py:627: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/utils/data/dataloader.py:627: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+
+[1m > TRAINING (2025-11-05 10:45:29) [0m
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv swa
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+ > Loading checkpoint with 6221 additional tokens.
+>> DVAE weights restored from: checkpoints/base/dvae.pth
+ > Missing column in line 3497 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+✅ Found 79655 training samples and 9954 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': 'Unaweza kuwa na haja ya kufanya muhtasari sehemu za somo hili ili kupatiana muda wa kufundisha mafundisho na kanuni muhimu vyema.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16925_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=16925_User=7_Language=swa'}
+Sample 2: {'text': 'Novemba 4, 2007: Mzee Dallin H. Oaks anafundisha kuhusu umuhimu wa kuweka siku ya Sabato takatifu na anawashauri vijana kujiandaa kwa maisha marefu, yenye matunda.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=25877_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=25877_User=7_Language=swa'}
+Sample 3: {'text': 'Lamani na Lemueli hawakuona jinsi wangeweza kutimiza hii amri, lakini Nefi alikuwa na imani kwamba Bwana angepatiana njia ambayo kwayo wangetimiza kile Yeye alihitaji.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=17390_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=17390_User=7_Language=swa'}
+--- END OF PREVIEW ---
+
+ > Sampling by language: dict_keys(['efi', 'ibo', 'xho', 'swa'])
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv swa
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+ > Loading checkpoint with 6221 additional tokens.
+>> DVAE weights restored from: checkpoints/base/dvae.pth
+ > Missing column in line 3497 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+✅ Found 79655 training samples and 9954 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': 'Unaweza kuwa na haja ya kufanya muhtasari sehemu za somo hili ili kupatiana muda wa kufundisha mafundisho na kanuni muhimu vyema.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16925_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=16925_User=7_Language=swa'}
+Sample 2: {'text': 'Novemba 4, 2007: Mzee Dallin H. Oaks anafundisha kuhusu umuhimu wa kuweka siku ya Sabato takatifu na anawashauri vijana kujiandaa kwa maisha marefu, yenye matunda.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=25877_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=25877_User=7_Language=swa'}
+Sample 3: {'text': 'Lamani na Lemueli hawakuona jinsi wangeweza kutimiza hii amri, lakini Nefi alikuwa na imani kwamba Bwana angepatiana njia ambayo kwayo wangetimiza kile Yeye alihitaji.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=17390_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=17390_User=7_Language=swa'}
+--- END OF PREVIEW ---
+
+ > Sampling by language: dict_keys(['efi', 'ibo', 'xho', 'swa'])
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+
+[1m   --> TIME: 2025-11-05 10:45:39 -- STEP: 0/1660 -- GLOBAL_STEP: 0[0m
+     | > loss_text_ce: nan  (nan)
+     | > loss_mel_ce: nan  (nan)
+     | > loss: nan  (nan)
+     | > current_lr: 5e-06 
+     | > step_time: 4.0356  (4.035622596740723)
+     | > loader_time: 5.3158  (5.315782308578491)
+
+
+[1m   --> TIME: 2025-11-05 10:47:04 -- STEP: 50/1660 -- GLOBAL_STEP: 50[0m
+     | > loss_text_ce: nan  (nan)
+     | > loss_mel_ce: nan  (nan)
+     | > loss: nan  (nan)
+     | > current_lr: 5e-06 
+     | > step_time: 0.4468  (0.5577580404281615)
+     | > loader_time: 1.688  (1.0774081039428713)
+
+
+[1m   --> TIME: 2025-11-05 10:48:30 -- STEP: 100/1660 -- GLOBAL_STEP: 100[0m
+     | > loss_text_ce: nan  (nan)
+     | > loss_mel_ce: nan  (nan)
+     | > loss: nan  (nan)
+     | > current_lr: 5e-06 
+     | > step_time: 0.4596  (0.5414365887641911)
+     | > loader_time: 0.1046  (1.1023435258865355)
+
+
+[1m   --> TIME: 2025-11-05 10:49:54 -- STEP: 150/1660 -- GLOBAL_STEP: 150[0m
+     | > loss_text_ce: nan  (nan)
+     | > loss_mel_ce: nan  (nan)
+     | > loss: nan  (nan)
+     | > current_lr: 5e-06 
+     | > step_time: 0.4374  (0.5368128951390586)
+     | > loader_time: 0.11  (1.0932382027308147)
+
+
+[1m   --> TIME: 2025-11-05 10:51:22 -- STEP: 200/1660 -- GLOBAL_STEP: 200[0m
+     | > loss_text_ce: nan  (nan)
+     | > loss_mel_ce: nan  (nan)
+     | > loss: nan  (nan)
+     | > current_lr: 5e-06 
+     | > step_time: 0.5191  (0.5350481188297276)
+     | > loader_time: 0.1232  (1.1115492784976964)
+
+slurmstepd: error: *** JOB 8327984 ON cs-1-4 CANCELLED AT 2025-11-05T10:52:32 ***

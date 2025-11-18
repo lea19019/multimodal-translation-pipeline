@@ -1,0 +1,236 @@
+=========================================================
+SLURM JOB ID: 8322030
+JOB NAME: train_multilingual_tts
+Running on nodes: cs-1-1
+Number of GPUs allocated: 2
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 2
+------------------------------------
+--- GPU Diagnostics ---
+Mon Nov  3 20:52:53 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:0A:00.0 Off |                    0 |
+| N/A   27C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   28C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting distributed training on 2 GPUs...
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_03-205301', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa', '--num_epochs', '6500', '--batch_size', '24', '--grad_acumm', '4', '--max_text_length', '500', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '10000', '--run_name', 'MULTILINGUAL_TRAINING_11_3', '--rank=0']
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_03-205301', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa', '--num_epochs', '6500', '--batch_size', '24', '--grad_acumm', '4', '--max_text_length', '500', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '10000', '--run_name', 'MULTILINGUAL_TRAINING_11_3', '--rank=1']
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+ > Training Environment:
+ | > Backend: Torch
+ | > Mixed precision: False
+ | > Precision: float32
+ | > Current device: 0
+ | > Num. of GPUs: 2
+ | > Num. of CPUs: 256
+ | > Num. of Torch Threads: 1
+ | > Torch seed: 54321
+ | > Torch CUDNN: True
+ | > Torch CUDNN deterministic: False
+ | > Torch CUDNN benchmark: False
+ | > Torch TF32 MatMul: False
+ > Start Tensorboard: tensorboard --logdir=checkpoints/MULTILINGUAL_TRAINING_11_3-November-03-2025_08+55PM-259c55f
+ > Using PyTorch DDP
+
+ > Model has 528131768 parameters
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv swa
+>> DVAE weights restored from: checkpoints/XTTS_v2.0_original_model_files/dvae.pth
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+ > Missing column in line 3497 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili
+✅ Found 79655 training samples and 9954 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': 'Inxalenye ebalulekileyo yomsebenzi kaJoseph Smith yayikukuzisa ngaphambili imibhalo yembewu kaJoseph, equlethwe kwiNcwadi kaMormoni.', 'audio_file': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/processed_audio_normalized/Segment=155543_User=11_Language=xho.wav', 'ref_file': 'null', 'speaker_name': 11, 'emotion_name': 'neutral', 'root_path': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned', 'language': 'xho', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=155543_User=11_Language=xho'}
+Sample 2: {'text': 'Okokuqala ebomini bam, ndaqala ukuzibuza ukuba ingaba andikho krelekrele ngokwaneleyo na esikolweni.', 'audio_file': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/processed_audio_normalized/Segment=152151_User=13_Language=xho.wav', 'ref_file': 'null', 'speaker_name': 13, 'emotion_name': 'neutral', 'root_path': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned', 'language': 'xho', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=152151_User=13_Language=xho'}
+Sample 3: {'text': 'Abangcwele baseHarare babambisana nebhunga lesixeko ukuvala imingxuma kwindawo yaseMabvuku-Tafara nendlela encinci kwingingqi yaseQueensdale.', 'audio_file': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/processed_audio_normalized/Segment=151371_User=11_Language=xho.wav', 'ref_file': 'null', 'speaker_name': 11, 'emotion_name': 'neutral', 'root_path': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned', 'language': 'xho', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=151371_User=11_Language=xho'}
+--- END OF PREVIEW ---
+
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv swa
+>> DVAE weights restored from: checkpoints/XTTS_v2.0_original_model_files/dvae.pth
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+ > Missing column in line 3497 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili
+✅ Found 79655 training samples and 9954 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': 'Inxalenye ebalulekileyo yomsebenzi kaJoseph Smith yayikukuzisa ngaphambili imibhalo yembewu kaJoseph, equlethwe kwiNcwadi kaMormoni.', 'audio_file': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/processed_audio_normalized/Segment=155543_User=11_Language=xho.wav', 'ref_file': 'null', 'speaker_name': 11, 'emotion_name': 'neutral', 'root_path': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned', 'language': 'xho', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=155543_User=11_Language=xho'}
+Sample 2: {'text': 'Okokuqala ebomini bam, ndaqala ukuzibuza ukuba ingaba andikho krelekrele ngokwaneleyo na esikolweni.', 'audio_file': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/processed_audio_normalized/Segment=152151_User=13_Language=xho.wav', 'ref_file': 'null', 'speaker_name': 13, 'emotion_name': 'neutral', 'root_path': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned', 'language': 'xho', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=152151_User=13_Language=xho'}
+Sample 3: {'text': 'Abangcwele baseHarare babambisana nebhunga lesixeko ukuvala imingxuma kwindawo yaseMabvuku-Tafara nendlela encinci kwingingqi yaseQueensdale.', 'audio_file': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/processed_audio_normalized/Segment=151371_User=11_Language=xho.wav', 'ref_file': 'null', 'speaker_name': 11, 'emotion_name': 'neutral', 'root_path': '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned', 'language': 'xho', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=151371_User=11_Language=xho'}
+--- END OF PREVIEW ---
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 198, in _new_conn
+[rank0]:     sock = connection.create_connection(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 85, in create_connection
+[rank0]:     raise err
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 73, in create_connection
+[rank0]:     sock.connect(sa)
+[rank0]: OSError: [Errno 101] Network is unreachable
+
+[rank0]: The above exception was the direct cause of the following exception:
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+[rank0]:     response = self._make_request(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+[rank0]:     raise new_e
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+[rank0]:     self._validate_conn(conn)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+[rank0]:     conn.connect()
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 753, in connect
+[rank0]:     self.sock = sock = self._new_conn()
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 213, in _new_conn
+[rank0]:     raise NewConnectionError(
+[rank0]: urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x7fbee2c1d5e0>: Failed to establish a new connection: [Errno 101] Network is unreachable
+
+[rank0]: The above exception was the direct cause of the following exception:
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 644, in send
+[rank0]:     resp = conn.urlopen(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+[rank0]:     retries = retries.increment(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/retry.py", line 519, in increment
+[rank0]:     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+[rank0]: urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /trainer/training_run (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fbee2c1d5e0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+
+[rank0]: During handling of the above exception, another exception occurred:
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 242, in <module>
+[rank0]:     trainer_out_path = train_gpt(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 208, in train_gpt
+[rank0]:     trainer = Trainer(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 583, in __init__
+[rank0]:     ping_training_run()
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/analytics.py", line 12, in ping_training_run
+[rank0]:     _ = requests.get(URL, timeout=5)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 73, in get
+[rank0]:     return request("get", url, params=params, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 59, in request
+[rank0]:     return session.request(method=method, url=url, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 589, in request
+[rank0]:     resp = self.send(prep, **send_kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 703, in send
+[rank0]:     r = adapter.send(request, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 677, in send
+[rank0]:     raise ConnectionError(e, request=request)
+[rank0]: requests.exceptions.ConnectionError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /trainer/training_run (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fbee2c1d5e0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 198, in _new_conn
+[rank1]:     sock = connection.create_connection(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 85, in create_connection
+[rank1]:     raise err
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 73, in create_connection
+[rank1]:     sock.connect(sa)
+[rank1]: OSError: [Errno 101] Network is unreachable
+
+[rank1]: The above exception was the direct cause of the following exception:
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+[rank1]:     response = self._make_request(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+[rank1]:     raise new_e
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+[rank1]:     self._validate_conn(conn)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+[rank1]:     conn.connect()
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 753, in connect
+[rank1]:     self.sock = sock = self._new_conn()
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 213, in _new_conn
+[rank1]:     raise NewConnectionError(
+[rank1]: urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x7f13d0281d00>: Failed to establish a new connection: [Errno 101] Network is unreachable
+
+[rank1]: The above exception was the direct cause of the following exception:
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 644, in send
+[rank1]:     resp = conn.urlopen(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+[rank1]:     retries = retries.increment(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/retry.py", line 519, in increment
+[rank1]:     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+[rank1]: urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /trainer/training_run (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f13d0281d00>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+
+[rank1]: During handling of the above exception, another exception occurred:
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 242, in <module>
+[rank1]:     trainer_out_path = train_gpt(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 208, in train_gpt
+[rank1]:     trainer = Trainer(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 583, in __init__
+[rank1]:     ping_training_run()
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/analytics.py", line 12, in ping_training_run
+[rank1]:     _ = requests.get(URL, timeout=5)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 73, in get
+[rank1]:     return request("get", url, params=params, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 59, in request
+[rank1]:     return session.request(method=method, url=url, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 589, in request
+[rank1]:     resp = self.send(prep, **send_kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 703, in send
+[rank1]:     r = adapter.send(request, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 677, in send
+[rank1]:     raise ConnectionError(e, request=request)
+[rank1]: requests.exceptions.ConnectionError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /trainer/training_run (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f13d0281d00>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+[rank0]:[W1103 20:55:18.868994195 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank1]:[W1103 20:55:19.912117393 TCPStore.cpp:125] [c10d] recvValue failed on SocketImpl(fd=50, addr=[localhost]:58240, remote=[localhost]:54321): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x7f14ab315eb0 in /home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5d694d1 (0x7f14ecd974d1 in /home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5d6a8cd (0x7f14ecd988cd in /home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5d6b47a (0x7f14ecd9947a in /home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::check(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x31e (0x7f14ecd9419e in /home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::ProcessGroupNCCL::HeartbeatMonitor::runLoop() + 0x398 (0x7f14ac279b18 in /home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/lib/libtorch_cuda.so)
+frame #6: <unknown function> + 0xdbad4 (0x7f148fa94ad4 in /usr/lib64/libstdc++.so.6)
+frame #7: <unknown function> + 0x89c02 (0x7f1509f4dc02 in /usr/lib64/libc.so.6)
+frame #8: <unknown function> + 0x10ec40 (0x7f1509fd2c40 in /usr/lib64/libc.so.6)
+
+[rank1]:[W1103 20:55:19.926144927 ProcessGroupNCCL.cpp:1783] [PG ID 0 PG GUID 0(default_pg) Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+=========================================================
+Training script finished.
+=========================================================

@@ -1,0 +1,58 @@
+=========================================================
+SLURM JOB ID: 8326407
+JOB NAME: train_efik
+Running on nodes: cs-1-1
+Number of GPUs allocated: 1
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Tue Nov  4 20:57:49 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:8A:00.0 Off |                    0 |
+| N/A   28C    P0             56W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Setting up NLLB model...
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Loading model from local path: ./checkpoints/base
+Map:   0%|          | 0/34895 [00:00<?, ? examples/s]/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/tokenization_utils_base.py:4007: UserWarning: `as_target_tokenizer` is deprecated and will be removed in v5 of Transformers. You can tokenize your labels by using the argument `text_target` of the regular `__call__` method (either in the same call as your input texts if you use the same keyword arguments, or in a separate call.
+  warnings.warn(
+Map:   3%|▎         | 1000/34895 [00:00<00:05, 6232.71 examples/s]Map:   6%|▌         | 2000/34895 [00:00<00:04, 7316.24 examples/s]Map:   9%|▊         | 3000/34895 [00:00<00:04, 7925.12 examples/s]Map:  11%|█▏        | 4000/34895 [00:00<00:03, 8625.82 examples/s]Map:  17%|█▋        | 6000/34895 [00:00<00:02, 9702.84 examples/s]Map:  20%|██        | 7000/34895 [00:00<00:02, 9725.62 examples/s]Map:  23%|██▎       | 8000/34895 [00:00<00:02, 9304.22 examples/s]Map:  26%|██▌       | 9000/34895 [00:01<00:02, 8735.42 examples/s]Map:  29%|██▊       | 10000/34895 [00:01<00:03, 6256.88 examples/s]Map:  32%|███▏      | 11000/34895 [00:01<00:03, 6760.84 examples/s]Map:  34%|███▍      | 12000/34895 [00:01<00:03, 7165.30 examples/s]Map:  37%|███▋      | 13000/34895 [00:01<00:02, 7451.33 examples/s]Map:  40%|████      | 14000/34895 [00:01<00:02, 7762.62 examples/s]Map:  43%|████▎     | 15000/34895 [00:01<00:02, 7878.74 examples/s]Map:  46%|████▌     | 16000/34895 [00:02<00:02, 7835.71 examples/s]Map:  49%|████▊     | 17000/34895 [00:02<00:02, 7844.08 examples/s]Map:  52%|█████▏    | 18000/34895 [00:02<00:02, 7979.25 examples/s]Map:  54%|█████▍    | 19000/34895 [00:02<00:01, 8028.66 examples/s]Map:  57%|█████▋    | 20000/34895 [00:02<00:01, 8026.35 examples/s]Map:  60%|██████    | 21000/34895 [00:02<00:01, 7934.18 examples/s]Map:  63%|██████▎   | 22000/34895 [00:02<00:01, 7992.21 examples/s]Map:  66%|██████▌   | 23000/34895 [00:02<00:01, 8001.17 examples/s]Map:  69%|██████▉   | 24000/34895 [00:03<00:01, 8290.51 examples/s]Map:  72%|███████▏  | 25000/34895 [00:03<00:01, 6252.15 examples/s]Map:  75%|███████▍  | 26000/34895 [00:03<00:01, 6956.36 examples/s]Map:  77%|███████▋  | 27000/34895 [00:03<00:01, 7402.06 examples/s]Map:  80%|████████  | 28000/34895 [00:03<00:00, 7798.22 examples/s]Map:  83%|████████▎ | 29000/34895 [00:03<00:00, 8013.57 examples/s]Map:  86%|████████▌ | 30000/34895 [00:03<00:00, 8179.71 examples/s]Map:  89%|████████▉ | 31000/34895 [00:03<00:00, 8503.05 examples/s]Map:  95%|█████████▍| 33000/34895 [00:04<00:00, 8775.43 examples/s]Map:  97%|█████████▋| 34000/34895 [00:04<00:00, 8504.89 examples/s]Map: 100%|██████████| 34895/34895 [00:04<00:00, 8318.35 examples/s]Map: 100%|██████████| 34895/34895 [00:04<00:00, 7914.98 examples/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/nmt/nllb_nmt.py", line 61, in <module>
+    args = Seq2SeqTrainingArguments(
+  File "<string>", line 139, in __init__
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/training_args.py", line 1803, in __post_init__
+    self.device
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/training_args.py", line 2332, in device
+    return self._setup_devices
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/utils/generic.py", line 74, in __get__
+    cached = self.fget(obj)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/training_args.py", line 2202, in _setup_devices
+    raise ImportError(
+ImportError: Using the `Trainer` with `PyTorch` requires `accelerate>=0.26.0`: Please run `pip install transformers[torch]` or `pip install 'accelerate>=0.26.0'`
+=========================================================
+Training script finished.
+=========================================================

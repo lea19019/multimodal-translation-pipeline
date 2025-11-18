@@ -1,0 +1,103 @@
+=========================================================
+SLURM JOB ID: 8541851
+JOB NAME: sonar_finetune
+Running on nodes: cs-1-4
+Number of GPUs allocated: 4
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 4
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov 12 00:40:15 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:07:00.0 Off |                    0 |
+| N/A   31C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          On  |   00000000:0A:00.0 Off |                    0 |
+| N/A   26C    P0             62W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-80GB          On  |   00000000:44:00.0 Off |                    0 |
+| N/A   27C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-80GB          On  |   00000000:4A:00.0 Off |                    0 |
+| N/A   31C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting fine-tuning...
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 18, in <module>
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 18, in <module>
+    from prep_fine_tuning_data import create_distributed_dataloaders, LANG_CONFIG
+ImportError: cannot import name 'create_distributed_dataloaders' from 'prep_fine_tuning_data' (/home/vacl2/multimodal_translation/services/evaluation/blaser/prep_fine_tuning_data.py)
+    from prep_fine_tuning_data import create_distributed_dataloaders, LANG_CONFIG
+ImportError: cannot import name 'create_distributed_dataloaders' from 'prep_fine_tuning_data' (/home/vacl2/multimodal_translation/services/evaluation/blaser/prep_fine_tuning_data.py)
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 18, in <module>
+    from prep_fine_tuning_data import create_distributed_dataloaders, LANG_CONFIG
+ImportError: cannot import name 'create_distributed_dataloaders' from 'prep_fine_tuning_data' (/home/vacl2/multimodal_translation/services/evaluation/blaser/prep_fine_tuning_data.py)
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 18, in <module>
+    from prep_fine_tuning_data import create_distributed_dataloaders, LANG_CONFIG
+ImportError: cannot import name 'create_distributed_dataloaders' from 'prep_fine_tuning_data' (/home/vacl2/multimodal_translation/services/evaluation/blaser/prep_fine_tuning_data.py)
+W1112 00:40:36.036000 610475 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 610761 closing signal SIGTERM
+W1112 00:40:36.036000 610475 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 610762 closing signal SIGTERM
+W1112 00:40:36.037000 610475 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 610764 closing signal SIGTERM
+E1112 00:40:36.201000 610475 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: 1) local_rank: 2 (pid: 610763) of binary: /home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/bin/python3
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/distributed/run.py", line 901, in main
+    run(args)
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/distributed/run.py", line 892, in run
+    elastic_launch(
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/distributed/launcher/api.py", line 143, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/distributed/launcher/api.py", line 277, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+finetune_speech_encoder.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-11-12_00:40:36
+  host      : cs-1-4.rc.byu.edu
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 610763)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+=========================================================
+Fine-tuning script finished.
+=========================================================

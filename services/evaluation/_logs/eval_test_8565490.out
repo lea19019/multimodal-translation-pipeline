@@ -1,0 +1,24 @@
+=========================================================
+SLURM JOB ID: 8565490
+JOB NAME: eval_test
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+
+Balanced Batch Evaluation - First Run
+==========================================
+
+Models to test:
+  NMT: multilang_finetuned_final
+  TTS: MULTILINGUAL_TRAINING_11_5
+
+Data: 10 samples per language (quick test)
+  - Efik: 10 / 3,248
+  - Igbo: 10 / 2,948
+  - Swahili: 10 / 1,864
+  - Xhosa: 10 / 1,894
+
+This is a quick test to verify everything works!
+==========================================
+
+ERROR: NMT model not found at ../nmt/checkpoints/multilang_finetuned_final

@@ -1,0 +1,287 @@
+=========================================================
+SLURM JOB ID: 8541842
+JOB NAME: sonar_finetune
+Running on nodes: cs-1-4
+Number of GPUs allocated: 4
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 4
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov 12 00:29:58 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:07:00.0 Off |                    0 |
+| N/A   30C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          On  |   00000000:0A:00.0 Off |                    0 |
+| N/A   26C    P0             62W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-80GB          On  |   00000000:44:00.0 Off |                    0 |
+| N/A   26C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-80GB          On  |   00000000:4A:00.0 Off |                    0 |
+| N/A   30C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting fine-tuning...
+============================================================
+SONAR SPEECH ENCODER FINE-TUNING
+============================================================
+
+Configuration:
+  num_epochs: 3
+  batch_size: 8
+  learning_rate: 1e-05
+
+============================================================
+FINE-TUNING: SWAHILI
+========================================================================================================================
+
+SONAR SPEECH ENCODER FINE-TUNING
+============================================================
+
+Configuration:
+  num_epochs: 3
+  batch_size: 8
+  learning_rate: 1e-05
+
+============================================================
+FINE-TUNING: SWAHILI
+============================================================
+============================================================
+SONAR SPEECH ENCODER FINE-TUNING
+============================================================
+
+Configuration:
+  num_epochs: 3
+  batch_size: 8
+  learning_rate: 1e-05
+
+============================================================
+FINE-TUNING: SWAHILI
+============================================================
+============================================================
+SONAR SPEECH ENCODER FINE-TUNING
+============================================================
+
+Configuration:
+  num_epochs: 3
+  batch_size: 8
+  learning_rate: 1e-05
+
+============================================================
+FINE-TUNING: SWAHILI
+============================================================
+
+Initializing trainer for swahili
+  Base encoder: swh
+
+✗ Error fine-tuning swh: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: XHOSA
+============================================================
+
+Initializing trainer for xhosa
+  Base encoder: swh
+
+✗ Error fine-tuning xho: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: IGBO
+============================================================
+
+Initializing trainer for igbo
+  Base encoder: eng
+
+✗ Error fine-tuning ibo: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+Initializing trainer for swahili
+  Base encoder: swh
+
+✗ Error fine-tuning swh: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: XHOSA
+============================================================
+
+Initializing trainer for xhosa
+  Base encoder: swh
+
+✗ Error fine-tuning xho: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: IGBO
+============================================================
+
+Initializing trainer for igbo
+  Base encoder: eng
+
+✗ Error fine-tuning ibo: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+Initializing trainer for swahili
+  Base encoder: swh
+
+✗ Error fine-tuning swh: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: XHOSA
+============================================================
+
+Initializing trainer for xhosa
+  Base encoder: swh
+
+✗ Error fine-tuning xho: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: IGBO
+============================================================
+
+Initializing trainer for igbo
+  Base encoder: eng
+
+✗ Error fine-tuning ibo: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+Initializing trainer for swahili
+  Base encoder: swh
+
+✗ Error fine-tuning swh: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: XHOSA
+============================================================
+
+Initializing trainer for xhosa
+  Base encoder: swh
+
+✗ Error fine-tuning xho: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+
+============================================================
+FINE-TUNING: IGBO
+============================================================
+
+Initializing trainer for igbo
+  Base encoder: eng
+
+✗ Error fine-tuning ibo: name 'DEVICE' is not defined
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 293, in main
+    trainer = SpeechEncoderTrainer(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 59, in __init__
+    print(f"  Device: {DEVICE}")
+                       ^^^^^^
+NameError: name 'DEVICE' is not defined
+=========================================================
+Fine-tuning script finished.
+=========================================================

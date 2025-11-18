@@ -493,7 +493,10 @@ def main(
                 click.echo(f"Samples evaluated: {results['valid_samples']}/{results['total_samples']}")
                 click.echo(f"\nAggregate Scores:")
                 for metric, score in results.get('aggregate_scores', {}).items():
-                    click.echo(f"  {metric.upper()}: {score:.3f}")
+                    if score is not None:
+                        click.echo(f"  {metric.upper()}: {score:.3f}")
+                    else:
+                        click.echo(f"  {metric.upper()}: N/A (skipped)")
                 click.echo(f"\nResults saved to: {pipeline.results_dir}")
         
         if not all_results:

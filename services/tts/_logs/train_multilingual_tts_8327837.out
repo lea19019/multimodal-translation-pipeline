@@ -1,0 +1,278 @@
+=========================================================
+SLURM JOB ID: 8327837
+JOB NAME: train_multilingual_tts
+Running on nodes: cs-1-4
+Number of GPUs allocated: 2
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 2
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov  5 10:35:50 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:44:00.0 Off |                    0 |
+| N/A   26C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          On  |   00000000:4A:00.0 Off |                    0 |
+| N/A   30C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting distributed training on 2 GPUs...
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_05-103601', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '--num_epochs', '40', '--batch_size', '64', '--grad_acumm', '1', '--max_text_length', '300', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '2000', '--run_name', 'MULTILINGUAL_TRAINING_11_5', '--rank=0']
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_05-103601', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv,swa', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '--num_epochs', '40', '--batch_size', '64', '--grad_acumm', '1', '--max_text_length', '300', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '2000', '--run_name', 'MULTILINGUAL_TRAINING_11_5', '--rank=1']
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+ > Training Environment:
+ | > Backend: Torch
+ | > Mixed precision: True
+ | > Precision: fp16
+ | > Current device: 0
+ | > Num. of GPUs: 2
+ | > Num. of CPUs: 128
+ | > Num. of Torch Threads: 1
+ | > Torch seed: 54321
+ | > Torch CUDNN: True
+ | > Torch CUDNN deterministic: False
+ | > Torch CUDNN benchmark: False
+ | > Torch TF32 MatMul: False
+ > Start Tensorboard: tensorboard --logdir=checkpoints/MULTILINGUAL_TRAINING_11_5-November-05-2025_10+38AM-cc09632
+ > Using PyTorch DDP
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py:552: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler()
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py:552: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.scaler = torch.cuda.amp.GradScaler()
+
+ > Model has 531188876 parameters
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+
+[4m[1m > EPOCH: 0/40[0m
+ --> checkpoints/MULTILINGUAL_TRAINING_11_5-November-05-2025_10+38AM-cc09632
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/utils/data/dataloader.py:627: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+
+[1m > TRAINING (2025-11-05 10:38:58) [0m
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/utils/data/dataloader.py:627: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv swa
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+ > Loading checkpoint with 6221 additional tokens.
+>> DVAE weights restored from: checkpoints/base/dvae.pth
+ > Missing column in line 3497 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+✅ Found 79655 training samples and 9954 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': 'Unaweza kuwa na haja ya kufanya muhtasari sehemu za somo hili ili kupatiana muda wa kufundisha mafundisho na kanuni muhimu vyema.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16925_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=16925_User=7_Language=swa'}
+Sample 2: {'text': 'Novemba 4, 2007: Mzee Dallin H. Oaks anafundisha kuhusu umuhimu wa kuweka siku ya Sabato takatifu na anawashauri vijana kujiandaa kwa maisha marefu, yenye matunda.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=25877_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=25877_User=7_Language=swa'}
+Sample 3: {'text': 'Lamani na Lemueli hawakuona jinsi wangeweza kutimiza hii amri, lakini Nefi alikuwa na imani kwamba Bwana angepatiana njia ambayo kwayo wangetimiza kile Yeye alihitaji.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=17390_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=17390_User=7_Language=swa'}
+--- END OF PREVIEW ---
+
+ > Sampling by language: dict_keys(['efi', 'ibo', 'xho', 'swa'])
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.csv swa
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+ > Loading checkpoint with 6221 additional tokens.
+>> DVAE weights restored from: checkpoints/base/dvae.pth
+ > Missing column in line 3497 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+✅ Found 79655 training samples and 9954 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': 'Unaweza kuwa na haja ya kufanya muhtasari sehemu za somo hili ili kupatiana muda wa kufundisha mafundisho na kanuni muhimu vyema.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16925_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=16925_User=7_Language=swa'}
+Sample 2: {'text': 'Novemba 4, 2007: Mzee Dallin H. Oaks anafundisha kuhusu umuhimu wa kuweka siku ya Sabato takatifu na anawashauri vijana kujiandaa kwa maisha marefu, yenye matunda.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=25877_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=25877_User=7_Language=swa'}
+Sample 3: {'text': 'Lamani na Lemueli hawakuona jinsi wangeweza kutimiza hii amri, lakini Nefi alikuwa na imani kwamba Bwana angepatiana njia ambayo kwayo wangetimiza kile Yeye alihitaji.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=17390_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': 7, 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili', 'language': 'swa', 'audio_unique_name': 'ft_dataset#processed_audio_normalized/Segment=17390_User=7_Language=swa'}
+--- END OF PREVIEW ---
+
+ > Sampling by language: dict_keys(['efi', 'ibo', 'xho', 'swa'])
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1833, in fit
+[rank1]:     self._fit()
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1785, in _fit
+[rank1]:     self.train_epoch()
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1504, in train_epoch
+[rank1]:     outputs, _ = self.train_step(batch, batch_num_steps, cur_step, loader_start_time)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1360, in train_step
+[rank1]:     outputs, loss_dict_new, step_time = self.optimize(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1226, in optimize
+[rank1]:     outputs, loss_dict = self._compute_loss(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1157, in _compute_loss
+[rank1]:     outputs, loss_dict = self._model_train_step(batch, model, criterion)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1115, in _model_train_step
+[rank1]:     return model.module.train_step(*input_args)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/trainer/gpt_trainer.py", line 309, in train_step
+[rank1]:     loss_text, loss_mel, _ = self.forward(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/trainer/gpt_trainer.py", line 216, in forward
+[rank1]:     losses = self.xtts.gpt(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/gpt.py", line 568, in forward
+[rank1]:     text_logits, mel_logits = self.get_logits(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/gpt.py", line 336, in get_logits
+[rank1]:     gpt_out = self.gpt(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/models/gpt2/modeling_gpt2.py", line 1132, in forward
+[rank1]:     outputs = block(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/models/gpt2/modeling_gpt2.py", line 652, in forward
+[rank1]:     feed_forward_hidden_states = self.mlp(hidden_states)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/models/gpt2/modeling_gpt2.py", line 575, in forward
+[rank1]:     hidden_states = self.c_fc(hidden_states)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/pytorch_utils.py", line 111, in forward
+[rank1]:     x = torch.addmm(self.bias, x.view(-1, x.size(-1)), self.weight)
+[rank1]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 234.00 MiB. GPU 1 has a total capacity of 79.25 GiB of which 78.94 MiB is free. Including non-PyTorch memory, this process has 79.17 GiB memory in use. Of the allocated memory 78.27 GiB is allocated by PyTorch, and 255.31 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+[rank1]: During handling of the above exception, another exception occurred:
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 245, in <module>
+[rank1]:     trainer_out_path = train_gpt(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 224, in train_gpt
+[rank1]:     trainer.fit()
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1860, in fit
+[rank1]:     remove_experiment_folder(self.output_path)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/generic_utils.py", line 77, in remove_experiment_folder
+[rank1]:     fs.rm(experiment_path, recursive=True)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/fsspec/implementations/local.py", line 198, in rm
+[rank1]:     shutil.rmtree(p)
+[rank1]:   File "/usr/lib64/python3.9/shutil.py", line 740, in rmtree
+[rank1]:     onerror(os.rmdir, path, sys.exc_info())
+[rank1]:   File "/usr/lib64/python3.9/shutil.py", line 738, in rmtree
+[rank1]:     os.rmdir(path)
+[rank1]: OSError: [Errno 39] Directory not empty: '/home/vacl2/multimodal_translation/services/tts/checkpoints/MULTILINGUAL_TRAINING_11_5-November-05-2025_10+38AM-cc09632'
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1833, in fit
+[rank0]:     self._fit()
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1785, in _fit
+[rank0]:     self.train_epoch()
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1504, in train_epoch
+[rank0]:     outputs, _ = self.train_step(batch, batch_num_steps, cur_step, loader_start_time)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1360, in train_step
+[rank0]:     outputs, loss_dict_new, step_time = self.optimize(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1226, in optimize
+[rank0]:     outputs, loss_dict = self._compute_loss(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1157, in _compute_loss
+[rank0]:     outputs, loss_dict = self._model_train_step(batch, model, criterion)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1115, in _model_train_step
+[rank0]:     return model.module.train_step(*input_args)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/trainer/gpt_trainer.py", line 309, in train_step
+[rank0]:     loss_text, loss_mel, _ = self.forward(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/trainer/gpt_trainer.py", line 216, in forward
+[rank0]:     losses = self.xtts.gpt(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/gpt.py", line 568, in forward
+[rank0]:     text_logits, mel_logits = self.get_logits(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/layers/xtts/gpt.py", line 336, in get_logits
+[rank0]:     gpt_out = self.gpt(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/models/gpt2/modeling_gpt2.py", line 1132, in forward
+[rank0]:     outputs = block(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/models/gpt2/modeling_gpt2.py", line 652, in forward
+[rank0]:     feed_forward_hidden_states = self.mlp(hidden_states)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/models/gpt2/modeling_gpt2.py", line 575, in forward
+[rank0]:     hidden_states = self.c_fc(hidden_states)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/transformers/pytorch_utils.py", line 111, in forward
+[rank0]:     x = torch.addmm(self.bias, x.view(-1, x.size(-1)), self.weight)
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 234.00 MiB. GPU 0 has a total capacity of 79.25 GiB of which 78.94 MiB is free. Including non-PyTorch memory, this process has 79.17 GiB memory in use. Of the allocated memory 78.27 GiB is allocated by PyTorch, and 255.31 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+[rank0]: During handling of the above exception, another exception occurred:
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 245, in <module>
+[rank0]:     trainer_out_path = train_gpt(
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 224, in train_gpt
+[rank0]:     trainer.fit()
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 1860, in fit
+[rank0]:     remove_experiment_folder(self.output_path)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/generic_utils.py", line 77, in remove_experiment_folder
+[rank0]:     fs.rm(experiment_path, recursive=True)
+[rank0]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/fsspec/implementations/local.py", line 198, in rm
+[rank0]:     shutil.rmtree(p)
+[rank0]:   File "/usr/lib64/python3.9/shutil.py", line 734, in rmtree
+[rank0]:     _rmtree_safe_fd(fd, path, onerror)
+[rank0]:   File "/usr/lib64/python3.9/shutil.py", line 690, in _rmtree_safe_fd
+[rank0]:     onerror(os.unlink, fullname, sys.exc_info())
+[rank0]:   File "/usr/lib64/python3.9/shutil.py", line 688, in _rmtree_safe_fd
+[rank0]:     os.unlink(entry.name, dir_fd=topfd)
+[rank0]: OSError: [Errno 16] Device or resource busy: '.nfs89ac1f94c8a5627200000043'
+[rank0]:[W1105 10:39:20.153074702 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+=========================================================
+Training script finished.
+=========================================================

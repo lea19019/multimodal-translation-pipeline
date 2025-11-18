@@ -132,8 +132,15 @@ def create_metrics_comparison_chart(
     try:
         fig, ax = plt.subplots(figsize=(10, 6))
         
-        metrics = list(results.keys())
-        scores = list(results.values())
+        # Filter out None values
+        filtered_results = {k: v for k, v in results.items() if v is not None}
+        
+        if not filtered_results:
+            logger.warning("No valid scores to plot in metrics comparison")
+            return
+        
+        metrics = list(filtered_results.keys())
+        scores = list(filtered_results.values())
         
         bars = ax.bar(metrics, scores, color=sns.color_palette("husl", len(metrics)))
         
@@ -262,14 +269,25 @@ def create_metrics_table_image(
         data = []
         for metric, value in summary.get('aggregate_scores', {}).items():
             stats = summary.get('score_statistics', {}).get(metric, {})
-            data.append([
-                metric.upper(),
-                f"{value:.3f}",
-                f"{stats.get('mean', 0):.3f}",
-                f"{stats.get('std', 0):.3f}",
-                f"{stats.get('min', 0):.3f}",
-                f"{stats.get('max', 0):.3f}",
-            ])
+            # Skip None values
+            if value is None:
+                data.append([
+                    metric.upper(),
+                    "N/A",
+                    "N/A",
+                    "N/A",
+                    "N/A",
+                    "N/A",
+                ])
+            else:
+                data.append([
+                    metric.upper(),
+                    f"{value:.3f}",
+                    f"{stats.get('mean', 0):.3f}",
+                    f"{stats.get('std', 0):.3f}",
+                    f"{stats.get('min', 0):.3f}",
+                    f"{stats.get('max', 0):.3f}",
+                ])
         
         columns = ['Metric', 'Corpus', 'Mean', 'Std', 'Min', 'Max']
         
@@ -547,6 +565,13 @@ def generate_html_report(
         
         # Render template
         template = Template(template_str)
+        
+        # Filter out None values from aggregate_scores for template
+        filtered_aggregate_scores = {
+            k: v for k, v in summary.get('aggregate_scores', {}).items()
+            if v is not None
+        }
+        
         html = template.render(
             title=title,
             run_id=summary.get('run_id', 'unknown'),
@@ -554,7 +579,7 @@ def generate_html_report(
             translation_type=summary.get('translation_type', 'unknown'),
             language_pair=summary.get('language_pair', 'unknown'),
             total_samples=summary.get('total_samples', 0),
-            aggregate_scores=summary.get('aggregate_scores', {}),
+            aggregate_scores=filtered_aggregate_scores,
             score_statistics=summary.get('score_statistics', {}),
             vis_files=vis_files,
         )
@@ -724,7 +749,7 @@ def create_normalized_metrics_comparison(
 
         metrics_data = []
         for metric, score in summary.get('aggregate_scores', {}).items():
-            if metric in METRIC_INFO:
+            if metric in METRIC_INFO and score is not None:
                 info = METRIC_INFO[metric]
 
                 # Normalize score to 0-1

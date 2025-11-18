@@ -1,0 +1,52 @@
+=========================================================
+SLURM JOB ID: 8326418
+JOB NAME: train_efik
+Running on nodes: cs-1-1
+Number of GPUs allocated: 1
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Tue Nov  4 21:31:42 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:8A:00.0 Off |                    0 |
+| N/A   28C    P0             56W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Setting up NLLB model...
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Loading model from local path: ./checkpoints/base
+Training samples: 31405
+Evaluation samples: 3490
+Map:   0%|          | 0/31405 [00:00<?, ? examples/s]/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/tokenization_utils_base.py:4007: UserWarning: `as_target_tokenizer` is deprecated and will be removed in v5 of Transformers. You can tokenize your labels by using the argument `text_target` of the regular `__call__` method (either in the same call as your input texts if you use the same keyword arguments, or in a separate call.
+  warnings.warn(
+Map:   3%|▎         | 1000/31405 [00:00<00:04, 7441.30 examples/s]Map:   6%|▋         | 2000/31405 [00:00<00:03, 7771.96 examples/s]Map:  10%|▉         | 3000/31405 [00:00<00:03, 7946.68 examples/s]Map:  13%|█▎        | 4000/31405 [00:00<00:03, 8006.97 examples/s]Map:  16%|█▌        | 5000/31405 [00:00<00:03, 8053.10 examples/s]Map:  19%|█▉        | 6000/31405 [00:00<00:03, 8114.32 examples/s]Map:  22%|██▏       | 7000/31405 [00:01<00:04, 5811.72 examples/s]Map:  25%|██▌       | 8000/31405 [00:01<00:03, 6356.94 examples/s]Map:  29%|██▊       | 9000/31405 [00:01<00:03, 6779.63 examples/s]Map:  32%|███▏      | 10000/31405 [00:01<00:02, 7164.94 examples/s]Map:  35%|███▌      | 11000/31405 [00:01<00:02, 7410.99 examples/s]Map:  38%|███▊      | 12000/31405 [00:01<00:02, 7472.74 examples/s]Map:  41%|████▏     | 13000/31405 [00:01<00:02, 7623.19 examples/s]Map:  45%|████▍     | 14000/31405 [00:01<00:02, 7683.50 examples/s]Map:  48%|████▊     | 15000/31405 [00:02<00:02, 7805.19 examples/s]Map:  51%|█████     | 16000/31405 [00:02<00:01, 7895.79 examples/s]Map:  54%|█████▍    | 17000/31405 [00:02<00:01, 7893.18 examples/s]Map:  57%|█████▋    | 18000/31405 [00:02<00:01, 7878.89 examples/s]Map:  60%|██████    | 19000/31405 [00:02<00:01, 7795.12 examples/s]Map:  64%|██████▎   | 20000/31405 [00:02<00:01, 7692.65 examples/s]Map:  67%|██████▋   | 21000/31405 [00:02<00:01, 5714.66 examples/s]Map:  70%|███████   | 22000/31405 [00:03<00:01, 6194.68 examples/s]Map:  73%|███████▎  | 23000/31405 [00:03<00:01, 6585.55 examples/s]Map:  76%|███████▋  | 24000/31405 [00:03<00:01, 6928.45 examples/s]Map:  80%|███████▉  | 25000/31405 [00:03<00:00, 7198.69 examples/s]Map:  83%|████████▎ | 26000/31405 [00:03<00:00, 7337.59 examples/s]Map:  86%|████████▌ | 27000/31405 [00:03<00:00, 7507.15 examples/s]Map:  89%|████████▉ | 28000/31405 [00:03<00:00, 7630.12 examples/s]Map:  92%|█████████▏| 29000/31405 [00:03<00:00, 7701.30 examples/s]Map:  96%|█████████▌| 30000/31405 [00:04<00:00, 7798.26 examples/s]Map:  99%|█████████▊| 31000/31405 [00:04<00:00, 7863.23 examples/s]Map: 100%|██████████| 31405/31405 [00:04<00:00, 7338.21 examples/s]
+Map:   0%|          | 0/3490 [00:00<?, ? examples/s]Map:  29%|██▊       | 1000/3490 [00:00<00:00, 8177.51 examples/s]Map:  57%|█████▋    | 2000/3490 [00:00<00:00, 5080.90 examples/s]Map:  86%|████████▌ | 3000/3490 [00:00<00:00, 6135.04 examples/s]Map: 100%|██████████| 3490/3490 [00:00<00:00, 6189.06 examples/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/nmt/nllb_nmt.py", line 70, in <module>
+    args = Seq2SeqTrainingArguments(
+TypeError: __init__() got an unexpected keyword argument 'evaluation_strategy'
+=========================================================
+Training script finished.
+=========================================================

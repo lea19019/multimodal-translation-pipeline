@@ -9,7 +9,7 @@
 #SBATCH --nodes=1                # Number of nodes. YourTTS `distribute` script is for single-node.
 #SBATCH --ntasks-per-node=1      # Number of tasks. The python script is a single task.                
 #SBATCH --mem=64G               # Total memory for the job. Adjust based on your dataset size and batch size.
-#SBATCH -J "train_efik"           # Job name
+#SBATCH -J "train_multilingual"           # Job name
 #SBATCH --output=%x_%j.out       # Standard output and error log
 #SBATCH --qos=cs
 #SBATCH --gpus=1

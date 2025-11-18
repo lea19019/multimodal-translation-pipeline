@@ -1,0 +1,38 @@
+=========================================================
+SLURM JOB ID: 8565503
+JOB NAME: eval_test
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+
+Balanced Batch Evaluation - First Run
+==========================================
+
+Models to test:
+  NMT: multilang_finetuned_final
+  TTS: MULTILINGUAL_TRAINING_11_5
+
+Data: 10 samples per language (quick test)
+  - Efik: 10 / 3,248
+  - Igbo: 10 / 2,948
+  - Swahili: 10 / 1,864
+  - Xhosa: 10 / 1,894
+
+This is a quick test to verify everything works!
+==========================================
+
+Working directory: /home/vacl2/multimodal_translation/services/evaluation
+
+✓ Models found
+
+
+Starting quick test evaluation...
+Run ID: quick_test_10samples_20251117_194818
+Expected time: ~5-10 minutes
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/batch_evaluation.py", line 39, in <module>
+    from nllb_nmt import NLLBTranslator
+  File "/home/vacl2/multimodal_translation/services/nmt/nllb_nmt.py", line 5, in <module>
+    from datasets import Dataset, concatenate_datasets
+ModuleNotFoundError: No module named 'datasets'

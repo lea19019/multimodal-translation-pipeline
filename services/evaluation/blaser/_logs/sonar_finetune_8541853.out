@@ -1,0 +1,243 @@
+=========================================================
+SLURM JOB ID: 8541853
+JOB NAME: sonar_finetune
+Running on nodes: cs-1-4
+Number of GPUs allocated: 4
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 4
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov 12 00:41:59 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:07:00.0 Off |                    0 |
+| N/A   31C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          On  |   00000000:0A:00.0 Off |                    0 |
+| N/A   26C    P0             62W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-80GB          On  |   00000000:44:00.0 Off |                    0 |
+| N/A   27C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-80GB          On  |   00000000:4A:00.0 Off |                    0 |
+| N/A   30C    P0             61W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting fine-tuning...
+Data Preparation for SONAR Fine-tuning
+============================================================
+
+SWAHILI (swh):
+  Base encoder: swh
+  Text code: swh_Latn
+Data Preparation for SONAR Fine-tuning
+============================================================
+
+SWAHILI (swh):
+  Base encoder: swh
+  Text code: swh_Latn
+Data Preparation for SONAR Fine-tuning
+============================================================
+
+SWAHILI (swh):
+  Base encoder: swh
+  Text code: swh_Latn
+Data Preparation for SONAR Fine-tuning
+============================================================
+
+SWAHILI (swh):
+  Base encoder: swh
+  Text code: swh_Latn
+  train: 14918/14918 files  train: 14918/14918 files
+
+  eval: 1864/1864 files  eval: 1864/1864 files
+
+  test: 1864/1864 files  test: 1864/1864 files
+
+  train: 14918/14918 files
+EFIK (efi):
+EFIK (efi):
+
+
+  Base encoder: eng  eval: 1864/1864 files  Base encoder: eng
+
+
+  Text code: None  test: 1864/1864 files  Text code: None
+
+  train: 14918/14918 files
+
+
+EFIK (efi):
+  eval: 1864/1864 files  Base encoder: eng
+
+  test: 1864/1864 files
+  Text code: None
+
+EFIK (efi):
+  Base encoder: eng
+  Text code: None
+  train: 25990/25990 files
+  train: 25990/25990 files  eval: 3248/3248 files
+
+  train: 25990/25990 files  test: 3248/3248 files  eval: 3248/3248 files
+  train: 25990/25990 files
+
+  eval: 3248/3248 files
+  test: 3248/3248 files
+
+  eval: 3248/3248 files
+XHOSA (xho):  test: 3248/3248 files
+
+  test: 3248/3248 files
+
+XHOSA (xho):  Base encoder: swh
+
+
+  Base encoder: swh
+XHOSA (xho):  Text code: xho_Latn
+
+XHOSA (xho):
+
+  Text code: xho_Latn
+  Base encoder: swh
+  Base encoder: swh
+
+  Text code: xho_Latn  Text code: xho_Latn
+
+  train: 15160/15160 files  train: 15160/15160 files  train: 15160/15160 files
+  train: 15160/15160 files
+
+  eval: 1894/1894 files
+  eval: 1894/1894 files  eval: 1894/1894 files
+  eval: 1894/1894 files
+
+  test: 1894/1894 files
+  test: 1894/1894 files  test: 1894/1894 files
+  test: 1894/1894 files
+
+
+
+IGBO (ibo):
+IGBO (ibo):
+IGBO (ibo):
+
+
+IGBO (ibo):
+  Base encoder: eng  Base encoder: eng
+  Base encoder: eng
+
+  Base encoder: eng
+  Text code: ibo_Latn  Text code: ibo_Latn
+  Text code: ibo_Latn
+
+  Text code: ibo_Latn
+
+  train: 23587/23588 files  train: 23587/23588 files
+
+    ⚠ 1 files missing    ⚠ 1 files missing
+
+  eval: 2948/2948 files  eval: 2948/2948 files
+
+  test: 2948/2948 files  test: 2948/2948 files
+
+
+============================================================
+============================================================
+
+
+Test loading a batch:
+Test loading a batch:
+
+  train: 23587/23588 files
+    ⚠ 1 files missing
+  eval: 2948/2948 files
+  test: 2948/2948 files
+
+============================================================
+
+Test loading a batch:
+  train: 23587/23588 files
+    ⚠ 1 files missing
+  eval: 2948/2948 files
+  test: 2948/2948 files
+
+============================================================
+
+Test loading a batch:
+Loaded 14918 valid samples
+Loaded 14918 valid samples
+Loaded 14918 valid samples
+Loaded 14918 valid samples
+Loaded 1864 valid samples
+Loaded 1864 valid samples
+Loaded 1864 valid samples
+Loaded 1864 valid samples
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+  Audio batch shape: torch.Size([2, 304320])
+  Number of texts: 2
+  Sample text: Mstari juu ya mstari na kanuni juu ya kanuni, hapa...
+  Audio batch shape: torch.Size([2, 316800])
+  Number of texts: 2
+  Sample text: Wanafunzi waliposoma kuhusu jinsi Wanefi na Walama...
+  Audio batch shape: torch.Size([2, 297600])
+  Number of texts: 2
+  Sample text: Lakini pia tunaweza kuuliza swali kwa njia hii, kw...
+  Audio lengths: tensor([316800, 234240])
+
+✓ Data loading works!
+  Audio lengths: tensor([304320, 161280])
+
+✓ Data loading works!
+  Audio lengths: tensor([297600, 134400])
+
+✓ Data loading works!
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+  Audio batch shape: torch.Size([2, 189120])
+  Number of texts: 2
+  Sample text: Bwana aliweka sheria hii kuanzia mwanzo na alisisi...
+  Audio lengths: tensor([189120, 179520])
+
+✓ Data loading works!
+=========================================================
+Fine-tuning script finished.
+=========================================================

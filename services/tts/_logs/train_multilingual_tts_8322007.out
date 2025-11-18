@@ -1,0 +1,173 @@
+=========================================================
+SLURM JOB ID: 8322007
+JOB NAME: train_multilingual_tts
+Running on nodes: cs-1-1
+Number of GPUs allocated: 2
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 2
+------------------------------------
+--- GPU Diagnostics ---
+Mon Nov  3 20:32:54 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:0A:00.0 Off |                    0 |
+| N/A   27C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   27C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting distributed training on 2 GPUs...
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_03-203310', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs,swa', '--num_epochs', '6500', '--batch_size', '24', '--grad_acumm', '4', '--max_text_length', '500', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '10000', '--run_name', 'MULTILINGUAL_TRAINING_11_3', '--rank=0']
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_03-203310', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs,swa', '--num_epochs', '6500', '--batch_size', '24', '--grad_acumm', '4', '--max_text_length', '500', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '10000', '--run_name', 'MULTILINGUAL_TRAINING_11_3', '--rank=1']
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs swa
+ > Downloading DVAE files!
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 198, in _new_conn
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs swa
+ > Downloading DVAE files!
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    sock = connection.create_connection(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    raise err
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 213, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x7fc7e5099640>: Failed to establish a new connection: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /hf-coqui/XTTS-v2/main/mel_stats.pth (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fc7e5099640>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 242, in <module>
+    trainer_out_path = train_gpt(
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 98, in train_gpt
+    ModelManager._download_model_files([MEL_NORM_LINK, DVAE_CHECKPOINT_LINK], CHECKPOINTS_OUT_PATH, progress_bar=True)
+  File "/home/vacl2/multimodal_translation/services/tts/TTS/utils/manage.py", line 600, in _download_model_files
+    r = requests.get(file_url, stream=True)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /hf-coqui/XTTS-v2/main/mel_stats.pth (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fc7e5099640>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connection.py", line 213, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x7f6d74236400>: Failed to establish a new connection: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /hf-coqui/XTTS-v2/main/mel_stats.pth (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f6d74236400>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 242, in <module>
+    trainer_out_path = train_gpt(
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 98, in train_gpt
+    ModelManager._download_model_files([MEL_NORM_LINK, DVAE_CHECKPOINT_LINK], CHECKPOINTS_OUT_PATH, progress_bar=True)
+  File "/home/vacl2/multimodal_translation/services/tts/TTS/utils/manage.py", line 600, in _download_model_files
+    r = requests.get(file_url, stream=True)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='coqui.gateway.scarf.sh', port=443): Max retries exceeded with url: /hf-coqui/XTTS-v2/main/mel_stats.pth (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f6d74236400>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
+=========================================================
+Training script finished.
+=========================================================

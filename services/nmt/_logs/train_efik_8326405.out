@@ -1,0 +1,71 @@
+=========================================================
+SLURM JOB ID: 8326405
+JOB NAME: train_efik
+Running on nodes: cs-1-1
+Number of GPUs allocated: 1
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Tue Nov  4 20:51:44 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:8A:00.0 Off |                    0 |
+| N/A   28C    P0             56W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Setting up NLLB model...
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Loading model from local path: ./checkpoints/base
+Map:   0%|          | 0/34895 [00:00<?, ? examples/s]/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/tokenization_utils_base.py:4007: UserWarning: `as_target_tokenizer` is deprecated and will be removed in v5 of Transformers. You can tokenize your labels by using the argument `text_target` of the regular `__call__` method (either in the same call as your input texts if you use the same keyword arguments, or in a separate call.
+  warnings.warn(
+Map:   0%|          | 0/34895 [00:00<?, ? examples/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/nmt/nllb_nmt.py", line 57, in <module>
+    dataset = dataset.map(preprocess, batched=True)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 562, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 3341, in map
+    for rank, done, content in Dataset._map_single(**unprocessed_kwargs):
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 3697, in _map_single
+    for i, batch in iter_outputs(shard_iterable):
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 3647, in iter_outputs
+    yield i, apply_function(example, i, offset=offset)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 3570, in apply_function
+    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
+  File "/home/vacl2/multimodal_translation/services/nmt/nllb_nmt.py", line 52, in preprocess
+    with tokenizer.as_target_tokenizer():
+  File "/usr/lib64/python3.9/contextlib.py", line 119, in __enter__
+    return next(self.gen)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/tokenization_utils_base.py", line 4012, in as_target_tokenizer
+    self._switch_to_target_mode()
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/models/nllb/tokenization_nllb_fast.py", line 260, in _switch_to_target_mode
+    return self.set_tgt_lang_special_tokens(self.tgt_lang)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/models/nllb/tokenization_nllb_fast.py", line 290, in set_tgt_lang_special_tokens
+    self.cur_lang_code = self.convert_tokens_to_ids(lang)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/transformers/tokenization_utils_fast.py", line 368, in convert_tokens_to_ids
+    return [self._convert_token_to_id_with_added_voc(token) for token in tokens]
+TypeError: 'NoneType' object is not iterable
+=========================================================
+Training script finished.
+=========================================================

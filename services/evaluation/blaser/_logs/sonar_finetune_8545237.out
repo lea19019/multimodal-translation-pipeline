@@ -1,0 +1,437 @@
+=========================================================
+SLURM JOB ID: 8545237
+JOB NAME: sonar_finetune
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov 12 18:13:05 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:C0:00.0 Off |                    0 |
+| N/A   28C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting fine-tuning...
+
+
+Fine-tuning SONAR Speech Encoders
+GPUs: 1
+
+============================================================
+Training: SWAHILI
+
+Training swahili
+  Device: cuda:0
+  Trainable parameters: 708,474,176
+
+Epoch 1/3
+  0%|          | 0/467 [00:00<?, ?it/s]/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+  0%|          | 0/467 [00:04<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 383, in main
+    trainer.train(train_loader, eval_loader, config['num_epochs'])
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 302, in train
+    train_loss = self.train_epoch(train_loader)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 257, in train_epoch
+    loss = self.train_step(batch)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 230, in train_step
+    student_emb = self.get_speech_embedding(audio, lengths)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 206, in get_speech_embedding
+    output = self.speech_model(fbank_seqs, seqs_layout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/sonar/models/sonar_speech/model.py", line 60, in forward
+    encoder_output = self.encoder(seqs, seqs_layout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/encoder.py", line 152, in forward
+    layer_output = layer(seqs, seqs_layout, attn_bias_cache)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 128, in forward
+    seqs = self._forward_self_attn(seqs, seqs_layout, attn_bias_cache)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 160, in _forward_self_attn
+    seqs = self.self_attn(
+           ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/multihead_attention.py", line 505, in forward
+    attns, attn_weights = self.sdpa(
+                          ^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 129, in forward
+    bd = self._shift_bd(bd)
+         ^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 163, in _shift_bd
+    x = pad(bd, (1, 0))
+        ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/functional.py", line 5290, in pad
+    return torch._C._nn.pad(input, pad, mode, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.82 GiB. GPU 0 has a total capacity of 79.25 GiB of which 288.94 MiB is free. Including non-PyTorch memory, this process has 78.96 GiB memory in use. Of the allocated memory 74.36 GiB is allocated by PyTorch, and 4.10 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+Error: CUDA out of memory. Tried to allocate 4.82 GiB. GPU 0 has a total capacity of 79.25 GiB of which 288.94 MiB is free. Including non-PyTorch memory, this process has 78.96 GiB memory in use. Of the allocated memory 74.36 GiB is allocated by PyTorch, and 4.10 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+============================================================
+Training: XHOSA
+
+Training xhosa
+  Device: cuda:0
+  Trainable parameters: 708,474,176
+
+Epoch 1/3
+  0%|          | 0/474 [00:00<?, ?it/s]/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+  0%|          | 0/474 [00:08<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 383, in main
+    trainer.train(train_loader, eval_loader, config['num_epochs'])
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 302, in train
+    train_loss = self.train_epoch(train_loader)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 257, in train_epoch
+    loss = self.train_step(batch)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 230, in train_step
+    student_emb = self.get_speech_embedding(audio, lengths)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 206, in get_speech_embedding
+    output = self.speech_model(fbank_seqs, seqs_layout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/sonar/models/sonar_speech/model.py", line 60, in forward
+    encoder_output = self.encoder(seqs, seqs_layout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/encoder.py", line 152, in forward
+    layer_output = layer(seqs, seqs_layout, attn_bias_cache)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 128, in forward
+    seqs = self._forward_self_attn(seqs, seqs_layout, attn_bias_cache)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 160, in _forward_self_attn
+    seqs = self.self_attn(
+           ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/multihead_attention.py", line 505, in forward
+    attns, attn_weights = self.sdpa(
+                          ^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 129, in forward
+    bd = self._shift_bd(bd)
+         ^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 163, in _shift_bd
+    x = pad(bd, (1, 0))
+        ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/functional.py", line 5290, in pad
+    return torch._C._nn.pad(input, pad, mode, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 5.62 GiB. GPU 0 has a total capacity of 79.25 GiB of which 16.94 MiB is free. Including non-PyTorch memory, this process has 79.23 GiB memory in use. Of the allocated memory 73.52 GiB is allocated by PyTorch, and 5.21 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+Error: CUDA out of memory. Tried to allocate 5.62 GiB. GPU 0 has a total capacity of 79.25 GiB of which 16.94 MiB is free. Including non-PyTorch memory, this process has 79.23 GiB memory in use. Of the allocated memory 73.52 GiB is allocated by PyTorch, and 5.21 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+============================================================
+Training: IGBO
+
+Training igbo
+  Device: cuda:0
+  Trainable parameters: 658,084,160
+
+Epoch 1/3
+  0%|          | 0/738 [00:00<?, ?it/s]/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+  0%|          | 0/738 [00:03<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 383, in main
+    trainer.train(train_loader, eval_loader, config['num_epochs'])
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 302, in train
+    train_loss = self.train_epoch(train_loader)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 257, in train_epoch
+    loss = self.train_step(batch)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 230, in train_step
+    student_emb = self.get_speech_embedding(audio, lengths)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 206, in get_speech_embedding
+    output = self.speech_model(fbank_seqs, seqs_layout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/sonar/models/sonar_speech/model.py", line 60, in forward
+    encoder_output = self.encoder(seqs, seqs_layout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/encoder.py", line 152, in forward
+    layer_output = layer(seqs, seqs_layout, attn_bias_cache)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 128, in forward
+    seqs = self._forward_self_attn(seqs, seqs_layout, attn_bias_cache)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 160, in _forward_self_attn
+    seqs = self.self_attn(
+           ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/multihead_attention.py", line 505, in forward
+    attns, attn_weights = self.sdpa(
+                          ^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 129, in forward
+    bd = self._shift_bd(bd)
+         ^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 163, in _shift_bd
+    x = pad(bd, (1, 0))
+        ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/functional.py", line 5290, in pad
+    return torch._C._nn.pad(input, pad, mode, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 8.01 GiB. GPU 0 has a total capacity of 79.25 GiB of which 7.11 GiB is free. Including non-PyTorch memory, this process has 72.13 GiB memory in use. Of the allocated memory 60.19 GiB is allocated by PyTorch, and 11.44 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+Error: CUDA out of memory. Tried to allocate 8.01 GiB. GPU 0 has a total capacity of 79.25 GiB of which 7.11 GiB is free. Including non-PyTorch memory, this process has 72.13 GiB memory in use. Of the allocated memory 60.19 GiB is allocated by PyTorch, and 11.44 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+============================================================
+Training: EFIK
+
+Training efik
+  Device: cuda:0
+  Trainable parameters: 658,084,160
+
+Epoch 1/3
+  0%|          | 0/813 [00:00<?, ?it/s]/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+  0%|          | 0/813 [00:03<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 383, in main
+    trainer.train(train_loader, eval_loader, config['num_epochs'])
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 302, in train
+    train_loss = self.train_epoch(train_loader)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 257, in train_epoch
+    loss = self.train_step(batch)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 230, in train_step
+    student_emb = self.get_speech_embedding(audio, lengths)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/finetune_speech_encoder.py", line 206, in get_speech_embedding
+    output = self.speech_model(fbank_seqs, seqs_layout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/sonar/models/sonar_speech/model.py", line 60, in forward
+    encoder_output = self.encoder(seqs, seqs_layout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/encoder.py", line 152, in forward
+    layer_output = layer(seqs, seqs_layout, attn_bias_cache)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 128, in forward
+    seqs = self._forward_self_attn(seqs, seqs_layout, attn_bias_cache)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/conformer/block.py", line 160, in _forward_self_attn
+    seqs = self.self_attn(
+           ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/multihead_attention.py", line 505, in forward
+    attns, attn_weights = self.sdpa(
+                          ^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 129, in forward
+    bd = self._shift_bd(bd)
+         ^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/transformer/sdpa/relative.py", line 163, in _shift_bd
+    x = pad(bd, (1, 0))
+        ^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/torch/nn/functional.py", line 5290, in pad
+    return torch._C._nn.pad(input, pad, mode, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 13.92 GiB. GPU 0 has a total capacity of 79.25 GiB of which 7.50 GiB is free. Including non-PyTorch memory, this process has 71.74 GiB memory in use. Of the allocated memory 56.18 GiB is allocated by PyTorch, and 15.06 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Error: CUDA out of memory. Tried to allocate 13.92 GiB. GPU 0 has a total capacity of 79.25 GiB of which 7.50 GiB is free. Including non-PyTorch memory, this process has 71.74 GiB memory in use. Of the allocated memory 56.18 GiB is allocated by PyTorch, and 15.06 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+=========================================================
+Fine-tuning script finished.
+=========================================================

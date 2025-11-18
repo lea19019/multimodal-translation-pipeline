@@ -223,13 +223,21 @@ async def translate(request: TranslateRequest):
         ).to(DEVICE)
         
         # Get target language token ID
+        # For NLLB, we need to get the special token for the target language
         try:
-            # Try to get the language token ID
+            # The language code is used as a special token
             forced_bos_token_id = tokenizer.convert_tokens_to_ids(tgt_lang)
-        except:
+            
+            # Check if it's a valid token (not UNK token)
+            if forced_bos_token_id == tokenizer.unk_token_id:
+                logger.warning(f"Language code {tgt_lang} not found in tokenizer vocabulary")
+                forced_bos_token_id = None
+            else:
+                logger.info(f"Using target language: {tgt_lang} (token ID: {forced_bos_token_id})")
+        except Exception as e:
             # Fallback: let the model decide
             forced_bos_token_id = None
-            logger.warning(f"Could not find token ID for {tgt_lang}, using default")
+            logger.warning(f"Could not find token ID for {tgt_lang}: {e}")
         
         # Generate translation
         with torch.no_grad():
@@ -244,6 +252,11 @@ async def translate(request: TranslateRequest):
             generated_tokens,
             skip_special_tokens=True
         )[0]
+        
+        # Remove language code prefix if present (e.g., "efi_Latn Hello" -> "Hello")
+        # This happens when we add custom language tokens
+        if translated_text.startswith(tgt_lang):
+            translated_text = translated_text[len(tgt_lang):].strip()
         
         logger.info(f"Translation completed: {translated_text[:50]}...")
         

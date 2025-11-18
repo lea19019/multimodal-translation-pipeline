@@ -1,0 +1,95 @@
+=========================================================
+SLURM JOB ID: 8530383
+JOB NAME: train_multilingual
+Running on nodes: cs-1-4
+Number of GPUs allocated: 1
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Mon Nov 10 18:22:41 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:4A:00.0 Off |                    0 |
+| N/A   40C    P0             65W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Setting up NLLB model for multi-language fine-tuning...
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Loading model from local path: ./checkpoints/base
+Adding efi_Latn as a special token...
+New vocab size: 256205
+efi_Latn token ID: 256204
+
+Verifying language codes in tokenizer:
+✓ swh_Latn found in tokenizer
+✓ ibo_Latn found in tokenizer
+✓ xho_Latn found in tokenizer
+
+Loading efi_Latn data...
+  Loaded 34895 sentence pairs for efi_Latn
+
+Loading swh_Latn data...
+  Loaded 349138 sentence pairs for swh_Latn
+
+Loading ibo_Latn data...
+  Loaded 77114 sentence pairs for ibo_Latn
+
+Loading xho_Latn data...
+  Loaded 88268 sentence pairs for xho_Latn
+
+Combining datasets...
+Total combined samples: 549415
+
+Training samples: 494473
+Evaluation samples: 54942
+
+Tokenizing datasets...
+Tokenizing training data (num_proc=4):   0%|          | 0/494473 [00:00<?, ? examples/s]Tokenizing training data (num_proc=4):   0%|          | 0/494473 [00:01<?, ? examples/s]
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/nmt/nllb_nmt.py", line 122, in <module>
+    train_dataset = train_dataset.map(
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 562, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/arrow_dataset.py", line 3332, in map
+    for rank, done, content in iflatmap_unordered(
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/datasets/utils/py_utils.py", line 605, in iflatmap_unordered
+    queue = manager.Queue()
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/multiprocess/managers.py", line 715, in temp
+    token, exp = self._create(typeid, *args, **kwds)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/multiprocess/managers.py", line 598, in _create
+    conn = self._Client(self._address, authkey=self._authkey)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/multiprocess/connection.py", line 511, in Client
+    answer_challenge(c, authkey)
+  File "/home/vacl2/multimodal_translation/services/nmt/.venv/lib64/python3.9/site-packages/multiprocess/connection.py", line 758, in answer_challenge
+    digest = hmac.new(authkey, message, 'md5').digest()
+  File "/usr/lib64/python3.9/hmac.py", line 189, in new
+    return HMAC(key, msg, digestmod)
+  File "/usr/lib64/python3.9/hmac.py", line 60, in __init__
+    self._init_hmac(key, msg, digestmod)
+  File "/usr/lib64/python3.9/hmac.py", line 69, in _init_hmac
+    self._hmac = _hashopenssl.hmac_new(key, msg, digestmod=digestmod)
+ValueError: [digital envelope routines] unsupported
+=========================================================
+Training script finished.
+=========================================================

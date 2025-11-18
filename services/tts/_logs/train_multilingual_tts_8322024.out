@@ -1,0 +1,87 @@
+=========================================================
+SLURM JOB ID: 8322024
+JOB NAME: train_multilingual_tts
+Running on nodes: cs-1-1
+Number of GPUs allocated: 2
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 2
+------------------------------------
+--- GPU Diagnostics ---
+Mon Nov  3 20:46:16 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:0A:00.0 Off |                    0 |
+| N/A   27C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   28C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting distributed training on 2 GPUs...
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_03-204623', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs,swa', '--num_epochs', '6500', '--batch_size', '24', '--grad_acumm', '4', '--max_text_length', '500', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '10000', '--run_name', 'MULTILINGUAL_TRAINING_11_3', '--rank=0']
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_11_03-204623', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv,/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv,ibo', '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs,/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs,swa', '--num_epochs', '6500', '--batch_size', '24', '--grad_acumm', '4', '--max_text_length', '500', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '5e-6', '--save_step', '10000', '--run_name', 'MULTILINGUAL_TRAINING_11_3', '--rank=1']
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs swa
+>> DVAE weights restored from: checkpoints/XTTS_v2.0_original_model_files/dvae.pth
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 242, in <module>
+/grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_train.csv /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/metadata_eval.csv ibo
+/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs /home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_eval.cvs swa
+>> DVAE weights restored from: checkpoints/XTTS_v2.0_original_model_files/dvae.pth
+ | > Found 15160 files in /grphome/grp_mtlab/projects/project-speech/african_tts/XTTSv2-Finetuning-for-New-Languages/xhosa/xhosa_cleaned
+ | > Found 25990 files in /home/vacl2/multimodal_translation/services/data/languages/efik
+ | > [!] 1 files not found
+ | > Found 23587 files in /home/vacl2/multimodal_translation/services/data/languages/igbo
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 242, in <module>
+    trainer_out_path = train_gpt(
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 192, in train_gpt
+    trainer_out_path = train_gpt(
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 192, in train_gpt
+    train_samples, eval_samples = load_tts_samples(
+  File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/datasets/__init__.py", line 120, in load_tts_samples
+    meta_data_train = formatter(root_path, meta_file_train, ignored_speakers=ignored_speakers)
+  File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/datasets/formatters.py", line 59, in coqui
+    with open(filepath, "r", encoding="utf8") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs'
+    train_samples, eval_samples = load_tts_samples(
+  File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/datasets/__init__.py", line 120, in load_tts_samples
+    meta_data_train = formatter(root_path, meta_file_train, ignored_speakers=ignored_speakers)
+  File "/home/vacl2/multimodal_translation/services/tts/TTS/tts/datasets/formatters.py", line 59, in coqui
+    with open(filepath, "r", encoding="utf8") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vacl2/multimodal_translation/services/data/languages/swahili/metadata_train.cvs'
+=========================================================
+Training script finished.
+=========================================================
