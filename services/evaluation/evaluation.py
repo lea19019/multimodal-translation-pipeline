@@ -17,12 +17,12 @@ import yaml
 from tqdm import tqdm
 
 # Import our modules
-from data_loader import load_samples, validate_sample_for_metrics, TranslationSample
-from text_metrics import TextMetrics
-from audio_metrics import AudioMetrics
+from scripts.data_loader import load_samples, validate_sample_for_metrics, TranslationSample, load_predictions
+from scripts.text_metrics import TextMetrics
+from scripts.audio_metrics import AudioMetrics
 from scripts.comet_evaluator import CometEvaluator
 from scripts.blaser_evaluator import BlaserEvaluator
-from visualizations import generate_all_visualizations, generate_html_report
+from scripts.visualizations import generate_all_visualizations, generate_html_report
 
 # Configure logging
 logging.basicConfig(
@@ -180,22 +180,35 @@ class EvaluationPipeline:
         references = []
         source_audio_paths = []
         target_audio_paths = []
-        
+        predicted_audio_paths = []
+
+        # Check if we're evaluating predictions (samples have predicted_tgt_text populated)
+        has_predictions = any(sample.predicted_tgt_text for sample in valid_samples)
+
         for sample in valid_samples:
             # For text metrics, use source or transcribed text
             if translation_type in ['text_to_text', 'text_to_audio']:
                 src = sample.source_text
             else:  # audio_to_text, audio_to_audio
                 src = sample.transcribed_text or sample.source_text or ""
-            
+
             sources.append(src)
-            hypotheses.append(sample.target_text or "")
-            references.append([sample.target_text or ""])  # Single reference
-            
+
+            # For predictions mode: use predicted_tgt_text as hypothesis, target_text as reference
+            # For ground truth mode: use target_text as both (measuring reference quality)
+            if has_predictions:
+                hypotheses.append(sample.predicted_tgt_text or "")
+                references.append([sample.target_text or ""])  # Ground truth as reference
+            else:
+                hypotheses.append(sample.target_text or "")
+                references.append([sample.target_text or ""])  # Single reference
+
             if sample.source_audio_path:
                 source_audio_paths.append(sample.source_audio_path)
             if sample.target_audio_path:
                 target_audio_paths.append(sample.target_audio_path)
+            if sample.predicted_tgt_audio_path:
+                predicted_audio_paths.append(sample.predicted_tgt_audio_path)
         
         # Compute text metrics
         if 'bleu' in metrics:
@@ -224,36 +237,42 @@ class EvaluationPipeline:
                 results['aggregate_scores']['comet'] = 0.0
         
         # Compute MCD
-        if 'mcd' in metrics and target_audio_paths:
-            logger.info("Computing MCD scores...")
-            # TODO: MCD requires separate reference audio files for proper evaluation.
-            # Currently skipping MCD as comparing generated audio to itself (target_audio_paths)
-            # produces meaningless results (MCD=0). Need to update data schema to include
-            # reference_audio.wav files for each sample.
-            logger.warning("MCD computation skipped: requires separate reference audio files")
-            logger.warning("Data schema needs reference_audio.wav in addition to target_audio.wav")
-            results['aggregate_scores']['mcd'] = None
-            results['mcd_details'] = {
-                'error': 'MCD requires reference audio - data schema update needed',
-                'mean_mcd': None,
-                'mcd_scores': [],
-            }
-
-            # Uncomment when reference audio is available:
-            # try:
-            #     mcd_result = self.audio_metrics.compute_mcd_batch(
-            #         target_audio_paths,       # Generated audio
-            #         reference_audio_paths,    # Reference audio (needs to be added)
-            #     )
-            #     results['aggregate_scores']['mcd'] = mcd_result['mean_mcd']
-            #     results['mcd_details'] = mcd_result
-            # except Exception as e:
-            #     logger.error(f"MCD evaluation failed: {e}")
-            #     results['aggregate_scores']['mcd'] = None
+        if 'mcd' in metrics:
+            # For predictions mode: compare predicted audio against ground truth
+            # For ground truth mode: skip (would compare audio to itself)
+            if has_predictions and predicted_audio_paths and target_audio_paths:
+                logger.info("Computing MCD scores...")
+                logger.info("Comparing predicted audio against ground truth audio")
+                try:
+                    mcd_result = self.audio_metrics.compute_mcd_batch(
+                        predicted_audio_paths,  # Hypothesis (TTS-generated audio)
+                        target_audio_paths,     # Reference (ground truth audio)
+                    )
+                    results['aggregate_scores']['mcd'] = mcd_result['mean_mcd']
+                    results['mcd_details'] = mcd_result
+                except Exception as e:
+                    logger.error(f"MCD evaluation failed: {e}")
+                    results['aggregate_scores']['mcd'] = None
+            else:
+                # Ground truth mode or missing audio files
+                logger.warning("MCD computation skipped: requires both predicted and ground truth audio")
+                if not has_predictions:
+                    logger.warning("MCD only available in predictions mode")
+                results['aggregate_scores']['mcd'] = None
+                results['mcd_details'] = {
+                    'error': 'MCD requires predictions mode with both predicted and ground truth audio',
+                    'mean_mcd': None,
+                    'mcd_scores': [],
+                }
         
         # Compute BLASER
-        if 'blaser' in metrics and source_audio_paths and target_audio_paths:
+        # Use predicted audio if available, otherwise use target audio
+        blaser_target_audio = predicted_audio_paths if predicted_audio_paths else target_audio_paths
+
+        if 'blaser' in metrics and source_audio_paths and blaser_target_audio:
             logger.info("Computing BLASER scores...")
+            if predicted_audio_paths:
+                logger.info("Using predicted audio for BLASER evaluation")
             try:
                 refs_flat = [r[0] if isinstance(r, list) and len(r) > 0 else r for r in references]
 
@@ -263,7 +282,7 @@ class EvaluationPipeline:
 
                 blaser_result = self.blaser_evaluator.evaluate(
                     source_audio_paths,
-                    target_audio_paths,
+                    blaser_target_audio,
                     refs_flat,
                     sources,
                     source_lang=f"{source_lang_code}_Latn",
@@ -393,6 +412,13 @@ class EvaluationPipeline:
 @click.option('--metrics', '-m', multiple=True,
               type=click.Choice(['bleu', 'chrf', 'comet', 'mcd', 'blaser']),
               help='Specific metrics to compute (auto-detect if not specified)')
+@click.option('--mode', type=click.Choice(['ground_truth', 'predictions']),
+              default='ground_truth',
+              help='Evaluation mode: ground_truth (original) or predictions (evaluate model outputs)')
+@click.option('--language', type=click.Choice(['efik', 'igbo', 'swahili', 'xhosa']),
+              help='Single language to evaluate (only for predictions mode)')
+@click.option('--limit', type=int, default=None,
+              help='Limit number of samples to evaluate (for testing)')
 def main(
     translation_type: Optional[str],
     data_dir: str,
@@ -401,6 +427,9 @@ def main(
     config: Optional[str],
     run_id: Optional[str],
     metrics: tuple,
+    mode: str,
+    language: Optional[str],
+    limit: Optional[int],
 ):
     """
     Evaluate multimodal translation system.
@@ -453,51 +482,116 @@ def main(
         
         # Evaluate each type
         all_results = []
-        for trans_type in types_to_eval:
-            logger.info(f"\n{'='*60}")
-            logger.info(f"Evaluating type: {trans_type or 'auto-detect'}")
-            logger.info(f"{'='*60}")
-            
-            # Load samples
-            sample_list = list(samples) if samples else None
-            loaded_samples, errors = load_samples(
-                data_dir=data_dir,
-                translation_type=trans_type,
-                sample_uuids=sample_list,
-            )
-            
-            if not loaded_samples:
-                logger.warning(f"No samples loaded for type: {trans_type}")
-                continue
-            
-            # Evaluate
-            results = pipeline.evaluate_samples(
-                loaded_samples,
-                metrics=list(metrics) if metrics else None,
-            )
-            
-            if results:
-                # Save results
-                pipeline.save_results(results)
-                
-                # Generate visualizations
-                pipeline.generate_visualizations(results)
-                
-                all_results.append(results)
-                
-                # Print summary
-                click.echo(f"\n{'='*60}")
-                click.echo(f"EVALUATION COMPLETE - {trans_type}")
-                click.echo(f"{'='*60}")
-                click.echo(f"Run ID: {pipeline.run_id}")
-                click.echo(f"Samples evaluated: {results['valid_samples']}/{results['total_samples']}")
-                click.echo(f"\nAggregate Scores:")
-                for metric, score in results.get('aggregate_scores', {}).items():
-                    if score is not None:
-                        click.echo(f"  {metric.upper()}: {score:.3f}")
-                    else:
-                        click.echo(f"  {metric.upper()}: N/A (skipped)")
-                click.echo(f"\nResults saved to: {pipeline.results_dir}")
+
+        # For predictions mode, evaluate by language instead of by type
+        if mode == 'predictions':
+            # Determine which languages to evaluate
+            if language:
+                languages_to_eval = [language]
+            else:
+                languages_to_eval = ['efik', 'igbo', 'swahili', 'xhosa']
+
+            for lang in languages_to_eval:
+                logger.info(f"\n{'='*60}")
+                logger.info(f"Evaluating predictions for {lang.upper()}")
+                logger.info(f"{'='*60}")
+
+                # Load predictions
+                loaded_samples, errors = load_predictions(
+                    data_dir=data_dir,
+                    language=lang,
+                    translation_type='audio_to_audio',  # Default for predictions
+                )
+
+                if not loaded_samples:
+                    logger.warning(f"No prediction samples loaded for {lang}")
+                    continue
+
+                # Apply limit if specified
+                if limit:
+                    logger.info(f"Limiting evaluation to {limit} samples")
+                    loaded_samples = loaded_samples[:limit]
+
+                # Evaluate
+                results = pipeline.evaluate_samples(
+                    loaded_samples,
+                    metrics=list(metrics) if metrics else None,
+                )
+
+                if results:
+                    # Save results
+                    pipeline.save_results(results)
+
+                    # Generate visualizations
+                    pipeline.generate_visualizations(results)
+
+                    all_results.append(results)
+
+                    # Print summary
+                    click.echo(f"\n{'='*60}")
+                    click.echo(f"EVALUATION COMPLETE - {lang}")
+                    click.echo(f"{'='*60}")
+                    click.echo(f"Run ID: {pipeline.run_id}")
+                    click.echo(f"Samples evaluated: {results['valid_samples']}/{results['total_samples']}")
+                    click.echo(f"\nAggregate Scores:")
+                    for metric, score in results.get('aggregate_scores', {}).items():
+                        if score is not None:
+                            click.echo(f"  {metric.upper()}: {score:.3f}")
+                        else:
+                            click.echo(f"  {metric.upper()}: N/A (skipped)")
+                    click.echo(f"\nResults saved to: {pipeline.results_dir}")
+        else:
+            # Ground truth mode (original behavior)
+            for trans_type in types_to_eval:
+                logger.info(f"\n{'='*60}")
+                logger.info(f"Evaluating type: {trans_type or 'auto-detect'}")
+                logger.info(f"{'='*60}")
+
+                # Load samples
+                sample_list = list(samples) if samples else None
+                loaded_samples, errors = load_samples(
+                    data_dir=data_dir,
+                    translation_type=trans_type,
+                    sample_uuids=sample_list,
+                )
+
+                if not loaded_samples:
+                    logger.warning(f"No samples loaded for type: {trans_type}")
+                    continue
+
+                # Apply limit if specified
+                if limit:
+                    logger.info(f"Limiting evaluation to {limit} samples")
+                    loaded_samples = loaded_samples[:limit]
+
+                # Evaluate
+                results = pipeline.evaluate_samples(
+                    loaded_samples,
+                    metrics=list(metrics) if metrics else None,
+                )
+
+                if results:
+                    # Save results
+                    pipeline.save_results(results)
+
+                    # Generate visualizations
+                    pipeline.generate_visualizations(results)
+
+                    all_results.append(results)
+
+                    # Print summary
+                    click.echo(f"\n{'='*60}")
+                    click.echo(f"EVALUATION COMPLETE - {trans_type}")
+                    click.echo(f"{'='*60}")
+                    click.echo(f"Run ID: {pipeline.run_id}")
+                    click.echo(f"Samples evaluated: {results['valid_samples']}/{results['total_samples']}")
+                    click.echo(f"\nAggregate Scores:")
+                    for metric, score in results.get('aggregate_scores', {}).items():
+                        if score is not None:
+                            click.echo(f"  {metric.upper()}: {score:.3f}")
+                        else:
+                            click.echo(f"  {metric.upper()}: N/A (skipped)")
+                    click.echo(f"\nResults saved to: {pipeline.results_dir}")
         
         if not all_results:
             logger.error("No results generated")

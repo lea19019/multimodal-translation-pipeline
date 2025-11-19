@@ -1,0 +1,140 @@
+=========================================================
+SLURM JOB ID: 8576616
+JOB NAME: eval_predictions
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.9.1+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Tue Nov 18 23:34:40 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   27C    P0             59W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting evaluation for language: efik
+Sample limit: 20
+Data directory: /home/vacl2/multimodal_translation/services/data/languages
+
+2025-11-18 23:34:55,577 - __main__ - INFO - Starting evaluation with run_id: run_20251118_233455
+2025-11-18 23:34:55,577 - __main__ - INFO - 
+============================================================
+2025-11-18 23:34:55,577 - __main__ - INFO - Evaluating predictions for EFIK
+2025-11-18 23:34:55,577 - __main__ - INFO - ============================================================
+2025-11-18 23:34:55,579 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/efik/nmt_predictions.csv
+2025-11-18 23:34:55,708 - scripts.data_loader - INFO - Loaded 3248 prediction samples for efik
+2025-11-18 23:35:08,154 - scripts.data_loader - INFO - Successfully created 3248 samples for efik
+2025-11-18 23:35:08,155 - __main__ - INFO - Limiting evaluation to 20 samples
+2025-11-18 23:35:08,160 - __main__ - INFO - Evaluating 20 samples of type 'audio_to_audio'
+2025-11-18 23:35:08,160 - __main__ - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-11-18 23:35:08,172 - __main__ - INFO - Initialized text metrics evaluator
+2025-11-18 23:35:08,386 - __main__ - INFO - Initialized COMET evaluator
+2025-11-18 23:35:08,387 - __main__ - INFO - Initialized audio metrics evaluator
+2025-11-18 23:35:08,396 - __main__ - INFO - Initialized BLASER evaluator
+2025-11-18 23:35:08,421 - __main__ - INFO - Valid samples: 20, Skipped: 0
+2025-11-18 23:35:08,421 - __main__ - INFO - Computing BLEU scores...
+2025-11-18 23:35:08,424 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,424 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,424 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,424 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,425 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:35:08,426 - __main__ - INFO - Computing chrF scores...
+2025-11-18 23:35:08,435 - __main__ - INFO - Computing COMET scores...
+/home/vacl2/multimodal_translation/services/evaluation/.venv/lib64/python3.11/site-packages/torchmetrics/utilities/imports.py:23: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import DistributionNotFound, get_distribution
+2025-11-18 23:35:42,823 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c16890>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 38fa0ac2-767d-4540-add2-0054b3b0a618)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+2025-11-18 23:35:47,572 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c16890>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 38fa0ac2-767d-4540-add2-0054b3b0a618)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+2025-11-18 23:35:47,572 - huggingface_hub.utils._http - WARNING - Retrying in 1s [Retry 1/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c02450>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: fea510d9-4e29-4687-b87e-7594dbb93930)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+2025-11-18 23:35:49,607 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c02450>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: fea510d9-4e29-4687-b87e-7594dbb93930)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+Retrying in 2s [Retry 2/5].
+2025-11-18 23:35:49,607 - huggingface_hub.utils._http - WARNING - Retrying in 2s [Retry 2/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c03510>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 9d1f2052-c5ec-402f-bfde-c0fd2cf35867)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+2025-11-18 23:35:53,703 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c03510>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 9d1f2052-c5ec-402f-bfde-c0fd2cf35867)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+Retrying in 4s [Retry 3/5].
+2025-11-18 23:35:53,703 - huggingface_hub.utils._http - WARNING - Retrying in 4s [Retry 3/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c02e10>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: fab2e42c-c089-483a-88ec-8c2c97da10e2)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+2025-11-18 23:35:57,713 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c02e10>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: fab2e42c-c089-483a-88ec-8c2c97da10e2)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 4/5].
+2025-11-18 23:35:57,713 - huggingface_hub.utils._http - WARNING - Retrying in 8s [Retry 4/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73befe50>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 31296bc8-08d1-488d-ae17-8676d0f701e8)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+2025-11-18 23:36:05,721 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73befe50>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 31296bc8-08d1-488d-ae17-8676d0f701e8)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 5/5].
+2025-11-18 23:36:05,721 - huggingface_hub.utils._http - WARNING - Retrying in 8s [Retry 5/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73bef550>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: af31c0d6-4603-424e-b4b8-f3171ae9c940)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+2025-11-18 23:36:13,732 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73bef550>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: af31c0d6-4603-424e-b4b8-f3171ae9c940)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/tokenizer_config.json
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b7403b690>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 37fbc97b-90b0-4605-96bf-d5baded19a0f)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:20,199 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b7403b690>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 37fbc97b-90b0-4605-96bf-d5baded19a0f)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+2025-11-18 23:36:20,199 - huggingface_hub.utils._http - WARNING - Retrying in 1s [Retry 1/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c68150>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: ae9538e2-5a54-4bc8-b402-7481152954ff)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:24,295 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c68150>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: ae9538e2-5a54-4bc8-b402-7481152954ff)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+Retrying in 2s [Retry 2/5].
+2025-11-18 23:36:24,295 - huggingface_hub.utils._http - WARNING - Retrying in 2s [Retry 2/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c68e50>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: f60ab57f-b0de-4b3f-a4a8-0bf900a2cfd0)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:28,327 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c68e50>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: f60ab57f-b0de-4b3f-a4a8-0bf900a2cfd0)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+Retrying in 4s [Retry 3/5].
+2025-11-18 23:36:28,327 - huggingface_hub.utils._http - WARNING - Retrying in 4s [Retry 3/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c69e50>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: c1140c85-72d1-4665-85a7-c598fe6e7d42)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:32,336 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c69e50>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: c1140c85-72d1-4665-85a7-c598fe6e7d42)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+Retrying in 8s [Retry 4/5].
+2025-11-18 23:36:32,336 - huggingface_hub.utils._http - WARNING - Retrying in 8s [Retry 4/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c6ae90>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 63b7c818-9a18-41e0-bfda-567ed18a7772)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:40,350 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c6ae90>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 63b7c818-9a18-41e0-bfda-567ed18a7772)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+Retrying in 8s [Retry 5/5].
+2025-11-18 23:36:40,350 - huggingface_hub.utils._http - WARNING - Retrying in 8s [Retry 5/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c6be90>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 738dc3e2-cbfd-4fc4-9655-7a577ad70edf)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:48,366 - huggingface_hub.utils._http - WARNING - '(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Davlan/afro-xlmr-large-76L/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4b73c6be90>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 738dc3e2-cbfd-4fc4-9655-7a577ad70edf)')' thrown while requesting HEAD https://huggingface.co/Davlan/afro-xlmr-large-76L/resolve/main/config.json
+2025-11-18 23:36:53,384 - comet.models.base - INFO - Encoder model frozen.
+2025-11-18 23:36:54,621 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-11-18 23:36:54,621 - scripts.comet_evaluator - INFO - Computing COMET scores for 20 samples...
+2025-11-18 23:36:54,639 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-11-18 23:36:54,818 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-11-18 23:36:54,818 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-11-18 23:36:54,834 - pytorch_lightning.utilities.rank_zero - INFO - You are using a CUDA device ('NVIDIA A100-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2025-11-18 23:36:54,835 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-11-18 23:36:54,869 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/3 [00:00<?, ?it/s]Predicting DataLoader 0:  33%|███▎      | 1/3 [00:00<00:01,  1.08it/s]Predicting DataLoader 0:  67%|██████▋   | 2/3 [00:00<00:00,  2.10it/s]Predicting DataLoader 0: 100%|██████████| 3/3 [00:01<00:00,  2.92it/s]Predicting DataLoader 0: 100%|██████████| 3/3 [00:01<00:00,  2.92it/s]
+2025-11-18 23:36:57,766 - __main__ - INFO - Computing MCD scores...
+2025-11-18 23:36:57,767 - __main__ - INFO - Comparing predicted audio against ground truth audio
+2025-11-18 23:37:23,022 - __main__ - INFO - Computing BLASER scores...
+2025-11-18 23:37:23,023 - __main__ - INFO - Using predicted audio for BLASER evaluation
+2025-11-18 23:37:23,025 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 20 samples...
+slurmstepd: error: *** JOB 8576616 ON cs-1-2 CANCELLED AT 2025-11-18T23:38:30 ***

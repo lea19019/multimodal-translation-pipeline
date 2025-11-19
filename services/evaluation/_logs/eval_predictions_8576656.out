@@ -1,0 +1,138 @@
+=========================================================
+SLURM JOB ID: 8576656
+JOB NAME: eval_predictions
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.9.1+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Tue Nov 18 23:39:41 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   28C    P0             59W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting evaluation for language: efik
+Sample limit: 20
+Data directory: /home/vacl2/multimodal_translation/services/data/languages
+
+2025-11-18 23:39:51,233 - __main__ - INFO - Starting evaluation with run_id: run_20251118_233951
+2025-11-18 23:39:51,233 - __main__ - INFO - 
+============================================================
+2025-11-18 23:39:51,233 - __main__ - INFO - Evaluating predictions for EFIK
+2025-11-18 23:39:51,233 - __main__ - INFO - ============================================================
+2025-11-18 23:39:51,234 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/efik/nmt_predictions.csv
+2025-11-18 23:39:51,282 - scripts.data_loader - INFO - Loaded 3248 prediction samples for efik
+2025-11-18 23:39:58,323 - scripts.data_loader - INFO - Successfully created 3248 samples for efik
+2025-11-18 23:39:58,324 - __main__ - INFO - Limiting evaluation to 20 samples
+2025-11-18 23:39:58,330 - __main__ - INFO - Evaluating 20 samples of type 'audio_to_audio'
+2025-11-18 23:39:58,330 - __main__ - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-11-18 23:39:58,338 - __main__ - INFO - Initialized text metrics evaluator
+2025-11-18 23:39:58,546 - __main__ - INFO - Initialized COMET evaluator
+2025-11-18 23:39:58,546 - __main__ - INFO - Initialized audio metrics evaluator
+2025-11-18 23:39:58,549 - __main__ - INFO - Initialized BLASER evaluator
+2025-11-18 23:39:58,550 - __main__ - INFO - Valid samples: 20, Skipped: 0
+2025-11-18 23:39:58,550 - __main__ - INFO - Computing BLEU scores...
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,553 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,554 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,555 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,555 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-18 23:39:58,555 - __main__ - INFO - Computing chrF scores...
+2025-11-18 23:39:58,564 - __main__ - INFO - Computing COMET scores...
+/home/vacl2/multimodal_translation/services/evaluation/.venv/lib64/python3.11/site-packages/torchmetrics/utilities/imports.py:23: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import DistributionNotFound, get_distribution
+2025-11-18 23:40:24,933 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-11-18 23:40:33,865 - comet.models.base - INFO - Encoder model frozen.
+2025-11-18 23:40:34,800 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-11-18 23:40:34,800 - scripts.comet_evaluator - INFO - Computing COMET scores for 20 samples...
+2025-11-18 23:40:35,034 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-11-18 23:40:35,095 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-11-18 23:40:35,095 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-11-18 23:40:35,104 - pytorch_lightning.utilities.rank_zero - INFO - You are using a CUDA device ('NVIDIA A100-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2025-11-18 23:40:35,105 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-11-18 23:40:35,115 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/3 [00:00<?, ?it/s]Predicting DataLoader 0:  33%|███▎      | 1/3 [00:00<00:00,  2.99it/s]Predicting DataLoader 0:  67%|██████▋   | 2/3 [00:00<00:00,  5.03it/s]Predicting DataLoader 0: 100%|██████████| 3/3 [00:00<00:00,  6.49it/s]Predicting DataLoader 0: 100%|██████████| 3/3 [00:00<00:00,  6.49it/s]
+2025-11-18 23:40:37,082 - __main__ - INFO - Computing MCD scores...
+2025-11-18 23:40:37,083 - __main__ - INFO - Comparing predicted audio against ground truth audio
+2025-11-18 23:41:01,403 - __main__ - INFO - Computing BLASER scores...
+2025-11-18 23:41:01,403 - __main__ - INFO - Using predicted audio for BLASER evaluation
+2025-11-18 23:41:01,404 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 20 samples...
+2025-11-18 23:41:32,513 - scripts.blaser_evaluator - INFO - BLASER evaluation complete. Corpus score: 2.2368
+2025-11-18 23:41:32,524 - __main__ - INFO - Saved summary to results_predictions_efik_gpu/run_20251118_233951/summary.json
+2025-11-18 23:41:32,544 - __main__ - INFO - Saved detailed results to results_predictions_efik_gpu/run_20251118_233951/detailed_results.csv
+2025-11-18 23:41:32,550 - __main__ - INFO - Saved full results to results_predictions_efik_gpu/run_20251118_233951/per_sample_results.json
+2025-11-18 23:41:32,550 - __main__ - INFO - Generating visualizations...
+2025-11-18 23:41:32,550 - __main__ - INFO - Using primary metric for quality categorization: blaser
+2025-11-18 23:41:33,937 - scripts.visualizations - INFO - Saved quality dashboard to results_predictions_efik_gpu/run_20251118_233951/visualizations/quality_dashboard.png
+2025-11-18 23:41:34,398 - scripts.visualizations - INFO - Saved normalized metrics comparison to results_predictions_efik_gpu/run_20251118_233951/visualizations/normalized_metrics.png
+2025-11-18 23:41:34,717 - scripts.visualizations - INFO - Saved metrics comparison chart to results_predictions_efik_gpu/run_20251118_233951/visualizations/metrics_comparison.png
+2025-11-18 23:41:34,940 - scripts.visualizations - INFO - Saved metrics table to results_predictions_efik_gpu/run_20251118_233951/visualizations/metrics_table.png
+2025-11-18 23:41:35,394 - scripts.visualizations - INFO - Saved BLEU distribution to results_predictions_efik_gpu/run_20251118_233951/visualizations/bleu_distribution.png
+2025-11-18 23:41:35,866 - scripts.visualizations - INFO - Saved CHRF distribution to results_predictions_efik_gpu/run_20251118_233951/visualizations/chrf_distribution.png
+2025-11-18 23:41:36,358 - scripts.visualizations - INFO - Saved COMET distribution to results_predictions_efik_gpu/run_20251118_233951/visualizations/comet_distribution.png
+2025-11-18 23:41:36,836 - scripts.visualizations - INFO - Saved MCD distribution to results_predictions_efik_gpu/run_20251118_233951/visualizations/mcd_distribution.png
+2025-11-18 23:41:37,326 - scripts.visualizations - INFO - Saved BLASER distribution to results_predictions_efik_gpu/run_20251118_233951/visualizations/blaser_distribution.png
+2025-11-18 23:41:38,148 - scripts.visualizations - INFO - Saved per-sample heatmap to results_predictions_efik_gpu/run_20251118_233951/visualizations/per_sample_heatmap.png
+2025-11-18 23:41:38,148 - scripts.visualizations - INFO - All visualizations saved to results_predictions_efik_gpu/run_20251118_233951/visualizations
+2025-11-18 23:41:38,169 - scripts.visualizations - INFO - Saved HTML report to results_predictions_efik_gpu/run_20251118_233951/summary_report.html
+2025-11-18 23:41:38,169 - __main__ - INFO - Generated HTML report at results_predictions_efik_gpu/run_20251118_233951/summary_report.html
+
+============================================================
+EVALUATION COMPLETE - efik
+============================================================
+Run ID: run_20251118_233951
+Samples evaluated: 20/20
+
+Aggregate Scores:
+  BLEU: 21.376
+  CHRF: 52.311
+  COMET: 0.576
+  MCD: 12.482
+  BLASER: 2.237
+
+Results saved to: results_predictions_efik_gpu/run_20251118_233951
+
+============================================================
+ALL EVALUATIONS COMPLETE
+============================================================
+Results directory: results_predictions_efik_gpu/run_20251118_233951
+
+=========================================================
+Evaluation finished for efik
+=========================================================

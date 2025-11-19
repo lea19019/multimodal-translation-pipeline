@@ -79,3 +79,7 @@ temp/
 # Package manager
 *.lock
 uv.lock
+
+
+test_efik_cpu
+results_predictions_efik_gpu

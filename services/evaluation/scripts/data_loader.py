@@ -13,6 +13,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ class TranslationSample:
         transcribed_text: Optional[str] = None,
         source_audio_path: Optional[Path] = None,
         target_audio_path: Optional[Path] = None,
+        predicted_tgt_text: Optional[str] = None,
+        predicted_tgt_audio_path: Optional[Path] = None,
     ):
         self.uuid = uuid
         self.translation_type = translation_type
@@ -43,6 +46,8 @@ class TranslationSample:
         self.transcribed_text = transcribed_text
         self.source_audio_path = source_audio_path
         self.target_audio_path = target_audio_path
+        self.predicted_tgt_text = predicted_tgt_text
+        self.predicted_tgt_audio_path = predicted_tgt_audio_path
     
     def to_dict(self) -> Dict:
         """Convert sample to dictionary."""
@@ -57,6 +62,8 @@ class TranslationSample:
             'transcribed_text': self.transcribed_text,
             'source_audio_path': str(self.source_audio_path) if self.source_audio_path else None,
             'target_audio_path': str(self.target_audio_path) if self.target_audio_path else None,
+            'predicted_tgt_text': self.predicted_tgt_text,
+            'predicted_tgt_audio_path': str(self.predicted_tgt_audio_path) if self.predicted_tgt_audio_path else None,
         }
 
 
@@ -241,38 +248,193 @@ def validate_sample_for_metrics(
 ) -> Tuple[bool, List[str]]:
     """
     Validate that a sample has all required data for given metrics.
-    
+
     Args:
         sample: The translation sample to validate
         required_metrics: List of metric names (e.g., ['bleu', 'mcd', 'blaser'])
-        
+
     Returns:
         Tuple of (is_valid, list of missing components)
     """
     missing = []
-    
+
     # Text always required
     if not sample.target_text:
         missing.append('target_text')
-    
+
     # For text-based metrics, need source or transcribed text
+    # For predictions mode, we use source_text even for audio_to_audio type
     if any(m in required_metrics for m in ['bleu', 'chrf', 'comet']):
+        # Check if this is predictions mode (has predicted_tgt_text)
+        is_predictions_mode = sample.predicted_tgt_text is not None
+
         if sample.translation_type in ['text_to_text', 'text_to_audio']:
             if not sample.source_text:
                 missing.append('source_text')
         elif sample.translation_type in ['audio_to_text', 'audio_to_audio']:
-            if not sample.transcribed_text:
-                missing.append('transcribed_text')
-    
+            # For predictions mode, use source_text (from CSV src_text)
+            # For ground truth mode, use transcribed_text
+            if is_predictions_mode:
+                if not sample.source_text:
+                    missing.append('source_text')
+            else:
+                if not sample.transcribed_text:
+                    missing.append('transcribed_text')
+
     # For audio metrics
     if 'mcd' in required_metrics:
-        if not sample.target_audio_path or not sample.target_audio_path.exists():
-            missing.append('target_audio')
-    
+        # For predictions mode, check predicted audio; for ground truth, check target audio
+        is_predictions_mode = sample.predicted_tgt_audio_path is not None
+        if is_predictions_mode:
+            if not sample.predicted_tgt_audio_path or not sample.predicted_tgt_audio_path.exists():
+                missing.append('predicted_audio')
+        else:
+            if not sample.target_audio_path or not sample.target_audio_path.exists():
+                missing.append('target_audio')
+
     if 'blaser' in required_metrics:
         if not sample.source_audio_path or not sample.source_audio_path.exists():
             missing.append('source_audio')
-        if not sample.target_audio_path or not sample.target_audio_path.exists():
-            missing.append('target_audio')
-    
+        # For BLASER, check predicted or target audio
+        is_predictions_mode = sample.predicted_tgt_audio_path is not None
+        if is_predictions_mode:
+            if not sample.predicted_tgt_audio_path or not sample.predicted_tgt_audio_path.exists():
+                missing.append('predicted_audio')
+        else:
+            if not sample.target_audio_path or not sample.target_audio_path.exists():
+                missing.append('target_audio')
+
     return len(missing) == 0, missing
+
+
+def get_predicted_audio_path(
+    data_dir: str,
+    language: str,
+    segment_id: int,
+    user_id: int,
+    iso_code: str
+) -> Optional[Path]:
+    """
+    Locate predicted audio file based on segment_id and user_id.
+
+    Args:
+        data_dir: Base data directory
+        language: Language name (efik, igbo, swahili, xhosa)
+        segment_id: Segment identifier
+        user_id: User/speaker identifier
+        iso_code: ISO language code (efi, ibo, swh, xho)
+
+    Returns:
+        Path to predicted audio file or None if not found
+    """
+    predicted_audio_dir = Path(data_dir) / language / "predicted_tgt_audio"
+    predicted_filename = f"Segment={segment_id}_User={user_id}_Language={iso_code}_pred.wav"
+    predicted_path = predicted_audio_dir / predicted_filename
+
+    if predicted_path.exists():
+        return predicted_path
+    else:
+        return None
+
+
+def load_predictions(
+    data_dir: str,
+    language: str,
+    translation_type: str = "audio_to_audio"
+) -> Tuple[List[TranslationSample], List[str]]:
+    """
+    Load prediction data from nmt_predictions.csv and predicted_tgt_audio/ folder.
+
+    Returns samples with both ground truth and predicted data populated.
+    Maps predictions to ground truth via segment_id + user_id.
+
+    Args:
+        data_dir: Base data directory
+        language: Language name (efik, igbo, swahili, xhosa)
+        translation_type: Translation type (default: audio_to_audio)
+
+    Returns:
+        Tuple of (list of TranslationSample objects, list of error messages)
+    """
+    data_dir_path = Path(data_dir)
+    lang_dir = data_dir_path / language
+
+    # Load NMT predictions CSV
+    predictions_csv = lang_dir / "nmt_predictions.csv"
+    if not predictions_csv.exists():
+        logger.error(f"NMT predictions file not found: {predictions_csv}")
+        return [], [f"Missing nmt_predictions.csv for {language}"]
+
+    logger.info(f"Loading predictions from {predictions_csv}")
+    df = pd.read_csv(predictions_csv, sep="|")
+
+    samples = []
+    errors = []
+
+    # Also load ground truth CSV for audio paths
+    ground_truth_csv = lang_dir / "mapped_metadata_test.csv"
+    if ground_truth_csv.exists():
+        df_gt = pd.read_csv(ground_truth_csv, sep="|")
+        # Merge with predictions to get ground truth audio paths
+        df = df.merge(df_gt[['segment_id', 'user_id', 'tgt_audio']],
+                     on=['segment_id', 'user_id'],
+                     how='left',
+                     suffixes=('', '_gt'))
+
+    logger.info(f"Loaded {len(df)} prediction samples for {language}")
+
+    # Create TranslationSample objects
+    for idx, row in df.iterrows():
+        try:
+            segment_id = row['segment_id']
+            user_id = row['user_id']
+            iso_code = row['iso_code']
+
+            # Get predicted audio path
+            predicted_audio_path = get_predicted_audio_path(
+                data_dir, language, segment_id, user_id, iso_code
+            )
+
+            # Get ground truth audio path
+            ground_truth_audio_path = None
+            if 'tgt_audio' in row and pd.notna(row['tgt_audio']):
+                ground_truth_audio_path = Path(row['tgt_audio'])
+                if not ground_truth_audio_path.exists():
+                    logger.warning(f"Ground truth audio not found: {ground_truth_audio_path}")
+                    ground_truth_audio_path = None
+
+            # Get source audio path
+            src_audio_dir = lang_dir / "src_audio"
+            src_audio_filename = f"Segment={segment_id}_User={user_id}_Language=en_src.wav"
+            source_audio_path = src_audio_dir / src_audio_filename
+            if not source_audio_path.exists():
+                source_audio_path = None
+
+            # Create sample
+            sample = TranslationSample(
+                uuid=f"{segment_id}_{user_id}",  # Create unique ID
+                translation_type=translation_type,
+                source_language="eng",
+                target_language=iso_code,
+                timestamp="",  # Not available in CSV
+                source_text=row.get('src_text', ''),
+                target_text=row.get('ground_truth_tgt_text', row.get('tgt_text', '')),
+                transcribed_text=None,  # Not used for text-to-text
+                source_audio_path=source_audio_path,
+                target_audio_path=ground_truth_audio_path,
+                predicted_tgt_text=row.get('predicted_tgt_text', ''),
+                predicted_tgt_audio_path=predicted_audio_path,
+            )
+
+            samples.append(sample)
+
+        except Exception as e:
+            error_msg = f"Failed to load sample at index {idx}: {e}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+
+    logger.info(f"Successfully created {len(samples)} samples for {language}")
+    if errors:
+        logger.warning(f"Encountered {len(errors)} errors")
+
+    return samples, errors
