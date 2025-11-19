@@ -95,10 +95,47 @@ python evaluation.py --mode ground_truth --type text_to_text --data-dir ../data/
 ### Predictions Mode
 Evaluates model outputs against ground truth references.
 
-**Required file in each UUID directory:** `predicted_tgt.txt` (or `predicted_tgt_audio.wav` for audio)
+**Required structure:**
+- NMT predictions: `{language}/nmt_predictions_{model_name}.csv`
+- TTS audio: `{language}/predicted_tgt_audio_{model_name}/`
 
 ```bash
-python evaluation.py --mode predictions --language igbo --data-dir ../data/predictions
+python evaluation.py \
+  --mode predictions \
+  --language igbo \
+  --data-dir ../data/languages \
+  --nmt-model multilang_finetuned_final \
+  --tts-model MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632 \
+  -m bleu -m chrf -m comet -m mcd -m blaser
+```
+
+**Execution IDs:** Auto-generated (`eval_YYYYMMDD_HHMMSS`) or specify with `--execution-id` to group multiple language runs.
+
+## GPU Batch Evaluation
+
+For large-scale evaluation with GPU acceleration, use the SLURM batch scripts.
+
+**Evaluate all 4 languages (recommended):**
+```bash
+./submit_all_languages.sh  # Auto-generates execution ID
+```
+
+**Evaluate single language on GPU:**
+```bash
+sbatch batch_evaluate.sh efik  # Auto-generated execution ID
+sbatch batch_evaluate.sh igbo eval_20251119_120000  # Use specific execution ID
+```
+
+**What it does:**
+- Submits SLURM job to `cs` partition with 1 GPU, 64GB RAM
+- Evaluates 1000 samples per language with all 5 metrics
+- Uses offline mode (cached models, no internet required)
+- Results organized by execution ID with overall summary
+
+**Monitor jobs:**
+```bash
+squeue -u $USER              # Check job status
+tail -f _logs/eval_*.out     # Watch logs
 ```
 
 ## CLI Options
@@ -110,6 +147,9 @@ python evaluation.py --mode predictions --language igbo --data-dir ../data/predi
 | `--language` | Single language (predictions mode) | `--language swahili` |
 | `--data-dir` | Path to data directory | `--data-dir ../data/app_evaluation` |
 | `--output-dir` | Results directory | `--output-dir ./results/run_001` |
+| `--nmt-model` | NMT model name (predictions mode) | `--nmt-model multilang_finetuned_final` |
+| `--tts-model` | TTS model name (predictions mode) | `--tts-model MULTILINGUAL_TRAINING_11_5...` |
+| `--execution-id` | Group multiple runs (predictions) | `--execution-id eval_20251119_120000` |
 | `--metrics` | Specific metrics to compute | `--metrics bleu comet` |
 | `--samples` | Specific UUIDs to evaluate | `--samples uuid1 uuid2` |
 | `--limit` | Limit sample count (testing) | `--limit 10` |
@@ -117,6 +157,7 @@ python evaluation.py --mode predictions --language igbo --data-dir ../data/predi
 
 ## Output Structure
 
+**Ground truth mode:**
 ```
 results/run_001/
 ├── summary.json              # Aggregate scores
@@ -130,6 +171,29 @@ results/run_001/
     ├── comet_distribution.png
     └── per_sample_heatmap.png
 ```
+
+**Predictions mode (with execution ID):**
+```
+results/eval_20251119_120000/
+├── manifest.json             # Full metadata + overall summary
+├── overall_summary.json      # Same as manifest (for convenience)
+├── efik/                     # Per-language results
+│   ├── summary.json
+│   ├── detailed_results.csv
+│   ├── per_sample_results.json
+│   ├── summary_report.html
+│   ├── logs/evaluation.log
+│   └── visualizations/
+├── igbo/
+├── swahili/
+└── xhosa/
+```
+
+**Overall summary includes:**
+- Average scores across all languages (mean, min, max)
+- Per-language breakdown with sample counts
+- Total samples evaluated
+- Model metadata (NMT/TTS model names)
 
 ## Architecture
 
@@ -185,8 +249,18 @@ python evaluation.py --type text_to_audio --samples uuid1 uuid2 --data-dir ../da
 
 ### Evaluate Multiple Languages (Predictions)
 ```bash
+# GPU batch (recommended for 4 languages)
+./submit_all_languages.sh
+
+# Or sequentially with shared execution ID
+EXEC_ID="eval_$(date +%Y%m%d_%H%M%S)"
 for lang in efik igbo swahili xhosa; do
-  python evaluation.py --mode predictions --language $lang --data-dir ../data/predictions
+  python evaluation.py --mode predictions --language $lang \
+    --data-dir ../data/languages \
+    --nmt-model multilang_finetuned_final \
+    --tts-model MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632 \
+    --execution-id $EXEC_ID \
+    -m bleu -m chrf -m comet
 done
 ```
 

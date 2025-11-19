@@ -48,40 +48,49 @@ class EvaluationPipeline:
         self,
         output_dir: Path,
         run_id: Optional[str] = None,
+        use_run_id_subdir: bool = True,
     ):
         """
         Initialize evaluation pipeline.
-        
+
         Args:
             output_dir: Directory to save results
             run_id: Run identifier (auto-generated if None)
+            use_run_id_subdir: If True, creates output_dir/run_id/ structure (default).
+                               If False, uses output_dir directly (for custom directory structures).
         """
         self.output_dir = Path(output_dir)
         self.run_id = run_id or f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
+
         # Create output directories
-        self.results_dir = self.output_dir / self.run_id
+        if use_run_id_subdir:
+            # Traditional mode: results/run_id/
+            self.results_dir = self.output_dir / self.run_id
+        else:
+            # Custom mode: use output_dir directly (e.g., results/execution_id/language/)
+            self.results_dir = self.output_dir
+
         self.results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.logs_dir = self.results_dir / 'logs'
         self.logs_dir.mkdir(exist_ok=True)
-        
+
         self.viz_dir = self.results_dir / 'visualizations'
         self.viz_dir.mkdir(exist_ok=True)
-        
+
         # Setup file logging
         file_handler = logging.FileHandler(self.logs_dir / 'evaluation.log')
         file_handler.setFormatter(
             logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         )
         logging.getLogger().addHandler(file_handler)
-        
+
         # Initialize metric evaluators (lazy loading)
         self.text_metrics = None
         self.audio_metrics = None
         self.comet_evaluator = None
         self.blaser_evaluator = None
-    
+
     def _get_metrics_for_type(self, translation_type: str) -> List[str]:
         """Get appropriate metrics for translation type."""
         return METRIC_MAPPING.get(translation_type, ['bleu', 'chrf'])
@@ -419,6 +428,12 @@ class EvaluationPipeline:
               help='Single language to evaluate (only for predictions mode)')
 @click.option('--limit', type=int, default=None,
               help='Limit number of samples to evaluate (for testing)')
+@click.option('--nmt-model', type=str, required=False,
+              help='NMT model name (required for predictions mode, e.g., multilang_finetuned_final)')
+@click.option('--tts-model', type=str, required=False,
+              help='TTS model name (required for predictions mode, e.g., MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632)')
+@click.option('--execution-id', type=str, default=None,
+              help='Execution ID (auto-generated if not provided)')
 def main(
     translation_type: Optional[str],
     data_dir: str,
@@ -430,6 +445,9 @@ def main(
     mode: str,
     language: Optional[str],
     limit: Optional[int],
+    nmt_model: Optional[str],
+    tts_model: Optional[str],
+    execution_id: Optional[str],
 ):
     """
     Evaluate multimodal translation system.
@@ -468,11 +486,55 @@ def main(
         if not data_dir:
             click.echo("Error: --data-dir is required (either as argument or in config file)")
             sys.exit(1)
-        
+
+        # Validate predictions mode requirements
+        if mode == 'predictions':
+            if not nmt_model:
+                click.echo("Error: --nmt-model is required for predictions mode")
+                sys.exit(1)
+            if not tts_model:
+                click.echo("Error: --tts-model is required for predictions mode")
+                sys.exit(1)
+
+        # Auto-generate execution ID if not provided (for predictions mode)
+        if mode == 'predictions' and not execution_id:
+            execution_id = datetime.now().strftime('eval_%Y%m%d_%H%M%S')
+            logger.info(f"Auto-generated execution ID: {execution_id}")
+        elif execution_id:
+            logger.info(f"Using provided execution ID: {execution_id}")
+
+        # Update output directory structure for predictions mode
+        if mode == 'predictions' and execution_id:
+            # Results go to: services/evaluation/results/{execution_id}/
+            # Each language will have its own subdirectory
+            base_results_dir = Path(output_dir) / 'results' / execution_id
+            base_results_dir.mkdir(parents=True, exist_ok=True)
+
+            # Manifest file path
+            manifest_path = base_results_dir / 'manifest.json'
+
+            # Initialize manifest if it doesn't exist
+            if not manifest_path.exists():
+                manifest = {
+                    'execution_id': execution_id,
+                    'timestamp': datetime.now().isoformat(),
+                    'nmt_model': nmt_model,
+                    'tts_model': tts_model,
+                    'metrics': list(metrics) if metrics else [],
+                    'languages': {},
+                    'total_samples': 0,
+                    'total_valid_samples': 0,
+                }
+                with open(manifest_path, 'w') as f:
+                    json.dump(manifest, f, indent=2)
+                logger.info(f"Initialized manifest: {manifest_path}")
+
         # Initialize pipeline
-        pipeline = EvaluationPipeline(output_dir=output_dir, run_id=run_id)
-        
-        logger.info(f"Starting evaluation with run_id: {pipeline.run_id}")
+        # For predictions mode, we'll create a new pipeline per language
+        # For ground truth mode, create it once
+        if mode != 'predictions':
+            pipeline = EvaluationPipeline(output_dir=output_dir, run_id=run_id)
+            logger.info(f"Starting evaluation with run_id: {pipeline.run_id}")
         
         # Determine translation types to evaluate
         if translation_type == 'all':
@@ -496,10 +558,26 @@ def main(
                 logger.info(f"Evaluating predictions for {lang.upper()}")
                 logger.info(f"{'='*60}")
 
-                # Load predictions
+                # Create a new pipeline for this language with proper directory structure
+                if execution_id:
+                    lang_results_dir = base_results_dir / lang
+                    # Create pipeline with language-specific directory, no nested run_id
+                    pipeline = EvaluationPipeline(
+                        output_dir=lang_results_dir,
+                        run_id=run_id,
+                        use_run_id_subdir=False  # Don't create nested run_id directory
+                    )
+                    logger.info(f"Results will be saved to: {lang_results_dir}")
+                else:
+                    # Fallback for predictions without execution_id
+                    pipeline = EvaluationPipeline(output_dir=output_dir, run_id=run_id)
+
+                # Load predictions with model names
                 loaded_samples, errors = load_predictions(
                     data_dir=data_dir,
                     language=lang,
+                    nmt_model=nmt_model,
+                    tts_model=tts_model,
                     translation_type='audio_to_audio',  # Default for predictions
                 )
 
@@ -527,10 +605,28 @@ def main(
 
                     all_results.append(results)
 
+                    # Update manifest with this language's results
+                    if execution_id:
+                        with open(manifest_path, 'r') as f:
+                            manifest = json.load(f)
+
+                        manifest['languages'][lang] = {
+                            'total_samples': results['total_samples'],
+                            'valid_samples': results['valid_samples'],
+                            'aggregate_scores': results.get('aggregate_scores', {}),
+                        }
+                        manifest['total_samples'] += results['total_samples']
+                        manifest['total_valid_samples'] += results['valid_samples']
+
+                        with open(manifest_path, 'w') as f:
+                            json.dump(manifest, f, indent=2)
+                        logger.info(f"Updated manifest: {manifest_path}")
+
                     # Print summary
                     click.echo(f"\n{'='*60}")
                     click.echo(f"EVALUATION COMPLETE - {lang}")
                     click.echo(f"{'='*60}")
+                    click.echo(f"Execution ID: {execution_id}")
                     click.echo(f"Run ID: {pipeline.run_id}")
                     click.echo(f"Samples evaluated: {results['valid_samples']}/{results['total_samples']}")
                     click.echo(f"\nAggregate Scores:")
@@ -540,6 +636,71 @@ def main(
                         else:
                             click.echo(f"  {metric.upper()}: N/A (skipped)")
                     click.echo(f"\nResults saved to: {pipeline.results_dir}")
+
+            # Generate overall summary for all languages
+            if execution_id and all_results:
+                logger.info("Generating overall summary across all languages...")
+
+                # Read the updated manifest
+                with open(manifest_path, 'r') as f:
+                    manifest = json.load(f)
+
+                # Compute average scores across languages
+                all_metrics = set()
+                for lang_results in all_results:
+                    all_metrics.update(lang_results.get('aggregate_scores', {}).keys())
+
+                overall_scores = {}
+                for metric in all_metrics:
+                    scores = [
+                        r['aggregate_scores'].get(metric)
+                        for r in all_results
+                        if r.get('aggregate_scores', {}).get(metric) is not None
+                    ]
+                    if scores:
+                        overall_scores[metric] = {
+                            'mean': sum(scores) / len(scores),
+                            'min': min(scores),
+                            'max': max(scores),
+                        }
+
+                # Add overall summary to manifest
+                manifest['overall_summary'] = {
+                    'languages_evaluated': len(all_results),
+                    'average_scores': overall_scores,
+                }
+
+                # Save summary file
+                summary_path = base_results_dir / 'overall_summary.json'
+                with open(summary_path, 'w') as f:
+                    json.dump(manifest, f, indent=2)
+                logger.info(f"Saved overall summary: {summary_path}")
+
+                # Update manifest with overall summary
+                with open(manifest_path, 'w') as f:
+                    json.dump(manifest, f, indent=2)
+
+                # Print overall summary
+                click.echo(f"\n{'='*70}")
+                click.echo("OVERALL SUMMARY - ALL LANGUAGES")
+                click.echo(f"{'='*70}")
+                click.echo(f"Execution ID: {execution_id}")
+                click.echo(f"Languages evaluated: {len(all_results)}")
+                click.echo(f"Total samples: {manifest['total_samples']}")
+                click.echo(f"Total valid samples: {manifest['total_valid_samples']}")
+                click.echo(f"\nAverage Scores Across Languages:")
+                for metric, stats in overall_scores.items():
+                    click.echo(f"  {metric.upper()}:")
+                    click.echo(f"    Mean:  {stats['mean']:.3f}")
+                    click.echo(f"    Range: {stats['min']:.3f} - {stats['max']:.3f}")
+                click.echo(f"\nPer-Language Breakdown:")
+                for lang, lang_data in manifest['languages'].items():
+                    click.echo(f"  {lang.upper()}:")
+                    click.echo(f"    Samples: {lang_data['valid_samples']}/{lang_data['total_samples']}")
+                    for metric, score in lang_data['aggregate_scores'].items():
+                        click.echo(f"    {metric.upper()}: {score:.3f}")
+                click.echo(f"\nResults directory: {base_results_dir}")
+                click.echo(f"Overall summary: {summary_path}")
         else:
             # Ground truth mode (original behavior)
             for trans_type in types_to_eval:

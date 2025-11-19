@@ -312,7 +312,8 @@ def get_predicted_audio_path(
     language: str,
     segment_id: int,
     user_id: int,
-    iso_code: str
+    iso_code: str,
+    tts_model: str
 ) -> Optional[Path]:
     """
     Locate predicted audio file based on segment_id and user_id.
@@ -323,11 +324,12 @@ def get_predicted_audio_path(
         segment_id: Segment identifier
         user_id: User/speaker identifier
         iso_code: ISO language code (efi, ibo, swh, xho)
+        tts_model: TTS model name used for generation
 
     Returns:
         Path to predicted audio file or None if not found
     """
-    predicted_audio_dir = Path(data_dir) / language / "predicted_tgt_audio"
+    predicted_audio_dir = Path(data_dir) / language / f"predicted_tgt_audio_{tts_model}"
     predicted_filename = f"Segment={segment_id}_User={user_id}_Language={iso_code}_pred.wav"
     predicted_path = predicted_audio_dir / predicted_filename
 
@@ -340,10 +342,12 @@ def get_predicted_audio_path(
 def load_predictions(
     data_dir: str,
     language: str,
+    nmt_model: str,
+    tts_model: str,
     translation_type: str = "audio_to_audio"
 ) -> Tuple[List[TranslationSample], List[str]]:
     """
-    Load prediction data from nmt_predictions.csv and predicted_tgt_audio/ folder.
+    Load prediction data from model-specific nmt_predictions CSV and predicted_tgt_audio folder.
 
     Returns samples with both ground truth and predicted data populated.
     Maps predictions to ground truth via segment_id + user_id.
@@ -351,6 +355,8 @@ def load_predictions(
     Args:
         data_dir: Base data directory
         language: Language name (efik, igbo, swahili, xhosa)
+        nmt_model: NMT model name used to generate predictions
+        tts_model: TTS model name used to generate audio
         translation_type: Translation type (default: audio_to_audio)
 
     Returns:
@@ -359,11 +365,11 @@ def load_predictions(
     data_dir_path = Path(data_dir)
     lang_dir = data_dir_path / language
 
-    # Load NMT predictions CSV
-    predictions_csv = lang_dir / "nmt_predictions.csv"
+    # Load model-specific NMT predictions CSV
+    predictions_csv = lang_dir / f"nmt_predictions_{nmt_model}.csv"
     if not predictions_csv.exists():
         logger.error(f"NMT predictions file not found: {predictions_csv}")
-        return [], [f"Missing nmt_predictions.csv for {language}"]
+        return [], [f"Missing nmt_predictions_{nmt_model}.csv for {language}"]
 
     logger.info(f"Loading predictions from {predictions_csv}")
     df = pd.read_csv(predictions_csv, sep="|")
@@ -392,7 +398,7 @@ def load_predictions(
 
             # Get predicted audio path
             predicted_audio_path = get_predicted_audio_path(
-                data_dir, language, segment_id, user_id, iso_code
+                data_dir, language, segment_id, user_id, iso_code, tts_model
             )
 
             # Get ground truth audio path

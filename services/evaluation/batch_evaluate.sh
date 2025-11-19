@@ -52,25 +52,48 @@ echo "--- GPU Diagnostics ---"
 nvidia-smi
 echo "-----------------------"
 
-# Set language to evaluate
-LANGUAGE="efik"
+# Model names (these should match the folder names containing the model checkpoints)
+NMT_MODEL="multilang_finetuned_final"
+TTS_MODEL="MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632"
 
-# Number of samples to evaluate (for testing)
-LIMIT=20
+# Set language to evaluate (pass as argument: sbatch batch_evaluate.sh efik [execution_id])
+LANGUAGE=${1:-efik}
+EXECUTION_ID=${2:-}  # Optional: if provided, allows linking multiple language runs
+
+# Number of samples to evaluate
+LIMIT=10
 
 echo "Starting evaluation for language: $LANGUAGE"
 echo "Sample limit: $LIMIT"
 echo "Data directory: /home/vacl2/multimodal_translation/services/data/languages"
+echo "NMT model: $NMT_MODEL"
+echo "TTS model: $TTS_MODEL"
+if [ -n "$EXECUTION_ID" ]; then
+    echo "Execution ID: $EXECUTION_ID (shared across languages)"
+else
+    echo "Execution ID: auto-generated (unique for this language)"
+fi
 echo ""
 
+# Build command arguments
+CMD_ARGS=(
+    --mode predictions
+    --language "$LANGUAGE"
+    --data-dir /home/vacl2/multimodal_translation/services/data/languages
+    -m bleu -m chrf -m comet -m mcd -m blaser
+    --limit "$LIMIT"
+    --nmt-model "$NMT_MODEL"
+    --tts-model "$TTS_MODEL"
+    --output-dir .
+)
+
+# Add execution ID if provided
+if [ -n "$EXECUTION_ID" ]; then
+    CMD_ARGS+=(--execution-id "$EXECUTION_ID")
+fi
+
 # Run evaluation
-uv run python evaluation.py \
-    --mode predictions \
-    --language $LANGUAGE \
-    --data-dir /home/vacl2/multimodal_translation/services/data/languages \
-    -m bleu -m chrf -m comet -m mcd -m blaser \
-    --limit $LIMIT \
-    --output-dir results_predictions_${LANGUAGE}_gpu 2>&1
+uv run python evaluation.py "${CMD_ARGS[@]}" 2>&1
 
 echo ""
 echo "========================================================="
