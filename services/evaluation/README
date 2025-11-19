@@ -1,0 +1,265 @@
+# Multimodal Translation Evaluation - Quick Guide
+
+## Overview
+
+Evaluate multimodal translation quality across text, audio, and speech-to-speech translation using automated metrics.
+
+## Quick Start
+
+### 1. Setup (one-time)
+
+```bash
+cd ~/multimodal_translation/services/evaluation
+source .venv/bin/activate  # or: uv venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Run Evaluation
+
+**Using config file (recommended):**
+```bash
+python evaluation.py --config examples/text_to_text_config.yaml
+```
+
+**Using command line:**
+```bash
+python evaluation.py \
+  --type text_to_text \
+  --data-dir ../data/app_evaluation/text_to_text \
+  --output-dir ./results/my_run
+```
+
+**Evaluate predictions (model outputs):**
+```bash
+python evaluation.py \
+  --mode predictions \
+  --language swahili \
+  --data-dir ../data/predictions \
+  --output-dir ./results/pred_run
+```
+
+## Supported Metrics
+
+| Translation Type | Metrics |
+|-----------------|---------|
+| `text_to_text` | BLEU, chrF++, COMET |
+| `audio_to_text` | BLEU, chrF++, COMET |
+| `text_to_audio` | BLEU, chrF++, COMET, MCD |
+| `audio_to_audio` | BLEU, chrF++, COMET, MCD, BLASER |
+
+**Metric Details:**
+- **BLEU**: N-gram precision (0-100, higher better)
+- **chrF++**: Character/word F-score (0-100, higher better)
+- **COMET**: Neural metric (0-1, higher better) - uses SSA-COMET-QE for African languages
+- **MCD**: Mel-Cepstral Distance (3-15, lower better) - audio quality
+- **BLASER 2.0**: Speech-to-speech quality (0-5, higher better)
+
+## Data Format
+
+Organize data in UUID directories:
+
+```
+data/app_evaluation/
+├── text_to_text/{uuid}/
+│   ├── metadata.json
+│   ├── source.txt
+│   └── target.txt
+├── audio_to_audio/{uuid}/
+│   ├── metadata.json
+│   ├── source_audio.wav
+│   ├── transcribed.txt
+│   ├── target.txt
+│   └── target_audio.wav
+└── ...
+```
+
+**metadata.json:**
+```json
+{
+  "source_language": "eng",
+  "target_language": "spa",
+  "translation_type": "text_to_text",
+  "timestamp": "2025-01-15T10:30:00Z"
+}
+```
+
+## Evaluation Modes
+
+### Ground Truth Mode (default)
+Evaluates reference translations to measure dataset quality.
+
+```bash
+python evaluation.py --mode ground_truth --type text_to_text --data-dir ../data/app_evaluation/text_to_text
+```
+
+### Predictions Mode
+Evaluates model outputs against ground truth references.
+
+**Required file in each UUID directory:** `predicted_tgt.txt` (or `predicted_tgt_audio.wav` for audio)
+
+```bash
+python evaluation.py --mode predictions --language igbo --data-dir ../data/predictions
+```
+
+## CLI Options
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--type` | Translation type or `all` | `--type audio_to_audio` |
+| `--mode` | `ground_truth` or `predictions` | `--mode predictions` |
+| `--language` | Single language (predictions mode) | `--language swahili` |
+| `--data-dir` | Path to data directory | `--data-dir ../data/app_evaluation` |
+| `--output-dir` | Results directory | `--output-dir ./results/run_001` |
+| `--metrics` | Specific metrics to compute | `--metrics bleu comet` |
+| `--samples` | Specific UUIDs to evaluate | `--samples uuid1 uuid2` |
+| `--limit` | Limit sample count (testing) | `--limit 10` |
+| `--config` | YAML config file | `--config config.yaml` |
+
+## Output Structure
+
+```
+results/run_001/
+├── summary.json              # Aggregate scores
+├── detailed_results.csv      # Per-sample scores
+├── per_sample_results.json   # Full details
+├── summary_report.html       # Interactive report
+├── logs/evaluation.log       # Detailed logs
+└── visualizations/
+    ├── metrics_comparison.png
+    ├── bleu_distribution.png
+    ├── comet_distribution.png
+    └── per_sample_heatmap.png
+```
+
+## Architecture
+
+### Environments
+
+**Main environment** (`evaluation/.venv/`):
+- PyTorch 2.9.0+cu128
+- COMET, text metrics, audio metrics
+
+**BLASER environment** (`evaluation/blaser/.venv/`):
+- PyTorch 2.8.0+cu128
+- fairseq2 0.6
+- Called via subprocess from main evaluator
+
+**Why separate?** fairseq2 requires exact PyTorch 2.8.0 match; prevents version conflicts.
+
+### Key Files
+
+- [evaluation.py](evaluation.py) - Main CLI (612 lines)
+- [scripts/data_loader.py](scripts/data_loader.py) - Load samples
+- [scripts/text_metrics.py](scripts/text_metrics.py) - BLEU, chrF++
+- [scripts/comet_evaluator.py](scripts/comet_evaluator.py) - COMET wrapper
+- [scripts/blaser_evaluator.py](scripts/blaser_evaluator.py) - BLASER subprocess wrapper
+- [scripts/audio_metrics.py](scripts/audio_metrics.py) - MCD computation
+- [scripts/visualizations.py](scripts/visualizations.py) - Charts and reports
+
+## Models
+
+### COMET: McGill-NLP/ssa-comet-qe
+- **Purpose**: Quality estimation for African languages
+- **Languages**: 76 African + major world languages
+- **Location**: `comet/models/ssa-comet-qe/`
+- **Mode**: Reference-free (QE)
+
+### BLASER 2.0
+- **Purpose**: Speech-to-speech translation quality
+- **Models**: `blaser_2_0_qe` (QE), `blaser_2_0_ref` (reference-based)
+- **Languages**: 37 languages via SONAR speech encoders
+- **Location**: `blaser/models/` (auto-cached)
+- **African languages**: Swahili, Afrikaans, Amharic, Yoruba, Igbo, Zulu
+
+## Common Use Cases
+
+### Evaluate All Types
+```bash
+python evaluation.py --type all --data-dir ../data/app_evaluation
+```
+
+### Evaluate Specific Samples
+```bash
+python evaluation.py --type text_to_audio --samples uuid1 uuid2 --data-dir ../data
+```
+
+### Evaluate Multiple Languages (Predictions)
+```bash
+for lang in efik igbo swahili xhosa; do
+  python evaluation.py --mode predictions --language $lang --data-dir ../data/predictions
+done
+```
+
+### Custom Metrics Only
+```bash
+python evaluation.py --type text_to_text --metrics bleu chrf --data-dir ../data
+```
+
+## Troubleshooting
+
+### COMET model not loading
+```bash
+# Pre-download model
+python -c "from comet import download_model; download_model('McGill-NLP/ssa-comet-qe')"
+```
+
+### BLASER import error
+```bash
+# Ensure BLASER environment is set up
+cd blaser
+uv venv --python /usr/bin/python3.11
+uv pip install torch==2.8.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+uv pip install fairseq2 --extra-index-url https://fair.pkg.atmeta.com/fairseq2/whl/pt2.8.0/cu128
+uv sync
+python scripts/verify_setup.py
+```
+
+### Audio format issues
+```bash
+# Convert to 16kHz mono WAV
+ffmpeg -i input.mp3 -ar 16000 -ac 1 output.wav
+```
+
+### GPU memory issues
+```bash
+# Force CPU usage
+export CUDA_VISIBLE_DEVICES=""
+python evaluation.py ...
+```
+
+## Example Config File
+
+```yaml
+# examples/my_eval.yaml
+run_id: my_evaluation
+translation_type: audio_to_audio
+data_dir: ../data/app_evaluation/audio_to_audio
+output_dir: ./results/my_evaluation
+
+# Optional: specific metrics
+metrics:
+  - bleu
+  - comet
+  - blaser
+
+# Optional: specific samples
+samples:
+  - uuid1
+  - uuid2
+```
+
+Run with: `python evaluation.py --config examples/my_eval.yaml`
+
+## Performance Tips
+
+1. **Use GPU** - Significantly faster for COMET/BLASER
+2. **Selective metrics** - Use `--metrics` to skip unnecessary metrics
+3. **Test with --limit** - Try `--limit 10` before full evaluation
+4. **Batch processing** - System automatically batches for efficiency
+
+## Support & Documentation
+
+- Full docs: [README.md](README.md)
+- Setup details: [SETUP_SUMMARY.md](SETUP_SUMMARY.md)
+- Examples: [examples/](examples/)
+- Logs: Check `results/{run_id}/logs/evaluation.log`
