@@ -171,6 +171,7 @@ class TTSBatchSynthesizer:
         language: str,
         data_dir: Path,
         input_source: str = "nmt_predictions",
+        model_name: str = "xtts_v2",
     ) -> Dict:
         """
         Process all test samples for a single language.
@@ -179,6 +180,7 @@ class TTSBatchSynthesizer:
             language: Language name (efik, igbo, swahili, xhosa)
             data_dir: Base data directory containing language folders
             input_source: "ground_truth" or "nmt_predictions"
+            model_name: Model name to include in output folder name
 
         Returns:
             Dictionary with processing statistics
@@ -201,7 +203,7 @@ class TTSBatchSynthesizer:
             input_csv = lang_dir / "mapped_metadata_test.csv"
             text_column = "tgt_text"
 
-        output_dir = lang_dir / "predicted_tgt_audio"
+        output_dir = lang_dir / f"predicted_tgt_audio_{model_name}"
         output_dir.mkdir(exist_ok=True)
 
         logger.info(f"\n{'='*60}")
@@ -328,6 +330,12 @@ def main():
         help='Path to fine-tuned XTTS model'
     )
     parser.add_argument(
+        '--model-name',
+        type=str,
+        default=None,
+        help='Model name for output folder (auto-extracted from model-path if not provided)'
+    )
+    parser.add_argument(
         '--reference-audio',
         type=str,
         default='/home/vacl2/multimodal_translation/services/tts/reference_audio/female_en.wav',
@@ -356,6 +364,13 @@ def main():
 
     args = parser.parse_args()
 
+    # Auto-extract model name from path if not provided
+    if not args.model_name:
+        args.model_name = Path(args.model_path).name
+
+    logger.info(f"Using model: {args.model_name}")
+    logger.info(f"Model path: {args.model_path}")
+
     try:
         # Initialize synthesizer
         synthesizer = TTSBatchSynthesizer(
@@ -374,6 +389,7 @@ def main():
                 language,
                 data_dir,
                 input_source=args.input_source,
+                model_name=args.model_name,
             )
             results.append(result)
 

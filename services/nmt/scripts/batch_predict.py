@@ -135,6 +135,7 @@ class NMTBatchPredictor:
         self,
         language: str,
         data_dir: Path,
+        model_name: str,
     ) -> Dict:
         """
         Process all test samples for a single language.
@@ -142,6 +143,7 @@ class NMTBatchPredictor:
         Args:
             language: Language name (efik, igbo, swahili, xhosa)
             data_dir: Base data directory containing language folders
+            model_name: Model name to include in output filename
 
         Returns:
             Dictionary with processing statistics
@@ -157,7 +159,7 @@ class NMTBatchPredictor:
         # Paths
         lang_dir = data_dir / language
         input_csv = lang_dir / "mapped_metadata_test.csv"
-        output_csv = lang_dir / "nmt_predictions.csv"
+        output_csv = lang_dir / f"nmt_predictions_{model_name}.csv"
 
         logger.info(f"\n{'='*60}")
         logger.info(f"Processing {language.upper()} ({iso_code} -> {target_lang})")
@@ -280,6 +282,12 @@ def main():
         help='Path to fine-tuned NLLB model'
     )
     parser.add_argument(
+        '--model-name',
+        type=str,
+        default=None,
+        help='Model name for output files (auto-extracted from model-path if not provided)'
+    )
+    parser.add_argument(
         '--batch-size',
         type=int,
         default=64,
@@ -301,6 +309,13 @@ def main():
 
     args = parser.parse_args()
 
+    # Auto-extract model name from path if not provided
+    if not args.model_name:
+        args.model_name = Path(args.model_path).name
+
+    logger.info(f"Using model: {args.model_name}")
+    logger.info(f"Model path: {args.model_path}")
+
     try:
         # Initialize predictor
         predictor = NMTBatchPredictor(
@@ -314,7 +329,7 @@ def main():
         results = []
 
         for language in args.languages:
-            result = predictor.process_language(language, data_dir)
+            result = predictor.process_language(language, data_dir, args.model_name)
             results.append(result)
 
         # Print summary
