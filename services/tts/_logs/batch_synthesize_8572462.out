@@ -1,0 +1,18 @@
+==========================================
+TTS Batch Synthesis Job
+==========================================
+Job ID: 8572462
+Node: cs-1-2
+GPU: 0
+Start time: Tue Nov 18 06:24:11 PM MST 2025
+==========================================
+Current directory: /home/vacl2/multimodal_translation/services/tts
+TTS directory exists: TTS
+yes
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/scripts/batch_synthesize.py", line 28, in <module>
+    from TTS.tts.configs.xtts_config import XttsConfig
+ModuleNotFoundError: No module named 'TTS'
+==========================================
+Job completed at: Tue Nov 18 06:24:23 PM MST 2025
+==========================================
