@@ -44,6 +44,7 @@ GATEWAY_PORT=${GATEWAY_PORT:-8075}
 ASR_PORT=${ASR_PORT:-8076}
 NMT_PORT=${NMT_PORT:-8077}
 TTS_PORT=${TTS_PORT:-8078}
+EVALUATION_API_PORT=${EVALUATION_API_PORT:-8079}
 
 # Create _logs directory if it doesn't exist
 mkdir -p "${LOG_DIR}"
@@ -163,6 +164,12 @@ main() {
     fi
     echo ""
     
+    # Start Evaluation API
+    if ! start_service "evaluation_api" "evaluation" "service.py" "${EVALUATION_API_PORT}"; then
+        failed=1
+    fi
+    echo ""
+    
     # Summary
     echo -e "${BLUE}================================================${NC}"
     if [ ${failed} -eq 0 ]; then
@@ -174,10 +181,11 @@ main() {
     echo ""
     
     print_info "Service endpoints:"
-    echo "  - API Gateway:  http://localhost:${GATEWAY_PORT}"
-    echo "  - ASR Service:  http://localhost:${ASR_PORT}"
-    echo "  - NMT Service:  http://localhost:${NMT_PORT}"
-    echo "  - TTS Service:  http://localhost:${TTS_PORT}"
+    echo "  - API Gateway:      http://localhost:${GATEWAY_PORT}"
+    echo "  - ASR Service:      http://localhost:${ASR_PORT}"
+    echo "  - NMT Service:      http://localhost:${NMT_PORT}"
+    echo "  - TTS Service:      http://localhost:${TTS_PORT}"
+    echo "  - Evaluation API:   http://localhost:${EVALUATION_API_PORT}"
     echo ""
     
     print_info "Logs are available in: ${LOG_DIR}/"

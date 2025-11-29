@@ -63,7 +63,7 @@ if [ ! -f "${PIDFILE}" ]; then
     print_info "Attempting to find and stop services by port..."
     
     # Try to find processes by port
-    for port in 8075 8076 8077 8078; do
+    for port in 8075 8076 8077 8078 8079; do
         pid=$(lsof -ti:${port} 2>/dev/null || echo "")
         if [ -n "${pid}" ]; then
             print_info "Found process on port ${port} (PID: ${pid})"
@@ -82,6 +82,7 @@ archive_log "api_gateway"
 archive_log "asr"
 archive_log "nmt"
 archive_log "tts"
+archive_log "evaluation_api"
 
 echo ""
 print_info "Stopping services..."

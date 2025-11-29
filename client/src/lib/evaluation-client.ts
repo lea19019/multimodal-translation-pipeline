@@ -6,15 +6,27 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
 // Types
-export interface EvaluationSummary {
-  run_id: string;
-  timestamp: string;
-  translation_type: string | null;
-  language_pair: string;
+export interface LanguageInfo {
   total_samples: number;
   valid_samples: number;
-  metrics_computed: string[];
-  aggregate_scores: Record<string, number>;
+}
+
+export interface EvaluationSummary {
+  execution_id: string;
+  timestamp: string;
+  nmt_model: string;
+  tts_model: string;
+  metrics: string[];
+  languages: Record<string, LanguageInfo>;
+  total_samples: number;
+  total_valid_samples: number;
+  overall_summary?: Record<string, any>;
+}
+
+export interface LanguageResults {
+  language: string;
+  summary: Record<string, any>;
+  visualizations: string[];
 }
 
 export interface SampleResult {
@@ -32,18 +44,15 @@ export interface ScoreStatistics {
 }
 
 export interface EvaluationDetail {
-  run_id: string;
+  execution_id: string;
   timestamp: string;
-  translation_type: string | null;
-  language_pair: string;
+  nmt_model: string;
+  tts_model: string;
+  metrics: string[];
+  languages: Record<string, LanguageInfo>;
   total_samples: number;
-  valid_samples: number;
-  skipped_samples: number;
-  metrics_computed: string[];
-  aggregate_scores: Record<string, number>;
-  score_statistics: Record<string, ScoreStatistics>;
-  per_sample_results: SampleResult[];
-  visualizations: string[];
+  total_valid_samples: number;
+  overall_summary?: Record<string, any>;
 }
 
 interface APIError {
@@ -79,11 +88,11 @@ export class EvaluationClient {
   }
 
   /**
-   * Get detailed results for a specific evaluation run
+   * Get detailed results for a specific evaluation execution
    */
-  async getEvaluationById(runId: string): Promise<EvaluationDetail> {
+  async getEvaluationById(executionId: string): Promise<EvaluationDetail> {
     try {
-      const response = await this.client.get<EvaluationDetail>(`/evaluations/${runId}`);
+      const response = await this.client.get<EvaluationDetail>(`/evaluations/${executionId}`);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -91,17 +100,53 @@ export class EvaluationClient {
   }
 
   /**
-   * Get URL for a visualization file
+   * Get results for a specific language within an execution
+   */
+  async getLanguageResults(executionId: string, language: string): Promise<LanguageResults> {
+    try {
+      const response = await this.client.get<LanguageResults>(
+        `/evaluations/${executionId}/languages/${language}`
+      );
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  /**
+   * Get URL for a language-specific visualization file
+   */
+  getLanguageVisualizationUrl(executionId: string, language: string, filename: string): string {
+    return `${this.client.defaults.baseURL}/evaluations/${executionId}/languages/${language}/files/${filename}`;
+  }
+
+  /**
+   * Get URL for an execution-level file (manifest, overall_summary)
+   */
+  getExecutionFileUrl(executionId: string, filename: string): string {
+    return `${this.client.defaults.baseURL}/evaluations/${executionId}/files/${filename}`;
+  }
+
+  /**
+   * Get URL for a visualization file (deprecated, use getLanguageVisualizationUrl)
    */
   getVisualizationUrl(runId: string, filename: string): string {
+    // For backward compatibility - assumes first language or general file
     return `${this.client.defaults.baseURL}/evaluations/${runId}/files/${filename}`;
   }
 
   /**
-   * Get URL for the HTML report
+   * Get URL for the HTML report (deprecated, use getLanguageVisualizationUrl)
    */
   getReportUrl(runId: string): string {
     return `${this.client.defaults.baseURL}/evaluations/${runId}/files/summary_report.html`;
+  }
+
+  /**
+   * Get URL for a language-specific HTML report
+   */
+  getLanguageReportUrl(executionId: string, language: string): string {
+    return this.getLanguageVisualizationUrl(executionId, language, 'summary_report.html');
   }
 
   /**

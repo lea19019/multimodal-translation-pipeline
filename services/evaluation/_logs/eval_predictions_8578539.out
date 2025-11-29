@@ -1,0 +1,188 @@
+=========================================================
+SLURM JOB ID: 8578539
+JOB NAME: eval_predictions
+Running on nodes: cs-1-4
+Number of GPUs allocated: 1
+=========================================================
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.9.1+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov 19 11:33:21 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:44:00.0 Off |                    0 |
+| N/A   27C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting evaluation for language: xhosa
+Sample limit: 10
+Data directory: /home/vacl2/multimodal_translation/services/data/languages
+NMT model: multilang_finetuned_final
+TTS model: MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632
+Execution ID: eval_20251119_113303 (shared across languages)
+
+2025-11-19 11:33:31,339 - __main__ - INFO - Using provided execution ID: eval_20251119_113303
+2025-11-19 11:33:31,352 - __main__ - INFO - Initialized manifest: results/eval_20251119_113303/manifest.json
+2025-11-19 11:33:31,352 - __main__ - INFO - 
+============================================================
+2025-11-19 11:33:31,352 - __main__ - INFO - Evaluating predictions for XHOSA
+2025-11-19 11:33:31,352 - __main__ - INFO - ============================================================
+2025-11-19 11:33:31,368 - __main__ - INFO - Results will be saved to: results/eval_20251119_113303/xhosa
+2025-11-19 11:33:31,369 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/xhosa/nmt_predictions_multilang_finetuned_final.csv
+2025-11-19 11:33:31,411 - scripts.data_loader - INFO - Loaded 1894 prediction samples for xhosa
+2025-11-19 11:33:35,992 - scripts.data_loader - INFO - Successfully created 1894 samples for xhosa
+2025-11-19 11:33:35,993 - __main__ - INFO - Limiting evaluation to 10 samples
+2025-11-19 11:33:35,996 - __main__ - INFO - Evaluating 10 samples of type 'audio_to_audio'
+2025-11-19 11:33:35,996 - __main__ - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-11-19 11:33:36,005 - __main__ - INFO - Initialized text metrics evaluator
+2025-11-19 11:33:36,202 - __main__ - INFO - Initialized COMET evaluator
+2025-11-19 11:33:36,202 - __main__ - INFO - Initialized audio metrics evaluator
+2025-11-19 11:33:36,204 - __main__ - INFO - Initialized BLASER evaluator
+2025-11-19 11:33:36,204 - __main__ - INFO - Valid samples: 10, Skipped: 0
+2025-11-19 11:33:36,204 - __main__ - INFO - Computing BLEU scores...
+2025-11-19 11:33:36,205 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,206 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:36,207 - __main__ - INFO - Computing chrF scores...
+2025-11-19 11:33:36,213 - __main__ - INFO - Computing COMET scores...
+/home/vacl2/multimodal_translation/services/evaluation/.venv/lib64/python3.11/site-packages/torchmetrics/utilities/imports.py:23: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import DistributionNotFound, get_distribution
+2025-11-19 11:33:53,527 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-11-19 11:34:00,573 - comet.models.base - INFO - Encoder model frozen.
+2025-11-19 11:34:01,491 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-11-19 11:34:01,491 - scripts.comet_evaluator - INFO - Computing COMET scores for 10 samples...
+2025-11-19 11:34:01,662 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-11-19 11:34:01,747 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-11-19 11:34:01,747 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-11-19 11:34:01,753 - pytorch_lightning.utilities.rank_zero - INFO - You are using a CUDA device ('NVIDIA A100-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2025-11-19 11:34:01,754 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-11-19 11:34:01,764 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/2 [00:00<?, ?it/s]Predicting DataLoader 0:  50%|█████     | 1/2 [00:00<00:00,  3.24it/s]Predicting DataLoader 0: 100%|██████████| 2/2 [00:00<00:00,  5.40it/s]Predicting DataLoader 0: 100%|██████████| 2/2 [00:00<00:00,  5.40it/s]
+2025-11-19 11:34:03,526 - __main__ - INFO - Computing MCD scores...
+2025-11-19 11:34:03,527 - __main__ - INFO - Comparing predicted audio against ground truth audio
+2025-11-19 11:34:19,112 - __main__ - INFO - Computing BLASER scores...
+2025-11-19 11:34:19,114 - __main__ - INFO - Using predicted audio for BLASER evaluation
+2025-11-19 11:34:19,115 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 10 samples...
+2025-11-19 11:35:12,513 - scripts.blaser_evaluator - INFO - BLASER evaluation complete. Corpus score: 2.1915
+2025-11-19 11:35:12,522 - __main__ - INFO - Saved summary to results/eval_20251119_113303/xhosa/summary.json
+2025-11-19 11:35:12,542 - __main__ - INFO - Saved detailed results to results/eval_20251119_113303/xhosa/detailed_results.csv
+2025-11-19 11:35:12,550 - __main__ - INFO - Saved full results to results/eval_20251119_113303/xhosa/per_sample_results.json
+2025-11-19 11:35:12,551 - __main__ - INFO - Generating visualizations...
+2025-11-19 11:35:12,551 - __main__ - INFO - Using primary metric for quality categorization: blaser
+2025-11-19 11:35:13,823 - scripts.visualizations - INFO - Saved quality dashboard to results/eval_20251119_113303/xhosa/visualizations/quality_dashboard.png
+2025-11-19 11:35:14,268 - scripts.visualizations - INFO - Saved normalized metrics comparison to results/eval_20251119_113303/xhosa/visualizations/normalized_metrics.png
+2025-11-19 11:35:14,581 - scripts.visualizations - INFO - Saved metrics comparison chart to results/eval_20251119_113303/xhosa/visualizations/metrics_comparison.png
+2025-11-19 11:35:14,800 - scripts.visualizations - INFO - Saved metrics table to results/eval_20251119_113303/xhosa/visualizations/metrics_table.png
+2025-11-19 11:35:15,282 - scripts.visualizations - INFO - Saved BLEU distribution to results/eval_20251119_113303/xhosa/visualizations/bleu_distribution.png
+2025-11-19 11:35:15,757 - scripts.visualizations - INFO - Saved CHRF distribution to results/eval_20251119_113303/xhosa/visualizations/chrf_distribution.png
+2025-11-19 11:35:16,228 - scripts.visualizations - INFO - Saved COMET distribution to results/eval_20251119_113303/xhosa/visualizations/comet_distribution.png
+2025-11-19 11:35:16,702 - scripts.visualizations - INFO - Saved MCD distribution to results/eval_20251119_113303/xhosa/visualizations/mcd_distribution.png
+2025-11-19 11:35:17,187 - scripts.visualizations - INFO - Saved BLASER distribution to results/eval_20251119_113303/xhosa/visualizations/blaser_distribution.png
+2025-11-19 11:35:17,814 - scripts.visualizations - INFO - Saved per-sample heatmap to results/eval_20251119_113303/xhosa/visualizations/per_sample_heatmap.png
+2025-11-19 11:35:17,814 - scripts.visualizations - INFO - All visualizations saved to results/eval_20251119_113303/xhosa/visualizations
+2025-11-19 11:35:17,836 - scripts.visualizations - INFO - Saved HTML report to results/eval_20251119_113303/xhosa/summary_report.html
+2025-11-19 11:35:17,836 - __main__ - INFO - Generated HTML report at results/eval_20251119_113303/xhosa/summary_report.html
+2025-11-19 11:35:17,847 - __main__ - INFO - Updated manifest: results/eval_20251119_113303/manifest.json
+
+============================================================
+EVALUATION COMPLETE - xhosa
+============================================================
+Execution ID: eval_20251119_113303
+Run ID: run_20251119_113331
+Samples evaluated: 10/10
+
+Aggregate Scores:
+  BLEU: 26.979
+  CHRF: 68.190
+  COMET: 0.645
+  MCD: 11.753
+  BLASER: 2.191
+
+Results saved to: results/eval_20251119_113303/xhosa
+2025-11-19 11:35:17,847 - __main__ - INFO - Generating overall summary across all languages...
+2025-11-19 11:35:17,857 - __main__ - INFO - Saved overall summary: results/eval_20251119_113303/overall_summary.json
+
+======================================================================
+OVERALL SUMMARY - ALL LANGUAGES
+======================================================================
+Execution ID: eval_20251119_113303
+Languages evaluated: 1
+Total samples: 30
+Total valid samples: 30
+
+Average Scores Across Languages:
+  MCD:
+    Mean:  11.753
+    Range: 11.753 - 11.753
+  COMET:
+    Mean:  0.645
+    Range: 0.645 - 0.645
+  CHRF:
+    Mean:  68.190
+    Range: 68.190 - 68.190
+  BLEU:
+    Mean:  26.979
+    Range: 26.979 - 26.979
+  BLASER:
+    Mean:  2.191
+    Range: 2.191 - 2.191
+
+Per-Language Breakdown:
+  IGBO:
+    Samples: 10/10
+    BLEU: 42.911
+    CHRF: 65.590
+    COMET: 0.609
+    MCD: 12.417
+    BLASER: 0.000
+  EFIK:
+    Samples: 10/10
+    BLEU: 23.224
+    CHRF: 51.757
+    COMET: 0.574
+    MCD: 12.187
+    BLASER: 2.192
+  XHOSA:
+    Samples: 10/10
+    BLEU: 26.979
+    CHRF: 68.190
+    COMET: 0.645
+    MCD: 11.753
+    BLASER: 2.191
+
+Results directory: results/eval_20251119_113303
+Overall summary: results/eval_20251119_113303/overall_summary.json
+
+============================================================
+ALL EVALUATIONS COMPLETE
+============================================================
+Results directory: results/eval_20251119_113303/xhosa
+
+=========================================================
+Evaluation finished for xhosa
+=========================================================

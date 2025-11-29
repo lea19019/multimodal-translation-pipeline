@@ -1,0 +1,229 @@
+=========================================================
+SLURM JOB ID: 8578537
+JOB NAME: eval_predictions
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.9.1+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Wed Nov 19 11:33:24 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:4C:00.0 Off |                    0 |
+| N/A   31C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting evaluation for language: igbo
+Sample limit: 10
+Data directory: /home/vacl2/multimodal_translation/services/data/languages
+NMT model: multilang_finetuned_final
+TTS model: MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632
+Execution ID: eval_20251119_113303 (shared across languages)
+
+2025-11-19 11:33:34,979 - __main__ - INFO - Using provided execution ID: eval_20251119_113303
+2025-11-19 11:33:34,985 - __main__ - INFO - 
+============================================================
+2025-11-19 11:33:34,985 - __main__ - INFO - Evaluating predictions for IGBO
+2025-11-19 11:33:34,985 - __main__ - INFO - ============================================================
+2025-11-19 11:33:34,999 - __main__ - INFO - Results will be saved to: results/eval_20251119_113303/igbo
+2025-11-19 11:33:35,000 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/igbo/nmt_predictions_multilang_finetuned_final.csv
+2025-11-19 11:33:35,049 - scripts.data_loader - INFO - Loaded 2948 prediction samples for igbo
+2025-11-19 11:33:41,237 - scripts.data_loader - INFO - Successfully created 2948 samples for igbo
+2025-11-19 11:33:41,238 - __main__ - INFO - Limiting evaluation to 10 samples
+2025-11-19 11:33:41,243 - __main__ - INFO - Evaluating 10 samples of type 'audio_to_audio'
+2025-11-19 11:33:41,243 - __main__ - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-11-19 11:33:41,249 - __main__ - INFO - Initialized text metrics evaluator
+2025-11-19 11:33:41,469 - __main__ - INFO - Initialized COMET evaluator
+2025-11-19 11:33:41,469 - __main__ - INFO - Initialized audio metrics evaluator
+2025-11-19 11:33:41,470 - __main__ - INFO - Initialized BLASER evaluator
+2025-11-19 11:33:41,470 - __main__ - INFO - Valid samples: 10, Skipped: 0
+2025-11-19 11:33:41,470 - __main__ - INFO - Computing BLEU scores...
+2025-11-19 11:33:41,472 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,472 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,472 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,472 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,472 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,472 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,473 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,473 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,473 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,473 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-11-19 11:33:41,473 - __main__ - INFO - Computing chrF scores...
+2025-11-19 11:33:41,480 - __main__ - INFO - Computing COMET scores...
+/home/vacl2/multimodal_translation/services/evaluation/.venv/lib64/python3.11/site-packages/torchmetrics/utilities/imports.py:23: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import DistributionNotFound, get_distribution
+2025-11-19 11:34:02,613 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-11-19 11:34:10,030 - comet.models.base - INFO - Encoder model frozen.
+2025-11-19 11:34:10,945 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-11-19 11:34:10,945 - scripts.comet_evaluator - INFO - Computing COMET scores for 10 samples...
+2025-11-19 11:34:11,131 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-11-19 11:34:11,189 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-11-19 11:34:11,189 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-11-19 11:34:11,191 - pytorch_lightning.utilities.rank_zero - INFO - You are using a CUDA device ('NVIDIA A100-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2025-11-19 11:34:11,192 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-11-19 11:34:11,202 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/2 [00:00<?, ?it/s]Predicting DataLoader 0:  50%|█████     | 1/2 [00:00<00:00,  2.48it/s]Predicting DataLoader 0: 100%|██████████| 2/2 [00:00<00:00,  4.56it/s]Predicting DataLoader 0: 100%|██████████| 2/2 [00:00<00:00,  4.55it/s]
+2025-11-19 11:34:13,256 - __main__ - INFO - Computing MCD scores...
+2025-11-19 11:34:13,256 - __main__ - INFO - Comparing predicted audio against ground truth audio
+2025-11-19 11:34:28,875 - __main__ - INFO - Computing BLASER scores...
+2025-11-19 11:34:28,875 - __main__ - INFO - Using predicted audio for BLASER evaluation
+2025-11-19 11:34:28,876 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 10 samples...
+2025-11-19 11:35:04,099 - scripts.blaser_evaluator - ERROR - BLASER evaluation failed with return code 1
+2025-11-19 11:35:04,100 - scripts.blaser_evaluator - ERROR - STDERR: 2025-11-19 11:34:38,537 - __main__ - INFO - Using device: cuda
+2025-11-19 11:34:50,562 - __main__ - INFO - Loading BLASER model: blaser_2_0_qe
+2025-11-19 11:34:50,905 - fairseq2 - INFO - Using the cached blaser_2_0_qe. Set `force` to `True` to download again.
+
+2025-11-19 11:34:51,863 - __main__ - INFO - Loading SONAR encoders...
+2025-11-19 11:34:51,868 - fairseq2 - INFO - Using the cached text_sonar_basic_encoder. Set `force` to `True` to download again.
+
+2025-11-19 11:34:57,221 - fairseq2 - INFO - Using the cached text_sonar_basic_encoder. Set `force` to `True` to download again.
+2025-11-19 11:34:57,325 - __main__ - INFO - Loading speech encoder for language: eng (sonar_speech_encoder_eng)
+2025-11-19 11:34:57,329 - fairseq2 - INFO - Using the cached sonar_speech_encoder_eng. Set `force` to `True` to download again.
+
+2025-11-19 11:35:03,045 - __main__ - INFO - Loading speech encoder for language: ibo (sonar_speech_encoder_ibo)
+2025-11-19 11:35:03,048 - __main__ - ERROR - Failed to load speech encoder for ibo: sonar_speech_encoder_ibo is not a known model.
+2025-11-19 11:35:03,048 - __main__ - ERROR - Evaluation failed: sonar_speech_encoder_ibo is not a known model.
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/evaluate.py", line 201, in main
+    target_speech_encoder = load_speech_encoder(target_lang_code, device_obj)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/evaluate.py", line 126, in load_speech_encoder
+    speech_encoder = SpeechToEmbeddingModelPipeline(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/sonar/inference_pipelines/speech.py", line 420, in __init__
+    encoder = encoder_hub.load_model(encoder, device=device)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/hub.py", line 341, in load_model
+    raise ModelNotKnownError(name) from None
+fairseq2.models.hub.ModelNotKnownError: sonar_speech_encoder_ibo is not a known model.
+
+2025-11-19 11:35:04,100 - scripts.blaser_evaluator - ERROR - Error during BLASER evaluation: BLASER evaluation failed: 2025-11-19 11:34:38,537 - __main__ - INFO - Using device: cuda
+2025-11-19 11:34:50,562 - __main__ - INFO - Loading BLASER model: blaser_2_0_qe
+2025-11-19 11:34:50,905 - fairseq2 - INFO - Using the cached blaser_2_0_qe. Set `force` to `True` to download again.
+
+2025-11-19 11:34:51,863 - __main__ - INFO - Loading SONAR encoders...
+2025-11-19 11:34:51,868 - fairseq2 - INFO - Using the cached text_sonar_basic_encoder. Set `force` to `True` to download again.
+
+2025-11-19 11:34:57,221 - fairseq2 - INFO - Using the cached text_sonar_basic_encoder. Set `force` to `True` to download again.
+2025-11-19 11:34:57,325 - __main__ - INFO - Loading speech encoder for language: eng (sonar_speech_encoder_eng)
+2025-11-19 11:34:57,329 - fairseq2 - INFO - Using the cached sonar_speech_encoder_eng. Set `force` to `True` to download again.
+
+2025-11-19 11:35:03,045 - __main__ - INFO - Loading speech encoder for language: ibo (sonar_speech_encoder_ibo)
+2025-11-19 11:35:03,048 - __main__ - ERROR - Failed to load speech encoder for ibo: sonar_speech_encoder_ibo is not a known model.
+2025-11-19 11:35:03,048 - __main__ - ERROR - Evaluation failed: sonar_speech_encoder_ibo is not a known model.
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/evaluate.py", line 201, in main
+    target_speech_encoder = load_speech_encoder(target_lang_code, device_obj)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/evaluate.py", line 126, in load_speech_encoder
+    speech_encoder = SpeechToEmbeddingModelPipeline(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/sonar/inference_pipelines/speech.py", line 420, in __init__
+    encoder = encoder_hub.load_model(encoder, device=device)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vacl2/multimodal_translation/services/evaluation/blaser/.venv/lib64/python3.11/site-packages/fairseq2/models/hub.py", line 341, in load_model
+    raise ModelNotKnownError(name) from None
+fairseq2.models.hub.ModelNotKnownError: sonar_speech_encoder_ibo is not a known model.
+
+2025-11-19 11:35:04,109 - __main__ - INFO - Saved summary to results/eval_20251119_113303/igbo/summary.json
+2025-11-19 11:35:04,130 - __main__ - INFO - Saved detailed results to results/eval_20251119_113303/igbo/detailed_results.csv
+2025-11-19 11:35:04,137 - __main__ - INFO - Saved full results to results/eval_20251119_113303/igbo/per_sample_results.json
+2025-11-19 11:35:04,137 - __main__ - INFO - Generating visualizations...
+2025-11-19 11:35:04,138 - __main__ - INFO - Using primary metric for quality categorization: blaser
+2025-11-19 11:35:05,373 - scripts.visualizations - INFO - Saved quality dashboard to results/eval_20251119_113303/igbo/visualizations/quality_dashboard.png
+2025-11-19 11:35:05,838 - scripts.visualizations - INFO - Saved normalized metrics comparison to results/eval_20251119_113303/igbo/visualizations/normalized_metrics.png
+2025-11-19 11:35:06,178 - scripts.visualizations - INFO - Saved metrics comparison chart to results/eval_20251119_113303/igbo/visualizations/metrics_comparison.png
+2025-11-19 11:35:06,405 - scripts.visualizations - INFO - Saved metrics table to results/eval_20251119_113303/igbo/visualizations/metrics_table.png
+2025-11-19 11:35:06,901 - scripts.visualizations - INFO - Saved BLEU distribution to results/eval_20251119_113303/igbo/visualizations/bleu_distribution.png
+2025-11-19 11:35:07,419 - scripts.visualizations - INFO - Saved CHRF distribution to results/eval_20251119_113303/igbo/visualizations/chrf_distribution.png
+2025-11-19 11:35:07,933 - scripts.visualizations - INFO - Saved COMET distribution to results/eval_20251119_113303/igbo/visualizations/comet_distribution.png
+2025-11-19 11:35:08,410 - scripts.visualizations - INFO - Saved MCD distribution to results/eval_20251119_113303/igbo/visualizations/mcd_distribution.png
+2025-11-19 11:35:08,874 - scripts.visualizations - INFO - Saved BLASER distribution to results/eval_20251119_113303/igbo/visualizations/blaser_distribution.png
+2025-11-19 11:35:09,533 - scripts.visualizations - INFO - Saved per-sample heatmap to results/eval_20251119_113303/igbo/visualizations/per_sample_heatmap.png
+2025-11-19 11:35:09,533 - scripts.visualizations - INFO - All visualizations saved to results/eval_20251119_113303/igbo/visualizations
+2025-11-19 11:35:09,554 - scripts.visualizations - INFO - Saved HTML report to results/eval_20251119_113303/igbo/summary_report.html
+2025-11-19 11:35:09,554 - __main__ - INFO - Generated HTML report at results/eval_20251119_113303/igbo/summary_report.html
+2025-11-19 11:35:09,565 - __main__ - INFO - Updated manifest: results/eval_20251119_113303/manifest.json
+
+============================================================
+EVALUATION COMPLETE - igbo
+============================================================
+Execution ID: eval_20251119_113303
+Run ID: run_20251119_113334
+Samples evaluated: 10/10
+
+Aggregate Scores:
+  BLEU: 42.911
+  CHRF: 65.590
+  COMET: 0.609
+  MCD: 12.417
+  BLASER: 0.000
+
+Results saved to: results/eval_20251119_113303/igbo
+2025-11-19 11:35:09,565 - __main__ - INFO - Generating overall summary across all languages...
+2025-11-19 11:35:09,576 - __main__ - INFO - Saved overall summary: results/eval_20251119_113303/overall_summary.json
+
+======================================================================
+OVERALL SUMMARY - ALL LANGUAGES
+======================================================================
+Execution ID: eval_20251119_113303
+Languages evaluated: 1
+Total samples: 10
+Total valid samples: 10
+
+Average Scores Across Languages:
+  BLASER:
+    Mean:  0.000
+    Range: 0.000 - 0.000
+  BLEU:
+    Mean:  42.911
+    Range: 42.911 - 42.911
+  MCD:
+    Mean:  12.417
+    Range: 12.417 - 12.417
+  COMET:
+    Mean:  0.609
+    Range: 0.609 - 0.609
+  CHRF:
+    Mean:  65.590
+    Range: 65.590 - 65.590
+
+Per-Language Breakdown:
+  IGBO:
+    Samples: 10/10
+    BLEU: 42.911
+    CHRF: 65.590
+    COMET: 0.609
+    MCD: 12.417
+    BLASER: 0.000
+
+Results directory: results/eval_20251119_113303
+Overall summary: results/eval_20251119_113303/overall_summary.json
+
+============================================================
+ALL EVALUATIONS COMPLETE
+============================================================
+Results directory: results/eval_20251119_113303/igbo
+
+=========================================================
+Evaluation finished for igbo
+=========================================================

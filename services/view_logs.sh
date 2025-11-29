@@ -39,12 +39,14 @@ echo "  1) View API Gateway logs"
 echo "  2) View ASR Service logs"
 echo "  3) View NMT Service logs"
 echo "  4) View TTS Service logs"
-echo "  5) View all logs (combined)"
-echo "  6) Follow API Gateway logs (live)"
-echo "  7) Follow ASR Service logs (live)"
-echo "  8) Follow NMT Service logs (live)"
-echo "  9) Follow TTS Service logs (live)"
-echo "  10) Follow all logs (live)"
+echo "  5) View Evaluation API logs"
+echo "  6) View all logs (combined)"
+echo "  7) Follow API Gateway logs (live)"
+echo "  8) Follow ASR Service logs (live)"
+echo "  9) Follow NMT Service logs (live)"
+echo "  10) Follow TTS Service logs (live)"
+echo "  11) Follow Evaluation API logs (live)"
+echo "  12) Follow all logs (live)"
 echo "  q) Quit"
 echo ""
 read -p "Enter choice: " choice
@@ -79,37 +81,51 @@ case ${choice} in
         fi
         ;;
     5)
-        cat "${LOG_DIR}"/*.log 2>/dev/null | less +G
+        if [ -f "${LOG_DIR}/evaluation_api.log" ]; then
+            less +G "${LOG_DIR}/evaluation_api.log"
+        else
+            echo "Evaluation API log not found"
+        fi
         ;;
     6)
+        cat "${LOG_DIR}"/*.log 2>/dev/null | less +G
+        ;;
+    7)
         if [ -f "${LOG_DIR}/api_gateway.log" ]; then
             tail -f "${LOG_DIR}/api_gateway.log"
         else
             echo "API Gateway log not found"
         fi
         ;;
-    7)
+    8)
         if [ -f "${LOG_DIR}/asr.log" ]; then
             tail -f "${LOG_DIR}/asr.log"
         else
             echo "ASR Service log not found"
         fi
         ;;
-    8)
+    9)
         if [ -f "${LOG_DIR}/nmt.log" ]; then
             tail -f "${LOG_DIR}/nmt.log"
         else
             echo "NMT Service log not found"
         fi
         ;;
-    9)
+    10)
         if [ -f "${LOG_DIR}/tts.log" ]; then
             tail -f "${LOG_DIR}/tts.log"
         else
             echo "TTS Service log not found"
         fi
         ;;
-    10)
+    11)
+        if [ -f "${LOG_DIR}/evaluation_api.log" ]; then
+            tail -f "${LOG_DIR}/evaluation_api.log"
+        else
+            echo "Evaluation API log not found"
+        fi
+        ;;
+    12)
         tail -f "${LOG_DIR}"/*.log
         ;;
     q|Q)

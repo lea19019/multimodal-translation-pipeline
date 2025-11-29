@@ -1,46 +1,24 @@
 'use client';
 
-import { Calendar, Languages, Download, Info, ExternalLink } from 'lucide-react';
+import { Calendar, Download, Info, ExternalLink, Languages as LangIcon } from 'lucide-react';
 import { EvaluationDetail as EvaluationDetailType } from '@/lib/evaluation-client';
-import MetricCard from './MetricCard';
 import evaluationClient from '@/lib/evaluation-client';
 
 interface EvaluationDetailProps {
   evaluation: EvaluationDetailType;
 }
 
-// Metric metadata for proper display
-const METRIC_INFO: Record<string, { description: string; higherIsBetter: boolean; goodRange?: [number, number] }> = {
-  bleu: {
-    description: 'N-gram overlap with reference',
-    higherIsBetter: true,
-    goodRange: [20, 40],
-  },
-  chrf: {
-    description: 'Character n-gram F-score',
-    higherIsBetter: true,
-    goodRange: [40, 60],
-  },
-  comet: {
-    description: 'Neural semantic quality',
-    higherIsBetter: true,
-    goodRange: [0.6, 0.8],
-  },
-  mcd: {
-    description: 'Mel-cepstral distortion (dB)',
-    higherIsBetter: false,
-    goodRange: [4, 6],
-  },
-  blaser: {
-    description: 'Speech translation quality',
-    higherIsBetter: true,
-    goodRange: [3.5, 4.5],
-  },
-};
-
 export default function EvaluationDetail({ evaluation }: EvaluationDetailProps) {
-  const handleOpenReport = () => {
-    window.open(evaluationClient.getReportUrl(evaluation.run_id), '_blank');
+  const handleDownloadManifest = () => {
+    window.open(evaluationClient.getExecutionFileUrl(evaluation.execution_id, 'manifest.json'), '_blank');
+  };
+
+  const handleDownloadOverallSummary = () => {
+    window.open(evaluationClient.getExecutionFileUrl(evaluation.execution_id, 'overall_summary.json'), '_blank');
+  };
+
+  const handleOpenLanguageReport = (language: string) => {
+    window.open(evaluationClient.getLanguageReportUrl(evaluation.execution_id, language), '_blank');
   };
 
   return (
@@ -48,10 +26,10 @@ export default function EvaluationDetail({ evaluation }: EvaluationDetailProps) 
       {/* Header Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          {evaluation.run_id}
+          {evaluation.execution_id}
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="flex items-center gap-3">
             <Calendar className="w-5 h-5 text-gray-500" />
             <div>
@@ -63,11 +41,21 @@ export default function EvaluationDetail({ evaluation }: EvaluationDetailProps) 
           </div>
 
           <div className="flex items-center gap-3">
-            <Languages className="w-5 h-5 text-gray-500" />
+            <Info className="w-5 h-5 text-gray-500" />
             <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Translation</div>
-              <div className="font-medium text-gray-900 dark:text-white">
-                {evaluation.translation_type || 'Unknown'} • {evaluation.language_pair}
+              <div className="text-xs text-gray-500 dark:text-gray-400">NMT Model</div>
+              <div className="font-medium text-gray-900 dark:text-white text-sm">
+                {evaluation.nmt_model}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Info className="w-5 h-5 text-gray-500" />
+            <div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">TTS Model</div>
+              <div className="font-medium text-gray-900 dark:text-white text-sm">
+                {evaluation.tts_model}
               </div>
             </div>
           </div>
@@ -77,140 +65,119 @@ export default function EvaluationDetail({ evaluation }: EvaluationDetailProps) 
             <div>
               <div className="text-xs text-gray-500 dark:text-gray-400">Samples</div>
               <div className="font-medium text-gray-900 dark:text-white">
-                {evaluation.valid_samples} valid / {evaluation.total_samples} total
+                {evaluation.total_valid_samples} / {evaluation.total_samples}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-4 flex gap-3">
-          <button
-            onClick={handleOpenReport}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Open Full Report
-          </button>
-        </div>
-      </div>
-
-      {/* Metrics Cards */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          Aggregate Metrics
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(evaluation.aggregate_scores).map(([metric, score]) => {
-            const info = METRIC_INFO[metric] || {
-              description: metric.toUpperCase(),
-              higherIsBetter: true,
-            };
-
-            return (
-              <MetricCard
+        <div className="mt-4">
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Metrics Evaluated</div>
+          <div className="flex flex-wrap gap-2">
+            {evaluation.metrics.map((metric) => (
+              <span
                 key={metric}
-                name={metric.toUpperCase()}
-                value={score}
-                description={info.description}
-                higherIsBetter={info.higherIsBetter}
-                goodRange={info.goodRange}
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Visualizations */}
-      {evaluation.visualizations && evaluation.visualizations.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Visualizations
-          </h2>
-
-          <div className="space-y-6">
-            {/* Quality Dashboard (highest priority) */}
-            {evaluation.visualizations.includes('quality_dashboard.png') && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Quality Dashboard
-                </h3>
-                <img
-                  src={evaluationClient.getVisualizationUrl(evaluation.run_id, 'quality_dashboard.png')}
-                  alt="Quality Dashboard"
-                  className="w-full rounded-lg border border-gray-200 dark:border-gray-700"
-                />
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
-                  Comprehensive quality analysis showing distribution, trends, and categorization.
-                </p>
-              </div>
-            )}
-
-            {/* Normalized Metrics */}
-            {evaluation.visualizations.includes('normalized_metrics.png') && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Normalized Metrics Comparison
-                </h3>
-                <img
-                  src={evaluationClient.getVisualizationUrl(evaluation.run_id, 'normalized_metrics.png')}
-                  alt="Normalized Metrics"
-                  className="w-full rounded-lg border border-gray-200 dark:border-gray-700"
-                />
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
-                  All metrics normalized to 0-1 scale with expected quality ranges indicated.
-                </p>
-              </div>
-            )}
-
-            {/* Other visualizations */}
-            {evaluation.visualizations
-              .filter((viz) => !viz.includes('quality_dashboard') && !viz.includes('normalized_metrics'))
-              .slice(0, 4) // Limit to avoid too many images
-              .map((viz) => (
-                <div key={viz} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {viz.replace('.png', '').replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                  </h3>
-                  <img
-                    src={evaluationClient.getVisualizationUrl(evaluation.run_id, viz)}
-                    alt={viz}
-                    className="w-full rounded-lg border border-gray-200 dark:border-gray-700"
-                  />
-                </div>
-              ))}
+                className="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium"
+              >
+                {metric.toUpperCase()}
+              </span>
+            ))}
           </div>
         </div>
-      )}
 
-      {/* Statistics Table */}
-      {evaluation.score_statistics && Object.keys(evaluation.score_statistics).length > 0 && (
+        <div className="mt-4 flex gap-3">
+          <button
+            onClick={handleDownloadManifest}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm"
+          >
+            <Download className="w-4 h-4" />
+            Download Manifest
+          </button>
+          {evaluation.overall_summary && (
+            <button
+              onClick={handleDownloadOverallSummary}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+            >
+              <Download className="w-4 h-4" />
+              Overall Summary
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Languages Section */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <LangIcon className="w-6 h-6" />
+          Language Results
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Object.entries(evaluation.languages).map(([language, info]) => (
+            <div
+              key={language}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 capitalize">
+                {language}
+              </h3>
+
+              <div className="space-y-3 mb-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Total Samples</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {info.total_samples}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Valid Samples</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {info.valid_samples}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Success Rate</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {((info.valid_samples / info.total_samples) * 100).toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleOpenLanguageReport(language)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View Report
+                </button>
+                <a
+                  href={evaluationClient.getLanguageVisualizationUrl(
+                    evaluation.execution_id,
+                    language,
+                    'detailed_results.csv'
+                  )}
+                  download
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                >
+                  <Download className="w-4 h-4" />
+                  CSV
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Overall Summary */}
+      {evaluation.overall_summary && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Score Statistics
+            Overall Summary
           </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Metric</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Mean</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Std Dev</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Min</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Max</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(evaluation.score_statistics).map(([metric, stats]) => (
-                  <tr key={metric} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{metric.toUpperCase()}</td>
-                    <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">{stats.mean.toFixed(3)}</td>
-                    <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">{stats.std.toFixed(3)}</td>
-                    <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">{stats.min.toFixed(3)}</td>
-                    <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">{stats.max.toFixed(3)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+            <pre className="text-sm text-gray-700 dark:text-gray-300 overflow-x-auto">
+              {JSON.stringify(evaluation.overall_summary, null, 2)}
+            </pre>
           </div>
         </div>
       )}

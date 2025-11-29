@@ -18,6 +18,11 @@ This directory contains microservices for a multimodal translation pipeline that
 └───────┘ └──────┘ └──────┘    │
                                 │
                          (Direct text path)
+
+┌─────────────────┐
+│ Evaluation API  │  Port 8079
+│  (service.py)   │
+└─────────────────┘
 ```
 
 ## Services
@@ -26,6 +31,7 @@ This directory contains microservices for a multimodal translation pipeline that
 - **ASR Service** (Port 8076): Automatic Speech Recognition using Whisper
 - **NMT Service** (Port 8077): Neural Machine Translation using NLLB
 - **TTS Service** (Port 8078): Text-to-Speech using XTTS
+- **Evaluation API** (Port 8079): Serves evaluation results and metrics
 
 ## Quick Start
 
@@ -37,7 +43,7 @@ bash start_all_services.sh
 ```
 
 This will:
-- Start all four services in the background
+- Start all five services in the background
 - Create log files in `services/_logs/` directory
 - Save process IDs for management
 
@@ -80,6 +86,10 @@ uv run python service.py
 # API Gateway
 cd api_gateway
 uv run python api.py
+
+# Evaluation API
+cd evaluation
+uv run python service.py
 ```
 
 ## Environment Configuration
@@ -93,6 +103,7 @@ export ASR_PORT=8076
 export NMT_PORT=8077
 export TTS_PORT=8078
 export GATEWAY_PORT=8075
+export EVALUATION_API_PORT=8079
 ```
 
 ### Service URL Override
@@ -118,6 +129,7 @@ tail -f _logs/api_gateway.log
 tail -f _logs/asr.log
 tail -f _logs/nmt.log
 tail -f _logs/tts.log
+tail -f _logs/evaluation_api.log
 
 # View all logs in real-time
 tail -f _logs/*.log
@@ -127,10 +139,21 @@ tail -f _logs/*.log
 
 ### API Gateway (http://localhost:8075)
 
+**Translation Pipeline:**
 - `GET /health` - Health check for all services
 - `POST /translate` - Main translation endpoint
+- `GET /models/asr` - List available ASR models
+- `GET /models/nmt` - List available NMT models
+- `GET /models/tts` - List available TTS models
 
-Example request:
+**Evaluation Results (proxied to Evaluation Service):**
+- `GET /evaluations` - List all evaluation executions
+- `GET /evaluations/{execution_id}` - Get detailed execution results
+- `GET /evaluations/{execution_id}/languages/{language}` - Get language-specific results
+- `GET /evaluations/{execution_id}/languages/{language}/files/{filename}` - Download files
+- `GET /evaluations/{execution_id}/files/{filename}` - Download execution-level files
+
+Example translation request:
 ```json
 {
   "input": "Hello, how are you?",
@@ -140,8 +163,42 @@ Example request:
   "output_type": "text",
   "asr_model": "base",
   "nmt_model": "base",
-  "tts_model": "base"
+  "tts_model": "base",
+  "save_for_evaluation": false
 }
+```
+
+**Note:** Frontend should only call the API Gateway (port 8075). Evaluation endpoints are automatically proxied to the Evaluation Service.
+
+### Evaluation Service (http://localhost:8079)
+
+Backend service (not called directly by frontend) that serves evaluation results:
+
+- `GET /health` - Health check
+- `GET /executions` - List all evaluation executions
+- `GET /executions/{execution_id}` - Get detailed execution results
+- `GET /executions/{execution_id}/languages/{language}` - Get language-specific results
+- `GET /executions/{execution_id}/languages/{language}/files/{filename}` - Download visualization/result files
+- `GET /executions/{execution_id}/files/{filename}` - Download execution-level files (manifest.json, overall_summary.json)
+
+Example response from `/executions`:
+```json
+[
+  {
+    "execution_id": "eval_20251119_105437",
+    "timestamp": "2025-11-19T10:54:37",
+    "nmt_model": "nllb-200-distilled-600M",
+    "tts_model": "xtts_v2",
+    "metrics": ["bleu", "comet", "wer"],
+    "languages": {
+      "swahili": {"total_samples": 50, "valid_samples": 48},
+      "igbo": {"total_samples": 50, "valid_samples": 47}
+    },
+    "total_samples": 100,
+    "total_valid_samples": 95,
+    "overall_summary": {...}
+  }
+]
 ```
 
 ### Individual Services
@@ -164,6 +221,7 @@ Each service has:
    lsof -i :8076
    lsof -i :8077
    lsof -i :8078
+   lsof -i :8079
    ```
 
 2. Check service logs:

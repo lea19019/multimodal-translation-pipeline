@@ -23,6 +23,7 @@ import base64
 import httpx
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from pydantic import BaseModel
 import uvicorn
 
@@ -55,10 +56,12 @@ app.add_middleware(
 ASR_PORT = os.getenv("ASR_PORT", "8076")
 NMT_PORT = os.getenv("NMT_PORT", "8077")
 TTS_PORT = os.getenv("TTS_PORT", "8078")
+EVALUATION_API_PORT = os.getenv("EVALUATION_API_PORT", "8079")
 
 ASR_SERVICE_URL = os.getenv("ASR_SERVICE_URL", f"http://localhost:{ASR_PORT}")
 NMT_SERVICE_URL = os.getenv("NMT_SERVICE_URL", f"http://localhost:{NMT_PORT}")
 TTS_SERVICE_URL = os.getenv("TTS_SERVICE_URL", f"http://localhost:{TTS_PORT}")
+EVALUATION_SERVICE_URL = os.getenv("EVALUATION_SERVICE_URL", f"http://localhost:{EVALUATION_API_PORT}")
 
 
 class TranslationRequest(BaseModel):
@@ -164,162 +167,105 @@ async def get_tts_models():
         )
 
 
-@app.get("/evaluation/stats")
-async def get_evaluation_stats():
-    """Get statistics about saved evaluation data"""
-    try:
-        stats = data_logger.get_statistics()
-        return stats
-    except Exception as e:
-        logger.error(f"Error getting evaluation stats: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Could not get evaluation stats: {str(e)}"
-        )
-
-
 @app.get("/evaluations")
 async def list_evaluations():
-    """List all evaluation runs from the results directory"""
+    """Proxy: List all evaluation executions from Evaluation Service"""
     try:
-        from pathlib import Path
-        import json
-
-        results_dir = Path(__file__).parent.parent / 'evaluation' / 'results'
-
-        if not results_dir.exists():
-            return []
-
-        evaluations = []
-        for eval_dir in sorted(results_dir.iterdir(), reverse=True):
-            if eval_dir.is_dir():
-                summary_path = eval_dir / 'summary.json'
-                if summary_path.exists():
-                    try:
-                        with open(summary_path, 'r') as f:
-                            summary = json.load(f)
-
-                        evaluations.append({
-                            'run_id': eval_dir.name,
-                            'timestamp': summary.get('timestamp'),
-                            'translation_type': summary.get('translation_type'),
-                            'language_pair': summary.get('language_pair'),
-                            'total_samples': summary.get('total_samples', 0),
-                            'valid_samples': summary.get('valid_samples', 0),
-                            'metrics_computed': summary.get('metrics_computed', []),
-                            'aggregate_scores': summary.get('aggregate_scores', {}),
-                        })
-                    except Exception as e:
-                        logger.warning(f"Could not load evaluation {eval_dir.name}: {e}")
-
-        return evaluations
-
+        async with httpx.AsyncClient(timeout=10.0, verify=False, trust_env=False) as client:
+            response = await client.get(f"{EVALUATION_SERVICE_URL}/executions")
+            response.raise_for_status()
+            return response.json()
     except Exception as e:
-        logger.error(f"Error listing evaluations: {e}")
+        logger.error(f"Error fetching evaluations: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Could not list evaluations: {str(e)}"
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Could not fetch evaluations: {str(e)}"
         )
 
 
-@app.get("/evaluations/{run_id}")
-async def get_evaluation(run_id: str):
-    """Get detailed results for a specific evaluation run"""
+@app.get("/evaluations/{execution_id}")
+async def get_evaluation(execution_id: str):
+    """Proxy: Get detailed evaluation execution from Evaluation Service"""
     try:
-        from pathlib import Path
-        import json
-
-        results_dir = Path(__file__).parent.parent / 'evaluation' / 'results'
-        eval_dir = results_dir / run_id
-
-        if not eval_dir.exists():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Evaluation run '{run_id}' not found"
-            )
-
-        # Load summary
-        summary_path = eval_dir / 'summary.json'
-        if not summary_path.exists():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Summary not found for evaluation '{run_id}'"
-            )
-
-        with open(summary_path, 'r') as f:
-            summary = json.load(f)
-
-        # Load per-sample results
-        per_sample_path = eval_dir / 'per_sample_results.json'
-        per_sample_results = None
-        if per_sample_path.exists():
-            with open(per_sample_path, 'r') as f:
-                full_results = json.load(f)
-                per_sample_results = full_results.get('per_sample_results', [])
-
-        # List available visualizations
-        viz_dir = eval_dir / 'visualizations'
-        visualizations = []
-        if viz_dir.exists():
-            for viz_file in viz_dir.glob('*.png'):
-                visualizations.append(viz_file.name)
-
-        return {
-            **summary,
-            'per_sample_results': per_sample_results,
-            'visualizations': visualizations,
-        }
-
-    except HTTPException:
-        raise
+        async with httpx.AsyncClient(timeout=10.0, verify=False, trust_env=False) as client:
+            response = await client.get(f"{EVALUATION_SERVICE_URL}/executions/{execution_id}")
+            response.raise_for_status()
+            return response.json()
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
     except Exception as e:
-        logger.error(f"Error getting evaluation {run_id}: {e}")
+        logger.error(f"Error fetching evaluation {execution_id}: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Could not get evaluation: {str(e)}"
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Could not fetch evaluation: {str(e)}"
         )
 
 
-@app.get("/evaluations/{run_id}/files/{filename}")
-async def get_evaluation_file(run_id: str, filename: str):
-    """Serve visualization files for an evaluation run"""
+@app.get("/evaluations/{execution_id}/languages/{language}")
+async def get_evaluation_language(execution_id: str, language: str):
+    """Proxy: Get language-specific evaluation results from Evaluation Service"""
     try:
-        from pathlib import Path
-        from fastapi.responses import FileResponse
-        import os
-
-        # Validate filename to prevent directory traversal
-        if '..' in filename or '/' in filename or '\\' in filename:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid filename"
+        async with httpx.AsyncClient(timeout=10.0, verify=False, trust_env=False) as client:
+            response = await client.get(
+                f"{EVALUATION_SERVICE_URL}/executions/{execution_id}/languages/{language}"
             )
-
-        results_dir = Path(__file__).parent.parent / 'evaluation' / 'results'
-        eval_dir = results_dir / run_id
-
-        # Try visualizations directory first
-        viz_file = eval_dir / 'visualizations' / filename
-        if viz_file.exists() and viz_file.is_file():
-            return FileResponse(viz_file)
-
-        # Try main results directory
-        results_file = eval_dir / filename
-        if results_file.exists() and results_file.is_file():
-            return FileResponse(results_file)
-
+            response.raise_for_status()
+            return response.json()
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error fetching language {language} for {execution_id}: {e}")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"File '{filename}' not found for evaluation '{run_id}'"
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Could not fetch language results: {str(e)}"
         )
 
-    except HTTPException:
-        raise
+
+@app.get("/evaluations/{execution_id}/languages/{language}/files/{filename}")
+async def get_evaluation_language_file(execution_id: str, language: str, filename: str):
+    """Proxy: Download language-specific files from Evaluation Service"""
+    try:
+        async with httpx.AsyncClient(timeout=30.0, verify=False, trust_env=False) as client:
+            response = await client.get(
+                f"{EVALUATION_SERVICE_URL}/executions/{execution_id}/languages/{language}/files/{filename}"
+            )
+            response.raise_for_status()
+            return Response(
+                content=response.content,
+                media_type=response.headers.get("content-type", "application/octet-stream"),
+                headers={"Content-Disposition": response.headers.get("content-disposition", "")}
+            )
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
     except Exception as e:
-        logger.error(f"Error serving file {filename} for evaluation {run_id}: {e}")
+        logger.error(f"Error fetching file {filename}: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Could not serve file: {str(e)}"
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Could not fetch file: {str(e)}"
+        )
+
+
+@app.get("/evaluations/{execution_id}/files/{filename}")
+async def get_evaluation_file(execution_id: str, filename: str):
+    """Proxy: Download execution-level files from Evaluation Service"""
+    try:
+        async with httpx.AsyncClient(timeout=30.0, verify=False, trust_env=False) as client:
+            response = await client.get(
+                f"{EVALUATION_SERVICE_URL}/executions/{execution_id}/files/{filename}"
+            )
+            response.raise_for_status()
+            return Response(
+                content=response.content,
+                media_type=response.headers.get("content-type", "application/octet-stream"),
+                headers={"Content-Disposition": response.headers.get("content-disposition", "")}
+            )
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error fetching file {filename}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Could not fetch file: {str(e)}"
         )
 
 

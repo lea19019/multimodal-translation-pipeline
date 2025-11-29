@@ -4,6 +4,15 @@
 
 Evaluate multimodal translation quality across text, audio, and speech-to-speech translation using automated metrics.
 
+## Components
+
+- **evaluation.py** - CLI tool for running evaluations (batch processing, metrics computation)
+- **service.py** - FastAPI server (port 8079) for serving evaluation results via REST API
+  - `GET /executions` - List all evaluation runs
+  - `GET /executions/{id}` - Get detailed results
+  - `GET /executions/{id}/languages/{lang}/files/{file}` - Download visualizations/data
+  - Start with: `uv run python service.py` or via `start_all_services.sh`
+
 ## Quick Start
 
 ### 1. Setup (one-time)

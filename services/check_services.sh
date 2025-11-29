@@ -54,11 +54,12 @@ declare -A services=(
     ["ASR Service"]=8076
     ["NMT Service"]=8077
     ["TTS Service"]=8078
+    ["Evaluation API"]=8079
 )
 
 all_running=true
 
-for service in "API Gateway" "ASR Service" "NMT Service" "TTS Service"; do
+for service in "API Gateway" "ASR Service" "NMT Service" "TTS Service" "Evaluation API"; do
     port=${services[$service]}
     pid=$(lsof -ti:${port} 2>/dev/null || echo "")
     
