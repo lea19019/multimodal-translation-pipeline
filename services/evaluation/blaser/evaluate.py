@@ -44,14 +44,95 @@ SONAR_TEXT_LANG_MAP = {
     'efi_Latn': 'ibo_Latn',  # Efik uses Igbo as proxy (not supported by NLLB-200)
     'xho_Latn': 'xho_Latn',  # Xhosa is supported
     'ibo_Latn': 'ibo_Latn',  # Igbo is supported
-    'swh_Latn': 'swh_Latn',  # Swahili is supported
+    'swh_Latn': 'swh_Latn',  # Swahili is supported (Meta naming)
+    'swa_Latn': 'swh_Latn',  # Swahili (ISO code) → SONAR naming
     'eng_Latn': 'eng_Latn',  # English is supported
+}
+
+# Fine-tuned encoder configuration
+# Maps language codes to their base encoders and checkpoint directories
+FINETUNED_CONFIG = {
+    'efi': {
+        'base_encoder': 'sonar_speech_encoder_eng',
+        'checkpoint_dir': 'finetuned_efi'
+    },
+    'ibo': {
+        'base_encoder': 'sonar_speech_encoder_eng',
+        'checkpoint_dir': 'finetuned_ibo'
+    },
+    'swh': {
+        'base_encoder': 'sonar_speech_encoder_swh',
+        'checkpoint_dir': 'finetuned_swh'
+    },
+    'swa': {  # ISO code variant for Swahili
+        'base_encoder': 'sonar_speech_encoder_swh',
+        'checkpoint_dir': 'finetuned_swh'
+    },
+    'xho': {
+        'base_encoder': 'sonar_speech_encoder_swh',
+        'checkpoint_dir': 'finetuned_xho'
+    },
 }
 
 
 def map_language_for_text_encoder(lang: str) -> str:
     """Map unsupported languages to SONAR-compatible proxies for text encoding."""
     return SONAR_TEXT_LANG_MAP.get(lang, lang)
+
+
+def load_finetuned_speech_encoder(language: str, device: torch.device):
+    """
+    Load fine-tuned speech encoder from checkpoint.
+
+    Args:
+        language: Language code (e.g., 'efi', 'ibo', 'swh', 'xho')
+        device: Device to load model on
+
+    Returns:
+        SpeechToEmbeddingModelPipeline with fine-tuned weights
+    """
+    try:
+        from sonar.inference_pipelines.speech import SpeechToEmbeddingModelPipeline
+
+        if language not in FINETUNED_CONFIG:
+            raise ValueError(f"No fine-tuned configuration for language: {language}")
+
+        config = FINETUNED_CONFIG[language]
+        base_encoder = config['base_encoder']
+        checkpoint_dir = config['checkpoint_dir']
+
+        # Checkpoint path
+        checkpoint_path = Path(__file__).parent / 'checkpoints' / checkpoint_dir / 'model_epochbest.pt'
+
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
+
+        logger.info(f"Loading fine-tuned speech encoder for {language}")
+        logger.info(f"  Base encoder: {base_encoder}")
+        logger.info(f"  Checkpoint: {checkpoint_path}")
+
+        # Step 1: Create base encoder pipeline
+        pipeline = SpeechToEmbeddingModelPipeline(
+            encoder=base_encoder,
+            device=device,
+        )
+
+        # Step 2: Load fine-tuned weights
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+
+        if 'model' not in checkpoint:
+            raise ValueError(f"Invalid checkpoint format: missing 'model' key")
+
+        pipeline.model.load_state_dict(checkpoint['model'])
+        pipeline.model.eval()  # Set to evaluation mode
+
+        logger.info(f"  Successfully loaded (epoch {checkpoint.get('epoch', 'unknown')})")
+
+        return pipeline
+
+    except Exception as e:
+        logger.error(f"Failed to load fine-tuned encoder for {language}: {e}")
+        raise
 
 
 def load_blaser_model(model_name: str = "blaser_2_0_qe"):
@@ -87,11 +168,24 @@ def load_sonar_encoders(device: torch.device):
 
 
 def load_speech_encoder(language: str, device: torch.device):
-    """Load SONAR speech encoder for specific language."""
+    """
+    Load SONAR speech encoder for specific language.
+    Tries fine-tuned version first, falls back to standard SONAR encoder.
+    """
+    # First, try to load fine-tuned encoder
+    if language in FINETUNED_CONFIG:
+        try:
+            logger.info(f"Attempting to load fine-tuned encoder for: {language}")
+            return load_finetuned_speech_encoder(language, device)
+        except Exception as e:
+            logger.warning(f"Failed to load fine-tuned encoder for {language}: {e}")
+            logger.info("Falling back to standard SONAR encoder...")
+
+    # Fall back to standard SONAR encoder
     try:
         from sonar.inference_pipelines.speech import SpeechToEmbeddingModelPipeline
 
-        # Language code to encoder mapping
+        # Language code to encoder mapping (standard SONAR encoders)
         lang_to_encoder = {
             'eng': 'sonar_speech_encoder_eng',
             'spa': 'sonar_speech_encoder_spa',
@@ -121,7 +215,7 @@ def load_speech_encoder(language: str, device: torch.device):
         }
 
         encoder_name = lang_to_encoder.get(language, 'sonar_speech_encoder_eng')
-        logger.info(f"Loading speech encoder for language: {language} ({encoder_name})")
+        logger.info(f"Loading standard speech encoder for: {language} ({encoder_name})")
 
         speech_encoder = SpeechToEmbeddingModelPipeline(
             encoder=encoder_name,
@@ -215,21 +309,6 @@ def main(
         logger.info(f"Processing {len(target_audio_paths)} target audio files...")
         mt_embs = target_speech_encoder.predict(target_audio_paths)
 
-        # Reference text embeddings
-        # Map languages to SONAR-compatible proxies for text encoding
-        target_lang_mapped = map_language_for_text_encoder(target_lang)
-        source_lang_mapped = map_language_for_text_encoder(source_lang)
-
-        logger.info("Processing reference texts...")
-        if target_lang != target_lang_mapped:
-            logger.info(f"Using language proxy for text encoding: {target_lang} -> {target_lang_mapped}")
-        ref_embs = text_encoder.predict(reference_texts, source_lang=target_lang_mapped)
-
-        # Source text embeddings (for ref-based BLASER)
-        if source_lang != source_lang_mapped:
-            logger.info(f"Using language proxy for text encoding: {source_lang} -> {source_lang_mapped}")
-        src_text_embs = text_encoder.predict(source_texts, source_lang=source_lang_mapped)
-
         # Compute BLASER scores
         logger.info(f"Computing BLASER scores for {len(source_audio_paths)} samples...")
 
@@ -237,14 +316,28 @@ def main(
         with torch.inference_mode():
             for i in range(len(source_audio_paths)):
                 if model_name == "blaser_2_0_ref":
-                    # Reference-based BLASER
+                    # Reference-based BLASER (requires text embeddings)
+                    # Map languages to SONAR-compatible proxies for text encoding
+                    if i == 0:  # Only compute once
+                        target_lang_mapped = map_language_for_text_encoder(target_lang)
+                        source_lang_mapped = map_language_for_text_encoder(source_lang)
+
+                        logger.info("Processing reference texts...")
+                        if target_lang != target_lang_mapped:
+                            logger.info(f"Using language proxy for text encoding: {target_lang} -> {target_lang_mapped}")
+                        ref_embs = text_encoder.predict(reference_texts, source_lang=target_lang_mapped)
+
+                        if source_lang != source_lang_mapped:
+                            logger.info(f"Using language proxy for text encoding: {source_lang} -> {source_lang_mapped}")
+                        src_text_embs = text_encoder.predict(source_texts, source_lang=source_lang_mapped)
+
                     score = blaser_model(
                         src=src_embs[i:i+1].to(device_obj),
                         ref=ref_embs[i:i+1].to(device_obj),
                         mt=mt_embs[i:i+1].to(device_obj),
                     ).item()
                 else:
-                    # QE-based BLASER (reference-free)
+                    # QE-based BLASER (reference-free, audio-only)
                     score = blaser_model(
                         src=src_embs[i:i+1].to(device_obj),
                         mt=mt_embs[i:i+1].to(device_obj),

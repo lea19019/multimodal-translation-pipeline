@@ -10,7 +10,7 @@
 #SBATCH --nodes=1                # Single node
 #SBATCH --ntasks-per-node=1      # Single task
 #SBATCH --mem=64G                # Memory for COMET and BLASER models
-#SBATCH -J "eval_predictions"    # Job name
+#SBATCH -J "eval_predictions_500"    # Job name
 #SBATCH --output=_logs/%x_%j.out # Standard output and error log
 #SBATCH --qos=cs
 #SBATCH --gpus=1                 # Single GPU for faster COMET/BLASER
@@ -61,7 +61,7 @@ LANGUAGE=${1:-efik}
 EXECUTION_ID=${2:-}  # Optional: if provided, allows linking multiple language runs
 
 # Number of samples to evaluate
-LIMIT=10
+LIMIT=500
 
 echo "Starting evaluation for language: $LANGUAGE"
 echo "Sample limit: $LIMIT"
@@ -78,7 +78,6 @@ echo ""
 # Build command arguments
 CMD_ARGS=(
     --mode predictions
-    --language "$LANGUAGE"
     --data-dir /home/vacl2/multimodal_translation/services/data/languages
     -m bleu -m chrf -m comet -m mcd -m blaser
     --limit "$LIMIT"

@@ -63,6 +63,12 @@ class LanguageResults(BaseModel):
     visualizations: List[str]
 
 
+class ExecutionVisualizationsResponse(BaseModel):
+    """List of execution-level visualizations"""
+    execution_id: str
+    visualizations: List[str]
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
@@ -152,6 +158,40 @@ async def get_execution(execution_id: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Could not get execution: {str(e)}"
+        )
+
+
+@app.get("/executions/{execution_id}/visualizations", response_model=ExecutionVisualizationsResponse)
+async def get_execution_visualizations(execution_id: str):
+    """
+    Get list of execution-level visualizations.
+    """
+    try:
+        exec_dir = RESULTS_DIR / execution_id
+        viz_dir = exec_dir / 'visualizations'
+
+        if not exec_dir.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Execution '{execution_id}' not found"
+            )
+
+        visualizations = []
+        if viz_dir.exists():
+            visualizations = [f.name for f in viz_dir.glob('*.png')]
+
+        return ExecutionVisualizationsResponse(
+            execution_id=execution_id,
+            visualizations=visualizations
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting visualizations for {execution_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Could not get visualizations: {str(e)}"
         )
 
 
@@ -256,7 +296,7 @@ async def get_language_file(execution_id: str, language: str, filename: str):
 @app.get("/executions/{execution_id}/files/{filename}")
 async def get_execution_file(execution_id: str, filename: str):
     """
-    Serve execution-level files (manifest.json, overall_summary.json).
+    Serve execution-level files (manifest.json, overall_summary.json, visualizations).
 
     Security: Validates filename to prevent directory traversal.
     """
@@ -276,6 +316,12 @@ async def get_execution_file(execution_id: str, filename: str):
                 detail=f"Execution '{execution_id}' not found"
             )
 
+        # Try visualizations directory first (for execution-level charts)
+        viz_file = exec_dir / 'visualizations' / filename
+        if viz_file.exists() and viz_file.is_file():
+            return FileResponse(viz_file)
+
+        # Try execution root directory
         file_path = exec_dir / filename
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)

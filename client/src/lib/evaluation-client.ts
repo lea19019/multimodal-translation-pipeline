@@ -9,6 +9,18 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 export interface LanguageInfo {
   total_samples: number;
   valid_samples: number;
+  aggregate_scores?: Record<string, number>;
+}
+
+export interface OverallSummary {
+  languages_evaluated: number;
+  average_scores: Record<string, {
+    mean: number;
+    median: number;
+    std: number;
+    min: number;
+    max: number;
+  }>;
 }
 
 export interface EvaluationSummary {
@@ -20,7 +32,7 @@ export interface EvaluationSummary {
   languages: Record<string, LanguageInfo>;
   total_samples: number;
   total_valid_samples: number;
-  overall_summary?: Record<string, any>;
+  overall_summary?: OverallSummary;
 }
 
 export interface LanguageResults {
@@ -52,7 +64,7 @@ export interface EvaluationDetail {
   languages: Record<string, LanguageInfo>;
   total_samples: number;
   total_valid_samples: number;
-  overall_summary?: Record<string, any>;
+  overall_summary?: OverallSummary;
 }
 
 interface APIError {
@@ -121,7 +133,19 @@ export class EvaluationClient {
   }
 
   /**
-   * Get URL for an execution-level file (manifest, overall_summary)
+   * Get list of execution-level visualizations
+   */
+  async getExecutionVisualizations(executionId: string): Promise<{ execution_id: string; visualizations: string[] }> {
+    try {
+      const response = await this.client.get(`/evaluations/${executionId}/visualizations`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  /**
+   * Get URL for an execution-level file (manifest, overall_summary, visualizations)
    */
   getExecutionFileUrl(executionId: string, filename: string): string {
     return `${this.client.defaults.baseURL}/evaluations/${executionId}/files/${filename}`;

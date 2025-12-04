@@ -29,49 +29,94 @@ QUALITY_THRESHOLDS = {
     'poor': 0.0,
 }
 
-# Metric characteristics for normalization and interpretation
+# Metric characteristics - based on official documentation
+# Sources:
+# - BLASER: https://aclanthology.org/2024.findings-emnlp.943.pdf (1-5 scale)
+# - COMET: https://unbabel.github.io/COMET/html/faqs.html (unbounded, typically 0-1)
+# - MCD: http://www.cs.columbia.edu/~ecooper/tts/mcd.html (unbounded, lower is better, good TTS <10 dB)
+# - BLEU/chrF: https://huggingface.co/spaces/evaluate-metric/chrf (0-100 scale)
 METRIC_INFO = {
     'bleu': {
         'name': 'BLEU',
         'scale': (0, 100),
         'higher_is_better': True,
         'description': 'N-gram overlap with reference',
-        'good_range': (20, 40),
-        'excellent_threshold': 50,
     },
     'chrf': {
         'name': 'chrF',
         'scale': (0, 100),
         'higher_is_better': True,
         'description': 'Character n-gram F-score',
-        'good_range': (40, 60),
-        'excellent_threshold': 70,
     },
     'comet': {
         'name': 'COMET',
-        'scale': (0, 1),
+        'scale': None,  # Unbounded, typically 0-1 but can exceed
         'higher_is_better': True,
         'description': 'Neural semantic quality',
-        'good_range': (0.6, 0.8),
-        'excellent_threshold': 0.8,
     },
     'mcd': {
         'name': 'MCD',
-        'scale': (0, 20),
+        'scale': None,  # Unbounded, depends on implementation. Good TTS typically <10 dB
         'higher_is_better': False,
         'description': 'Mel-cepstral distortion (dB)',
-        'good_range': (4, 6),
-        'excellent_threshold': 4,
     },
     'blaser': {
         'name': 'BLASER',
-        'scale': (0, 5),
+        'scale': (1, 5),  # IMPORTANT: 1-5, not 0-5!
         'higher_is_better': True,
         'description': 'Speech translation quality',
-        'good_range': (3.5, 4.5),
-        'excellent_threshold': 4.5,
     },
 }
+
+
+def normalize_metric_value(value: float, metric: str, data_min: float = None, data_max: float = None) -> float:
+    """
+    Normalize a metric value to 0-1 scale for visualization.
+
+    For metrics with known ranges (BLEU, chrF, BLASER), uses those ranges.
+    For unbounded metrics (COMET, MCD), uses actual data min/max if provided,
+    otherwise assumes reasonable defaults based on typical values.
+
+    Args:
+        value: The metric value to normalize
+        metric: The metric name
+        data_min: Actual minimum value in the dataset (for unbounded metrics)
+        data_max: Actual maximum value in the dataset (for unbounded metrics)
+
+    Returns:
+        Normalized value between 0 and 1
+    """
+    metric_info = METRIC_INFO.get(metric, {})
+    scale = metric_info.get('scale')
+    higher_is_better = metric_info.get('higher_is_better', True)
+
+    if scale is not None:
+        # Use known scale
+        min_val, max_val = scale
+        if higher_is_better:
+            # Normalize: 0 -> 0, max -> 1
+            return (value - min_val) / (max_val - min_val) if max_val > min_val else 0
+        else:
+            # Invert: min -> 1, max -> 0
+            return 1 - ((value - min_val) / (max_val - min_val)) if max_val > min_val else 0
+    else:
+        # Unbounded metric - use actual data range if provided
+        if data_min is not None and data_max is not None:
+            if higher_is_better:
+                return (value - data_min) / (data_max - data_min) if data_max > data_min else 0
+            else:
+                return 1 - ((value - data_min) / (data_max - data_min)) if data_max > data_min else 0
+        else:
+            # Fallback: use value as-is or clip to reasonable range
+            if metric == 'comet':
+                # Typically 0-1, but can exceed - clip to 0-1
+                return max(0, min(1, value))
+            elif metric == 'mcd':
+                # Lower is better. Assume 0-10 as reasonable range
+                return 1 - (min(10, max(0, value)) / 10)
+            else:
+                # Unknown metric - return as-is, clipped to 0-1
+                return max(0, min(1, value))
 
 
 def categorize_quality(score: float, metric: str = 'comet') -> str:
@@ -116,52 +161,408 @@ def categorize_quality(score: float, metric: str = 'comet') -> str:
             return 'poor'
 
 
+def create_metric_correlation_heatmap(
+    df: pd.DataFrame,
+    output_path: Path,
+):
+    """
+    Create correlation heatmap showing relationships between metrics.
+
+    Args:
+        df: DataFrame with per-sample scores (columns ending in '_score')
+        output_path: Path to save the heatmap
+    """
+    output_path = Path(output_path)
+
+    # Extract metric score columns
+    score_cols = [col for col in df.columns if col.endswith('_score')]
+
+    if len(score_cols) < 2:
+        logger.warning(f"Need at least 2 metrics for correlation heatmap, found {len(score_cols)}")
+        return
+
+    # Normalize all metrics to 0-1 scale for fair correlation
+    corr_data = df[score_cols].copy()
+
+    for col in score_cols:
+        metric = col.replace('_score', '')
+
+        if metric == 'comet':
+            # Already 0-1
+            pass
+        elif metric in ['bleu', 'chrf']:
+            # 0-100 → 0-1
+            corr_data[col] = corr_data[col] / 100.0
+        elif metric == 'blaser':
+            # 0-5 → 0-1
+            corr_data[col] = corr_data[col] / 5.0
+        elif metric == 'mcd':
+            # 0-20, lower is better → invert to 0-1
+            corr_data[col] = 1 - (corr_data[col] / 20.0)
+
+    # Rename columns for cleaner display
+    corr_data.columns = [col.replace('_score', '').upper() for col in score_cols]
+
+    # Compute Pearson correlation on normalized data
+    corr_matrix = corr_data.corr()
+
+    # Create figure
+    plt.figure(figsize=(10, 8))
+
+    # Create heatmap
+    sns.heatmap(
+        corr_matrix,
+        annot=True,  # Show correlation values
+        fmt='.3f',   # 3 decimal places
+        cmap='coolwarm',  # Diverging colormap
+        center=0,    # Center colormap at 0
+        vmin=-1,     # Minimum correlation
+        vmax=1,      # Maximum correlation
+        square=True, # Square cells
+        linewidths=0.5,
+        cbar_kws={'label': 'Pearson Correlation'}
+    )
+
+    plt.title('Metric Correlation Heatmap (Normalized)\nHow do different metrics relate to each other?',
+              fontsize=14, fontweight='bold', pad=20)
+    plt.xlabel('')
+    plt.ylabel('')
+    plt.tight_layout()
+
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+
+    logger.info(f"Saved metric correlation heatmap to {output_path}")
+
+
+def create_all_metrics_overview(
+    df: pd.DataFrame,
+    summary: Dict,
+    output_path: Path,
+):
+    """
+    Create comprehensive overview showing all metrics together.
+    Combines distributions, box plots, and aggregate scores in one view.
+
+    Args:
+        df: DataFrame with per-sample results
+        summary: Summary dictionary with aggregate scores
+        output_path: Path to save the visualization
+    """
+    try:
+        # Get all metric columns
+        score_cols = [col for col in df.columns if col.endswith('_score')]
+
+        if not score_cols:
+            logger.warning("No metric scores found for overview")
+            return
+
+        # Prepare normalized data for violin plots
+        # First, compute data ranges for unbounded metrics
+        data_ranges = {}
+        for col in score_cols:
+            metric = col.replace('_score', '')
+            scores = df[col].dropna()
+            if len(scores) > 0:
+                data_ranges[metric] = (scores.min(), scores.max())
+
+        plot_data = []
+        for col in score_cols:
+            metric = col.replace('_score', '')
+            scores = df[col].dropna()
+
+            if len(scores) == 0:
+                continue
+
+            # Normalize each score for the plot
+            data_min, data_max = data_ranges.get(metric, (None, None))
+            for score in scores:
+                normalized = normalize_metric_value(score, metric, data_min, data_max)
+
+                plot_data.append({
+                    'Metric': metric.upper(),
+                    'Normalized Score': normalized,
+                    'Original Score': score
+                })
+
+        if not plot_data:
+            logger.warning("No data to plot in all metrics overview")
+            return
+
+        plot_df = pd.DataFrame(plot_data)
+
+        # Create figure with better layout
+        fig = plt.figure(figsize=(16, 10))
+        gs = fig.add_gridspec(2, 2, hspace=0.3, wspace=0.3,
+                              height_ratios=[2, 1], width_ratios=[3, 1])
+
+        # 1. Violin plot showing distributions (main plot)
+        ax1 = fig.add_subplot(gs[0, :])
+        sns.violinplot(data=plot_df, x='Metric', y='Normalized Score',
+                      palette='Set2', ax=ax1, inner='box')
+        ax1.set_title('All Metrics Distribution (Normalized 0-1 Scale)',
+                     fontsize=16, fontweight='bold', pad=20)
+        ax1.set_ylabel('Normalized Score', fontsize=12, fontweight='bold')
+        ax1.set_xlabel('Metrics', fontsize=12, fontweight='bold')
+        ax1.grid(axis='y', alpha=0.3, linestyle='--')
+
+        ax1.set_ylim(-0.05, 1.05)
+
+        # 2. Aggregate scores bar chart
+        ax2 = fig.add_subplot(gs[1, 0])
+
+        aggregate_scores = summary.get('aggregate_scores', {})
+        if aggregate_scores:
+            metrics = []
+            normalized_vals = []
+            original_vals = []
+
+            for metric, score in aggregate_scores.items():
+                if score is None:
+                    continue
+
+                metrics.append(metric.upper())
+                original_vals.append(score)
+
+                # Normalize using data ranges
+                data_min, data_max = data_ranges.get(metric, (None, None))
+                normalized_vals.append(normalize_metric_value(score, metric, data_min, data_max))
+
+            # Use simple color - NO color coding by quality
+            bars = ax2.bar(metrics, normalized_vals, color='steelblue',
+                          edgecolor='black', linewidth=1.5)
+
+            # Add original values as labels
+            for bar, orig in zip(bars, original_vals):
+                height = bar.get_height()
+                ax2.text(bar.get_x() + bar.get_width()/2., height + 0.02,
+                        f'{orig:.2f}',
+                        ha='center', va='bottom', fontsize=10, fontweight='bold')
+
+            ax2.set_ylabel('Normalized Score', fontsize=11, fontweight='bold')
+            ax2.set_xlabel('Metrics', fontsize=11, fontweight='bold')
+            ax2.set_title('Mean Scores (labels show original values)',
+                         fontsize=12, fontweight='bold')
+            ax2.set_ylim(0, 1.15)
+            ax2.grid(axis='y', alpha=0.3, linestyle='--')
+
+        # 3. Summary statistics table
+        ax3 = fig.add_subplot(gs[1, 1])
+        ax3.axis('off')
+
+        # Create summary stats
+        stats_text = "Summary Statistics\n" + "="*25 + "\n\n"
+        for col in sorted(score_cols):
+            metric = col.replace('_score', '').upper()
+            scores = df[col].dropna()
+
+            if len(scores) > 0:
+                stats_text += f"{metric}:\n"
+                stats_text += f"  Mean:   {scores.mean():.2f}\n"
+                stats_text += f"  Median: {scores.median():.2f}\n"
+                stats_text += f"  Std:    {scores.std():.2f}\n"
+                stats_text += f"  Range:  {scores.min():.2f}-{scores.max():.2f}\n\n"
+
+        ax3.text(0.1, 0.95, stats_text, transform=ax3.transAxes,
+                fontsize=9, verticalalignment='top', fontfamily='monospace',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
+
+        plt.suptitle('Complete Metrics Overview', fontsize=18, fontweight='bold', y=0.98)
+        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"Saved all-metrics overview to {output_path}")
+
+    except Exception as e:
+        logger.error(f"Error creating all-metrics overview: {e}", exc_info=True)
+
+
+def create_language_metric_heatmap(
+    manifest: Dict,
+    output_path: Path,
+):
+    """
+    Create heatmap showing performance across languages and metrics.
+
+    Args:
+        manifest: Manifest dictionary with 'languages' key containing per-language results
+        output_path: Path to save the heatmap
+    """
+    output_path = Path(output_path)
+
+    # Extract per-language aggregate scores
+    languages = manifest.get('languages', {})
+
+    if not languages:
+        logger.warning("No language data found in manifest for heatmap")
+        return
+
+    # First pass: collect all scores to compute data ranges for unbounded metrics
+    all_scores_by_metric = {}
+    for lang, lang_data in languages.items():
+        aggregate_scores = lang_data.get('aggregate_scores', {})
+        for metric, score in aggregate_scores.items():
+            if score is not None:
+                if metric not in all_scores_by_metric:
+                    all_scores_by_metric[metric] = []
+                all_scores_by_metric[metric].append(score)
+
+    # Compute data ranges for unbounded metrics
+    data_ranges = {}
+    for metric, scores in all_scores_by_metric.items():
+        if scores:
+            data_ranges[metric] = (min(scores), max(scores))
+
+    # Build raw and normalized DataFrames
+    raw_data = {}
+    normalized_data = {}
+
+    for lang, lang_data in languages.items():
+        aggregate_scores = lang_data.get('aggregate_scores', {})
+
+        raw_data[lang] = {}
+        normalized_data[lang] = {}
+
+        for metric, score in aggregate_scores.items():
+            if score is None:
+                continue
+
+            raw_data[lang][metric] = score
+
+            # Normalize scores to 0-1 scale for fair comparison
+            # For MCD (lower is better), normalize_metric_value already inverts
+            # so low raw MCD → high normalized score (good performance)
+            data_min, data_max = data_ranges.get(metric, (None, None))
+            normalized_data[lang][metric] = normalize_metric_value(score, metric, data_min, data_max)
+
+    # Create DataFrames
+    df_raw = pd.DataFrame(raw_data).T  # Transpose so languages are rows
+    df_norm = pd.DataFrame(normalized_data).T
+
+    # Sort columns by metric name for consistent ordering
+    df_raw = df_raw.reindex(sorted(df_raw.columns), axis=1)
+    df_norm = df_norm.reindex(sorted(df_norm.columns), axis=1)
+
+    # Rename columns for display (uppercase)
+    display_cols = [col.upper() for col in df_raw.columns]
+    df_raw.columns = display_cols
+    df_norm.columns = display_cols
+
+    # Create annotations from raw data
+    annot_data = df_raw.applymap(lambda x: f"{x:.2f}" if pd.notna(x) else "N/A")
+
+    # Create figure
+    plt.figure(figsize=(12, 6))
+
+    # Create heatmap using normalized values for color, raw values for annotations
+    # Normalized values: 0 (worst performance) → 1 (best performance) for ALL metrics
+    # MCD is already inverted by normalize_metric_value: low raw MCD = high normalized = GREEN
+    sns.heatmap(
+        df_norm,
+        annot=annot_data,  # Show raw values
+        fmt='',  # String format (already formatted)
+        cmap='RdYlGn',  # Red (worst) → Yellow → Green (best)
+        vmin=0,
+        vmax=1,
+        linewidths=0.5,
+        cbar_kws={'label': 'Performance (0=worst, 1=best)'}
+    )
+
+    plt.title('Language × Metric Performance Heatmap\n' +
+              'Colors show performance | Annotations show actual metric values',
+              fontsize=14, fontweight='bold', pad=20)
+    plt.xlabel('Metrics', fontsize=12, fontweight='bold')
+    plt.ylabel('Languages', fontsize=12, fontweight='bold')
+
+    # Add note about metrics
+    plt.figtext(0.5, -0.05,
+                'Note: For MCD, lower raw values are better. Colors reflect performance (green=good, red=bad).',
+                ha='center', fontsize=9, style='italic', wrap=True)
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+
+    logger.info(f"Saved language×metric heatmap to {output_path}")
+
+
 def create_metrics_comparison_chart(
     results: Dict[str, float],
     output_path: Path,
-    title: str = "Metrics Comparison",
+    title: str = "Metrics Comparison (Normalized)",
+    df: pd.DataFrame = None,
 ):
     """
-    Create a bar chart comparing different metrics.
-    
+    Create a normalized bar chart comparing different metrics on 0-1 scale.
+    Shows both normalized (bar height) and original values (labels).
+
     Args:
         results: Dictionary mapping metric name to score
         output_path: Path to save the chart
         title: Chart title
+        df: Optional DataFrame with per-sample scores to compute data ranges for unbounded metrics
     """
     try:
-        fig, ax = plt.subplots(figsize=(10, 6))
-        
         # Filter out None values
         filtered_results = {k: v for k, v in results.items() if v is not None}
-        
+
         if not filtered_results:
             logger.warning("No valid scores to plot in metrics comparison")
             return
-        
-        metrics = list(filtered_results.keys())
-        scores = list(filtered_results.values())
-        
-        bars = ax.bar(metrics, scores, color=sns.color_palette("husl", len(metrics)))
-        
-        # Add value labels on bars
-        for bar in bars:
+
+        # Compute data ranges for unbounded metrics from DataFrame if available
+        data_ranges = {}
+        if df is not None:
+            for metric in filtered_results.keys():
+                col = f'{metric}_score'
+                if col in df.columns:
+                    scores = df[col].dropna()
+                    if len(scores) > 0:
+                        data_ranges[metric] = (scores.min(), scores.max())
+
+        # Prepare data with both original and normalized values
+        data = []
+        for metric, score in filtered_results.items():
+            # Normalize using helper function with data ranges
+            data_min, data_max = data_ranges.get(metric, (None, None))
+            normalized = normalize_metric_value(score, metric, data_min, data_max)
+
+            data.append({
+                'metric': metric.upper(),
+                'original': score,
+                'normalized': normalized
+            })
+
+        # Create figure
+        fig, ax = plt.subplots(figsize=(12, 6))
+
+        metrics = [d['metric'] for d in data]
+        normalized_scores = [d['normalized'] for d in data]
+        original_scores = [d['original'] for d in data]
+
+        # Use simple color scheme - NO color coding by quality
+        bars = ax.bar(metrics, normalized_scores, color='steelblue', edgecolor='black', linewidth=1.5)
+
+        # Add value labels showing ORIGINAL values
+        for i, (bar, orig) in enumerate(zip(bars, original_scores)):
             height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height,
-                   f'{height:.2f}',
-                   ha='center', va='bottom', fontsize=10)
-        
-        ax.set_ylabel('Score', fontsize=12)
-        ax.set_title(title, fontsize=14, fontweight='bold')
-        ax.set_ylim(0, max(scores) * 1.2 if scores else 1)
-        
-        plt.xticks(rotation=45, ha='right')
+            ax.text(bar.get_x() + bar.get_width()/2., height + 0.02,
+                   f'{orig:.2f}',
+                   ha='center', va='bottom', fontsize=11, fontweight='bold')
+
+        ax.set_ylabel('Normalized Score (0-1)', fontsize=12, fontweight='bold')
+        ax.set_xlabel('Metrics', fontsize=12, fontweight='bold')
+        ax.set_title(title, fontsize=14, fontweight='bold', pad=20)
+        ax.set_ylim(0, 1.15)
+        ax.grid(axis='y', alpha=0.3, linestyle='--')
+
+        plt.xticks(rotation=0, ha='center')
         plt.tight_layout()
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
-        
+
         logger.info(f"Saved metrics comparison chart to {output_path}")
-    
+
     except Exception as e:
         logger.error(f"Error creating metrics comparison chart: {e}")
 
@@ -174,7 +575,7 @@ def create_score_distribution(
 ):
     """
     Create a distribution plot (histogram + box plot) for a metric.
-    
+
     Args:
         scores: List of scores
         metric_name: Name of the metric
@@ -182,33 +583,40 @@ def create_score_distribution(
         title: Optional title
     """
     try:
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), 
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8),
                                         gridspec_kw={'height_ratios': [3, 1]})
-        
+
+        # Determine appropriate number of bins based on sample size and data range
+        if len(scores) <= 10:
+            # For small datasets, use fewer bins to avoid gaps
+            n_bins = max(5, len(scores))
+        else:
+            n_bins = min(30, max(10, len(scores) // 3))
+
         # Histogram
-        ax1.hist(scores, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
-        ax1.axvline(np.mean(scores), color='red', linestyle='--', 
+        ax1.hist(scores, bins=n_bins, color='skyblue', edgecolor='black', alpha=0.7)
+        ax1.axvline(np.mean(scores), color='red', linestyle='--',
                     label=f'Mean: {np.mean(scores):.2f}')
-        ax1.axvline(np.median(scores), color='green', linestyle='--', 
+        ax1.axvline(np.median(scores), color='green', linestyle='--',
                     label=f'Median: {np.median(scores):.2f}')
         ax1.set_ylabel('Frequency', fontsize=11)
         ax1.legend()
-        ax1.set_title(title or f'{metric_name} Distribution', 
+        ax1.set_title(title or f'{metric_name} Distribution',
                       fontsize=13, fontweight='bold')
-        
-        # Box plot
-        ax2.boxplot(scores, vert=False, widths=0.6)
+
+        # Box plot - disable outlier symbols for cleaner look with small datasets
+        ax2.boxplot(scores, vert=False, widths=0.6, showfliers=False)
         ax2.set_xlabel(f'{metric_name} Score', fontsize=11)
         ax2.set_yticks([])
-        
+
         plt.tight_layout()
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
-        
+
         logger.info(f"Saved {metric_name} distribution to {output_path}")
-    
+
     except Exception as e:
-        logger.error(f"Error creating score distribution: {e}")
+        logger.error(f"Error creating score distribution for {metric_name}: {e}", exc_info=True)
 
 
 def create_per_sample_heatmap(
@@ -605,8 +1013,8 @@ def create_quality_dashboard(
         output_path: Path to save the dashboard
     """
     try:
-        fig = plt.figure(figsize=(16, 10))
-        gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+        fig = plt.figure(figsize=(18, 12))
+        gs = fig.add_gridspec(3, 3, hspace=0.4, wspace=0.4)
 
         metric_col = f'{primary_metric}_score'
         if metric_col not in df.columns:
@@ -671,30 +1079,35 @@ def create_quality_dashboard(
         table.auto_set_font_size(False)
         table.set_fontsize(9)
         table.scale(1, 2)
-        ax3.set_title('Statistics', fontweight='bold', fontsize=12, pad=20)
+        ax3.set_title('Statistics', fontweight='bold', fontsize=12, pad=10)
 
         # 4. All Metrics Comparison (if available)
         ax4 = fig.add_subplot(gs[1, 1:])
         metric_cols = [col for col in df.columns if col.endswith('_score')]
         if metric_cols:
+            # Compute data ranges for unbounded metrics
+            data_ranges_dashboard = {}
+            for col in metric_cols:
+                metric_name = col.replace('_score', '')
+                scores_col = df[col].dropna()
+                if len(scores_col) > 0:
+                    data_ranges_dashboard[metric_name] = (scores_col.min(), scores_col.max())
+
             metric_data = []
             metric_names = []
             for col in metric_cols:
                 metric_name = col.replace('_score', '')
                 if metric_name in METRIC_INFO:
                     scores_norm = df[col].dropna()
-                    if METRIC_INFO[metric_name]['higher_is_better']:
-                        scale_max = METRIC_INFO[metric_name]['scale'][1]
-                        normalized = scores_norm / scale_max
-                    else:
-                        scale_max = METRIC_INFO[metric_name]['scale'][1]
-                        normalized = 1 - (scores_norm / scale_max)
+                    # Use normalize_metric_value helper for each score with data ranges
+                    data_min, data_max = data_ranges_dashboard.get(metric_name, (None, None))
+                    normalized = scores_norm.apply(lambda x: normalize_metric_value(x, metric_name, data_min, data_max))
 
                     metric_data.append(normalized.tolist())
                     metric_names.append(METRIC_INFO[metric_name]['name'])
 
             if metric_data:
-                bp = ax4.boxplot(metric_data, labels=metric_names, patch_artist=True)
+                bp = ax4.boxplot(metric_data, labels=metric_names, patch_artist=True, showfliers=False)
                 for patch, color in zip(bp['boxes'], sns.color_palette("husl", len(metric_data))):
                     patch.set_facecolor(color)
                 ax4.set_ylabel('Normalized Score (0-1)', fontsize=11)
@@ -871,7 +1284,16 @@ def generate_all_visualizations(
         else:
             primary_metric = 'comet'
 
-    # 1. Quality Dashboard (NEW)
+    # 1. ALL METRICS OVERVIEW - Main comprehensive view
+    score_cols = [col for col in detailed_results.columns if col.endswith('_score')]
+    if score_cols and summary.get('aggregate_scores'):
+        create_all_metrics_overview(
+            detailed_results,
+            summary,
+            output_dir / 'all_metrics_overview.png',
+        )
+
+    # 2. Quality Dashboard
     if f'{primary_metric}_score' in detailed_results.columns:
         create_quality_dashboard(
             detailed_results,
@@ -879,24 +1301,18 @@ def generate_all_visualizations(
             output_dir / 'quality_dashboard.png',
         )
 
-    # 2. Normalized Metrics Comparison (NEW)
-    if summary.get('aggregate_scores'):
-        create_normalized_metrics_comparison(
-            summary,
-            output_dir / 'normalized_metrics.png',
-        )
-
-    # 3. Original Metrics comparison
+    # 4. Metrics comparison bar chart (normalized)
     if summary.get('aggregate_scores'):
         create_metrics_comparison_chart(
             summary['aggregate_scores'],
             output_dir / 'metrics_comparison.png',
+            df=detailed_results,
         )
 
-    # 4. Metrics table
+    # 5. Metrics table
     create_metrics_table_image(summary, output_dir / 'metrics_table.png')
 
-    # 5. Score distributions
+    # 6. Score distributions (individual)
     for metric in summary.get('metrics_computed', []):
         if f'{metric}_score' in detailed_results.columns:
             scores = detailed_results[f'{metric}_score'].dropna().tolist()
@@ -906,16 +1322,5 @@ def generate_all_visualizations(
                     metric.upper(),
                     output_dir / f'{metric}_distribution.png',
                 )
-
-    # 6. Per-sample heatmap (limit to first 50 samples for readability)
-    score_columns = [col for col in detailed_results.columns if col.endswith('_score')]
-    if score_columns:
-        sample_scores = detailed_results[score_columns].head(50).copy()
-        sample_scores.columns = [col.replace('_score', '').upper() for col in sample_scores.columns]
-        if not sample_scores.empty:
-            create_per_sample_heatmap(
-                sample_scores,
-                output_dir / 'per_sample_heatmap.png',
-            )
 
     logger.info(f"All visualizations saved to {output_dir}")

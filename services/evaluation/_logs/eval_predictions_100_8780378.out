@@ -1,0 +1,828 @@
+=========================================================
+SLURM JOB ID: 8780378
+JOB NAME: eval_predictions_100
+Running on nodes: cs-1-2
+Number of GPUs allocated: 1
+=========================================================
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.9.1+cu128
+CUDA available: True
+Number of GPUs: 1
+------------------------------------
+--- GPU Diagnostics ---
+Mon Dec  1 21:26:38 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   28C    P0             59W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting evaluation for language: efik
+Sample limit: 100
+Data directory: /home/vacl2/multimodal_translation/services/data/languages
+NMT model: multilang_finetuned_final
+TTS model: MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632
+Execution ID: auto-generated (unique for this language)
+
+2025-12-01 21:26:48,090 - __main__ - INFO - Auto-generated execution ID: eval_20251201_212648
+2025-12-01 21:26:48,101 - __main__ - INFO - Initialized manifest: results/eval_20251201_212648/manifest.json
+2025-12-01 21:26:48,101 - __main__ - INFO - 
+============================================================
+2025-12-01 21:26:48,101 - __main__ - INFO - Evaluating predictions for EFIK
+2025-12-01 21:26:48,101 - __main__ - INFO - ============================================================
+2025-12-01 21:26:48,112 - __main__ - INFO - Results will be saved to: results/eval_20251201_212648/efik
+2025-12-01 21:26:48,113 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/efik/nmt_predictions_multilang_finetuned_final.csv
+2025-12-01 21:26:48,158 - scripts.data_loader - INFO - Loaded 3248 prediction samples for efik
+2025-12-01 21:26:52,942 - scripts.data_loader - INFO - Successfully created 3248 samples for efik
+2025-12-01 21:26:52,943 - __main__ - INFO - Limiting evaluation to 100 samples
+2025-12-01 21:26:52,948 - pipeline - INFO - Evaluating 100 samples of type 'audio_to_audio'
+2025-12-01 21:26:52,948 - pipeline - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-12-01 21:26:52,957 - pipeline - INFO - Initialized text metrics evaluator
+2025-12-01 21:26:53,120 - pipeline - INFO - Initialized COMET evaluator
+2025-12-01 21:26:53,120 - pipeline - INFO - Initialized audio metrics evaluator
+2025-12-01 21:26:53,122 - pipeline - INFO - Initialized BLASER evaluator
+2025-12-01 21:26:53,124 - pipeline - INFO - Valid samples: 100, Skipped: 0
+2025-12-01 21:26:53,124 - pipeline - INFO - Computing BLEU scores...
+2025-12-01 21:26:53,139 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,139 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,139 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,139 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,139 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,139 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,140 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,141 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,142 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,143 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,144 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,145 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,146 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,147 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,148 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,149 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:26:53,150 - pipeline - INFO - Computing chrF scores...
+2025-12-01 21:26:53,205 - pipeline - INFO - Computing COMET scores...
+/home/vacl2/multimodal_translation/services/evaluation/.venv/lib64/python3.11/site-packages/torchmetrics/utilities/imports.py:23: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import DistributionNotFound, get_distribution
+2025-12-01 21:27:13,280 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-12-01 21:27:21,111 - comet.models.base - INFO - Encoder model frozen.
+2025-12-01 21:27:22,213 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-12-01 21:27:22,213 - scripts.comet_evaluator - INFO - Computing COMET scores for 100 samples...
+2025-12-01 21:27:22,397 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-12-01 21:27:22,471 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-12-01 21:27:22,471 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-12-01 21:27:22,480 - pytorch_lightning.utilities.rank_zero - INFO - You are using a CUDA device ('NVIDIA A100-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+2025-12-01 21:27:22,481 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-12-01 21:27:22,492 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/13 [00:00<?, ?it/s]Predicting DataLoader 0:   8%|▊         | 1/13 [00:00<00:04,  2.85it/s]Predicting DataLoader 0:  15%|█▌        | 2/13 [00:00<00:02,  4.94it/s]Predicting DataLoader 0:  23%|██▎       | 3/13 [00:00<00:01,  6.78it/s]Predicting DataLoader 0:  31%|███       | 4/13 [00:00<00:01,  8.23it/s]Predicting DataLoader 0:  38%|███▊      | 5/13 [00:00<00:00,  9.02it/s]Predicting DataLoader 0:  46%|████▌     | 6/13 [00:00<00:00,  9.91it/s]Predicting DataLoader 0:  54%|█████▍    | 7/13 [00:00<00:00, 10.67it/s]Predicting DataLoader 0:  62%|██████▏   | 8/13 [00:00<00:00, 11.31it/s]Predicting DataLoader 0:  69%|██████▉   | 9/13 [00:00<00:00, 11.92it/s]Predicting DataLoader 0:  77%|███████▋  | 10/13 [00:00<00:00, 12.35it/s]Predicting DataLoader 0:  85%|████████▍ | 11/13 [00:00<00:00, 12.70it/s]Predicting DataLoader 0:  92%|█████████▏| 12/13 [00:00<00:00, 12.92it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 13.12it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 13.12it/s]
+2025-12-01 21:27:24,891 - pipeline - INFO - Computing MCD scores...
+2025-12-01 21:27:24,891 - pipeline - INFO - Comparing predicted audio against ground truth audio
+2025-12-01 21:30:09,790 - pipeline - INFO - Computing BLASER scores...
+2025-12-01 21:30:09,791 - pipeline - INFO - Using predicted audio for BLASER evaluation
+2025-12-01 21:30:09,792 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 100 samples...
+2025-12-01 21:30:53,653 - scripts.blaser_evaluator - INFO - BLASER evaluation complete. Corpus score: 1.8459
+2025-12-01 21:30:53,663 - pipeline - INFO - Saved summary to results/eval_20251201_212648/efik/summary.json
+2025-12-01 21:30:53,681 - pipeline - INFO - Saved detailed results to results/eval_20251201_212648/efik/detailed_results.csv
+2025-12-01 21:30:53,689 - pipeline - INFO - Saved full results to results/eval_20251201_212648/efik/per_sample_results.json
+2025-12-01 21:30:53,689 - pipeline - INFO - Generating visualizations...
+2025-12-01 21:30:53,690 - pipeline - INFO - Using primary metric for quality categorization: blaser
+/home/vacl2/multimodal_translation/services/evaluation/scripts/visualizations.py:301: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.violinplot(data=plot_df, x='Metric', y='Normalized Score',
+2025-12-01 21:30:54,253 - scripts.visualizations - INFO - Saved all-metrics overview to results/eval_20251201_212648/efik/visualizations/all_metrics_overview.png
+2025-12-01 21:30:56,234 - scripts.visualizations - INFO - Saved quality dashboard to results/eval_20251201_212648/efik/visualizations/quality_dashboard.png
+2025-12-01 21:30:56,622 - scripts.visualizations - INFO - Saved metrics comparison chart to results/eval_20251201_212648/efik/visualizations/metrics_comparison.png
+2025-12-01 21:30:56,847 - scripts.visualizations - INFO - Saved metrics table to results/eval_20251201_212648/efik/visualizations/metrics_table.png
+2025-12-01 21:30:57,345 - scripts.visualizations - INFO - Saved BLEU distribution to results/eval_20251201_212648/efik/visualizations/bleu_distribution.png
+2025-12-01 21:30:57,855 - scripts.visualizations - INFO - Saved CHRF distribution to results/eval_20251201_212648/efik/visualizations/chrf_distribution.png
+2025-12-01 21:30:58,334 - scripts.visualizations - INFO - Saved COMET distribution to results/eval_20251201_212648/efik/visualizations/comet_distribution.png
+2025-12-01 21:30:58,809 - scripts.visualizations - INFO - Saved MCD distribution to results/eval_20251201_212648/efik/visualizations/mcd_distribution.png
+2025-12-01 21:30:59,274 - scripts.visualizations - INFO - Saved BLASER distribution to results/eval_20251201_212648/efik/visualizations/blaser_distribution.png
+2025-12-01 21:30:59,274 - scripts.visualizations - INFO - All visualizations saved to results/eval_20251201_212648/efik/visualizations
+2025-12-01 21:30:59,299 - scripts.visualizations - INFO - Saved HTML report to results/eval_20251201_212648/efik/summary_report.html
+2025-12-01 21:30:59,299 - pipeline - INFO - Generated HTML report at results/eval_20251201_212648/efik/summary_report.html
+2025-12-01 21:30:59,308 - __main__ - INFO - Updated manifest: results/eval_20251201_212648/manifest.json
+
+============================================================
+EVALUATION COMPLETE - efik
+============================================================
+Execution ID: eval_20251201_212648
+Run ID: run_20251201_212648
+Samples evaluated: 100/100
+
+Aggregate Scores:
+  BLEU: 24.519
+  CHRF: 56.190
+  COMET: 0.583
+  MCD: 12.914
+  BLASER: 1.846
+
+Results saved to: results/eval_20251201_212648/efik
+2025-12-01 21:30:59,308 - __main__ - INFO - 
+============================================================
+2025-12-01 21:30:59,308 - __main__ - INFO - Evaluating predictions for IGBO
+2025-12-01 21:30:59,308 - __main__ - INFO - ============================================================
+2025-12-01 21:30:59,330 - __main__ - INFO - Results will be saved to: results/eval_20251201_212648/igbo
+2025-12-01 21:30:59,331 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/igbo/nmt_predictions_multilang_finetuned_final.csv
+2025-12-01 21:30:59,373 - scripts.data_loader - INFO - Loaded 2948 prediction samples for igbo
+2025-12-01 21:31:03,682 - scripts.data_loader - INFO - Successfully created 2948 samples for igbo
+2025-12-01 21:31:03,684 - __main__ - INFO - Limiting evaluation to 100 samples
+2025-12-01 21:31:03,691 - pipeline - INFO - Evaluating 100 samples of type 'audio_to_audio'
+2025-12-01 21:31:03,691 - pipeline - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-12-01 21:31:03,692 - pipeline - INFO - Initialized text metrics evaluator
+2025-12-01 21:31:03,693 - pipeline - INFO - Initialized COMET evaluator
+2025-12-01 21:31:03,693 - pipeline - INFO - Initialized audio metrics evaluator
+2025-12-01 21:31:03,693 - pipeline - INFO - Initialized BLASER evaluator
+2025-12-01 21:31:03,695 - pipeline - INFO - Valid samples: 100, Skipped: 0
+2025-12-01 21:31:03,695 - pipeline - INFO - Computing BLEU scores...
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,712 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,713 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,714 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,715 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,716 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,717 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,718 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,719 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,720 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,721 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,722 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,723 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:31:03,724 - pipeline - INFO - Computing chrF scores...
+2025-12-01 21:31:03,780 - pipeline - INFO - Computing COMET scores...
+2025-12-01 21:31:03,780 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-12-01 21:31:11,846 - comet.models.base - INFO - Encoder model frozen.
+2025-12-01 21:31:12,655 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-12-01 21:31:12,655 - scripts.comet_evaluator - INFO - Computing COMET scores for 100 samples...
+2025-12-01 21:31:12,666 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-12-01 21:31:12,808 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-12-01 21:31:12,809 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-12-01 21:31:12,817 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-12-01 21:31:12,822 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/13 [00:00<?, ?it/s]Predicting DataLoader 0:   8%|▊         | 1/13 [00:00<00:00, 24.82it/s]Predicting DataLoader 0:  15%|█▌        | 2/13 [00:00<00:00, 25.80it/s]Predicting DataLoader 0:  23%|██▎       | 3/13 [00:00<00:00, 24.89it/s]Predicting DataLoader 0:  31%|███       | 4/13 [00:00<00:00, 23.24it/s]Predicting DataLoader 0:  38%|███▊      | 5/13 [00:00<00:00, 21.92it/s]Predicting DataLoader 0:  46%|████▌     | 6/13 [00:00<00:00, 22.31it/s]Predicting DataLoader 0:  54%|█████▍    | 7/13 [00:00<00:00, 22.18it/s]Predicting DataLoader 0:  62%|██████▏   | 8/13 [00:00<00:00, 22.09it/s]Predicting DataLoader 0:  69%|██████▉   | 9/13 [00:00<00:00, 21.90it/s]Predicting DataLoader 0:  77%|███████▋  | 10/13 [00:00<00:00, 21.65it/s]Predicting DataLoader 0:  85%|████████▍ | 11/13 [00:00<00:00, 21.17it/s]Predicting DataLoader 0:  92%|█████████▏| 12/13 [00:00<00:00, 20.45it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 19.98it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 19.48it/s]
+2025-12-01 21:31:15,529 - pipeline - INFO - Computing MCD scores...
+2025-12-01 21:31:15,529 - pipeline - INFO - Comparing predicted audio against ground truth audio
+2025-12-01 21:33:40,578 - pipeline - INFO - Computing BLASER scores...
+2025-12-01 21:33:40,580 - pipeline - INFO - Using predicted audio for BLASER evaluation
+2025-12-01 21:33:40,581 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 100 samples...
+2025-12-01 21:34:18,257 - scripts.blaser_evaluator - INFO - BLASER evaluation complete. Corpus score: 2.8203
+2025-12-01 21:34:18,267 - pipeline - INFO - Saved summary to results/eval_20251201_212648/igbo/summary.json
+2025-12-01 21:34:18,277 - pipeline - INFO - Saved detailed results to results/eval_20251201_212648/igbo/detailed_results.csv
+2025-12-01 21:34:18,286 - pipeline - INFO - Saved full results to results/eval_20251201_212648/igbo/per_sample_results.json
+2025-12-01 21:34:18,286 - pipeline - INFO - Generating visualizations...
+2025-12-01 21:34:18,287 - pipeline - INFO - Using primary metric for quality categorization: blaser
+/home/vacl2/multimodal_translation/services/evaluation/scripts/visualizations.py:301: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.violinplot(data=plot_df, x='Metric', y='Normalized Score',
+2025-12-01 21:34:18,706 - scripts.visualizations - INFO - Saved all-metrics overview to results/eval_20251201_212648/igbo/visualizations/all_metrics_overview.png
+2025-12-01 21:34:20,614 - scripts.visualizations - INFO - Saved quality dashboard to results/eval_20251201_212648/igbo/visualizations/quality_dashboard.png
+2025-12-01 21:34:20,976 - scripts.visualizations - INFO - Saved metrics comparison chart to results/eval_20251201_212648/igbo/visualizations/metrics_comparison.png
+2025-12-01 21:34:21,201 - scripts.visualizations - INFO - Saved metrics table to results/eval_20251201_212648/igbo/visualizations/metrics_table.png
+2025-12-01 21:34:21,671 - scripts.visualizations - INFO - Saved BLEU distribution to results/eval_20251201_212648/igbo/visualizations/bleu_distribution.png
+2025-12-01 21:34:22,139 - scripts.visualizations - INFO - Saved CHRF distribution to results/eval_20251201_212648/igbo/visualizations/chrf_distribution.png
+2025-12-01 21:34:22,614 - scripts.visualizations - INFO - Saved COMET distribution to results/eval_20251201_212648/igbo/visualizations/comet_distribution.png
+2025-12-01 21:34:23,069 - scripts.visualizations - INFO - Saved MCD distribution to results/eval_20251201_212648/igbo/visualizations/mcd_distribution.png
+2025-12-01 21:34:23,558 - scripts.visualizations - INFO - Saved BLASER distribution to results/eval_20251201_212648/igbo/visualizations/blaser_distribution.png
+2025-12-01 21:34:23,559 - scripts.visualizations - INFO - All visualizations saved to results/eval_20251201_212648/igbo/visualizations
+2025-12-01 21:34:23,579 - scripts.visualizations - INFO - Saved HTML report to results/eval_20251201_212648/igbo/summary_report.html
+2025-12-01 21:34:23,579 - pipeline - INFO - Generated HTML report at results/eval_20251201_212648/igbo/summary_report.html
+2025-12-01 21:34:23,587 - __main__ - INFO - Updated manifest: results/eval_20251201_212648/manifest.json
+
+============================================================
+EVALUATION COMPLETE - igbo
+============================================================
+Execution ID: eval_20251201_212648
+Run ID: run_20251201_213059
+Samples evaluated: 100/100
+
+Aggregate Scores:
+  BLEU: 38.597
+  CHRF: 63.286
+  COMET: 0.634
+  MCD: 11.741
+  BLASER: 2.820
+
+Results saved to: results/eval_20251201_212648/igbo
+2025-12-01 21:34:23,588 - __main__ - INFO - 
+============================================================
+2025-12-01 21:34:23,588 - __main__ - INFO - Evaluating predictions for SWAHILI
+2025-12-01 21:34:23,588 - __main__ - INFO - ============================================================
+2025-12-01 21:34:23,604 - __main__ - INFO - Results will be saved to: results/eval_20251201_212648/swahili
+2025-12-01 21:34:23,606 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/swahili/nmt_predictions_multilang_finetuned_final.csv
+2025-12-01 21:34:23,635 - scripts.data_loader - INFO - Loaded 1864 prediction samples for swahili
+2025-12-01 21:34:27,410 - scripts.data_loader - INFO - Successfully created 1864 samples for swahili
+2025-12-01 21:34:27,411 - __main__ - INFO - Limiting evaluation to 100 samples
+2025-12-01 21:34:27,415 - pipeline - INFO - Evaluating 100 samples of type 'audio_to_audio'
+2025-12-01 21:34:27,415 - pipeline - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-12-01 21:34:27,415 - pipeline - INFO - Initialized text metrics evaluator
+2025-12-01 21:34:27,419 - pipeline - INFO - Initialized COMET evaluator
+2025-12-01 21:34:27,421 - pipeline - INFO - Initialized audio metrics evaluator
+2025-12-01 21:34:27,422 - pipeline - INFO - Initialized BLASER evaluator
+2025-12-01 21:34:27,424 - pipeline - INFO - Valid samples: 100, Skipped: 0
+2025-12-01 21:34:27,424 - pipeline - INFO - Computing BLEU scores...
+2025-12-01 21:34:27,439 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,440 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,441 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,442 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,443 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,444 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,445 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,446 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,447 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,448 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,449 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,450 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,451 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,452 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:34:27,453 - pipeline - INFO - Computing chrF scores...
+2025-12-01 21:34:27,523 - pipeline - INFO - Computing COMET scores...
+2025-12-01 21:34:27,523 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-12-01 21:34:34,550 - comet.models.base - INFO - Encoder model frozen.
+2025-12-01 21:34:35,287 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-12-01 21:34:35,287 - scripts.comet_evaluator - INFO - Computing COMET scores for 100 samples...
+2025-12-01 21:34:35,301 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-12-01 21:34:35,436 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-12-01 21:34:35,436 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-12-01 21:34:35,444 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-12-01 21:34:35,448 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/13 [00:00<?, ?it/s]Predicting DataLoader 0:   8%|▊         | 1/13 [00:00<00:00, 25.06it/s]Predicting DataLoader 0:  15%|█▌        | 2/13 [00:00<00:00, 25.29it/s]Predicting DataLoader 0:  23%|██▎       | 3/13 [00:00<00:00, 25.63it/s]Predicting DataLoader 0:  31%|███       | 4/13 [00:00<00:00, 25.59it/s]Predicting DataLoader 0:  38%|███▊      | 5/13 [00:00<00:00, 25.73it/s]Predicting DataLoader 0:  46%|████▌     | 6/13 [00:00<00:00, 25.21it/s]Predicting DataLoader 0:  54%|█████▍    | 7/13 [00:00<00:00, 25.25it/s]Predicting DataLoader 0:  62%|██████▏   | 8/13 [00:00<00:00, 25.18it/s]Predicting DataLoader 0:  69%|██████▉   | 9/13 [00:00<00:00, 25.11it/s]Predicting DataLoader 0:  77%|███████▋  | 10/13 [00:00<00:00, 25.03it/s]Predicting DataLoader 0:  85%|████████▍ | 11/13 [00:00<00:00, 24.75it/s]Predicting DataLoader 0:  92%|█████████▏| 12/13 [00:00<00:00, 24.23it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 24.35it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 24.12it/s]
+2025-12-01 21:34:37,889 - pipeline - INFO - Computing MCD scores...
+2025-12-01 21:34:37,889 - pipeline - INFO - Comparing predicted audio against ground truth audio
+2025-12-01 21:37:37,537 - pipeline - INFO - Computing BLASER scores...
+2025-12-01 21:37:37,541 - pipeline - INFO - Using predicted audio for BLASER evaluation
+2025-12-01 21:37:37,542 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 100 samples...
+2025-12-01 21:38:20,342 - scripts.blaser_evaluator - INFO - BLASER evaluation complete. Corpus score: 4.4222
+2025-12-01 21:38:20,353 - pipeline - INFO - Saved summary to results/eval_20251201_212648/swahili/summary.json
+2025-12-01 21:38:20,364 - pipeline - INFO - Saved detailed results to results/eval_20251201_212648/swahili/detailed_results.csv
+2025-12-01 21:38:20,377 - pipeline - INFO - Saved full results to results/eval_20251201_212648/swahili/per_sample_results.json
+2025-12-01 21:38:20,377 - pipeline - INFO - Generating visualizations...
+2025-12-01 21:38:20,378 - pipeline - INFO - Using primary metric for quality categorization: blaser
+/home/vacl2/multimodal_translation/services/evaluation/scripts/visualizations.py:301: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.violinplot(data=plot_df, x='Metric', y='Normalized Score',
+2025-12-01 21:38:20,808 - scripts.visualizations - INFO - Saved all-metrics overview to results/eval_20251201_212648/swahili/visualizations/all_metrics_overview.png
+2025-12-01 21:38:22,757 - scripts.visualizations - INFO - Saved quality dashboard to results/eval_20251201_212648/swahili/visualizations/quality_dashboard.png
+2025-12-01 21:38:23,113 - scripts.visualizations - INFO - Saved metrics comparison chart to results/eval_20251201_212648/swahili/visualizations/metrics_comparison.png
+2025-12-01 21:38:23,341 - scripts.visualizations - INFO - Saved metrics table to results/eval_20251201_212648/swahili/visualizations/metrics_table.png
+2025-12-01 21:38:23,799 - scripts.visualizations - INFO - Saved BLEU distribution to results/eval_20251201_212648/swahili/visualizations/bleu_distribution.png
+2025-12-01 21:38:24,283 - scripts.visualizations - INFO - Saved CHRF distribution to results/eval_20251201_212648/swahili/visualizations/chrf_distribution.png
+2025-12-01 21:38:24,785 - scripts.visualizations - INFO - Saved COMET distribution to results/eval_20251201_212648/swahili/visualizations/comet_distribution.png
+2025-12-01 21:38:25,265 - scripts.visualizations - INFO - Saved MCD distribution to results/eval_20251201_212648/swahili/visualizations/mcd_distribution.png
+2025-12-01 21:38:25,740 - scripts.visualizations - INFO - Saved BLASER distribution to results/eval_20251201_212648/swahili/visualizations/blaser_distribution.png
+2025-12-01 21:38:25,741 - scripts.visualizations - INFO - All visualizations saved to results/eval_20251201_212648/swahili/visualizations
+2025-12-01 21:38:25,758 - scripts.visualizations - INFO - Saved HTML report to results/eval_20251201_212648/swahili/summary_report.html
+2025-12-01 21:38:25,758 - pipeline - INFO - Generated HTML report at results/eval_20251201_212648/swahili/summary_report.html
+2025-12-01 21:38:25,768 - __main__ - INFO - Updated manifest: results/eval_20251201_212648/manifest.json
+
+============================================================
+EVALUATION COMPLETE - swahili
+============================================================
+Execution ID: eval_20251201_212648
+Run ID: run_20251201_213423
+Samples evaluated: 100/100
+
+Aggregate Scores:
+  BLEU: 51.236
+  CHRF: 74.706
+  COMET: 0.682
+  MCD: 13.515
+  BLASER: 4.422
+
+Results saved to: results/eval_20251201_212648/swahili
+2025-12-01 21:38:25,768 - __main__ - INFO - 
+============================================================
+2025-12-01 21:38:25,768 - __main__ - INFO - Evaluating predictions for XHOSA
+2025-12-01 21:38:25,768 - __main__ - INFO - ============================================================
+2025-12-01 21:38:25,783 - __main__ - INFO - Results will be saved to: results/eval_20251201_212648/xhosa
+2025-12-01 21:38:25,784 - scripts.data_loader - INFO - Loading predictions from /home/vacl2/multimodal_translation/services/data/languages/xhosa/nmt_predictions_multilang_finetuned_final.csv
+2025-12-01 21:38:25,815 - scripts.data_loader - INFO - Loaded 1894 prediction samples for xhosa
+2025-12-01 21:38:29,141 - scripts.data_loader - INFO - Successfully created 1894 samples for xhosa
+2025-12-01 21:38:29,143 - __main__ - INFO - Limiting evaluation to 100 samples
+2025-12-01 21:38:29,146 - pipeline - INFO - Evaluating 100 samples of type 'audio_to_audio'
+2025-12-01 21:38:29,146 - pipeline - INFO - Metrics to compute: ['bleu', 'chrf', 'comet', 'mcd', 'blaser']
+2025-12-01 21:38:29,146 - pipeline - INFO - Initialized text metrics evaluator
+2025-12-01 21:38:29,148 - pipeline - INFO - Initialized COMET evaluator
+2025-12-01 21:38:29,148 - pipeline - INFO - Initialized audio metrics evaluator
+2025-12-01 21:38:29,148 - pipeline - INFO - Initialized BLASER evaluator
+2025-12-01 21:38:29,150 - pipeline - INFO - Valid samples: 100, Skipped: 0
+2025-12-01 21:38:29,150 - pipeline - INFO - Computing BLEU scores...
+2025-12-01 21:38:29,163 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,164 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,165 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,166 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,167 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,168 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,169 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,170 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,171 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,172 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,173 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,174 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,175 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,176 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,176 - sacrebleu - WARNING - It is recommended to enable `effective_order` for sentence-level BLEU.
+2025-12-01 21:38:29,176 - pipeline - INFO - Computing chrF scores...
+2025-12-01 21:38:29,251 - pipeline - INFO - Computing COMET scores...
+2025-12-01 21:38:29,252 - scripts.comet_evaluator - INFO - Loading COMET model: McGill-NLP/ssa-comet-qe
+2025-12-01 21:38:37,887 - comet.models.base - INFO - Encoder model frozen.
+2025-12-01 21:38:38,717 - scripts.comet_evaluator - INFO - COMET model loaded successfully on cuda
+2025-12-01 21:38:38,717 - scripts.comet_evaluator - INFO - Computing COMET scores for 100 samples...
+2025-12-01 21:38:38,732 - pytorch_lightning.utilities.rank_zero - INFO - 💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+2025-12-01 21:38:38,928 - pytorch_lightning.utilities.rank_zero - INFO - GPU available: True (cuda), used: True
+2025-12-01 21:38:38,929 - pytorch_lightning.utilities.rank_zero - INFO - TPU available: False, using: 0 TPU cores
+2025-12-01 21:38:38,938 - pytorch_lightning.accelerators.cuda - INFO - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2025-12-01 21:38:38,943 - pytorch_lightning.trainer.connectors.signal_connector - INFO - SLURM auto-requeueing enabled. Setting signal handlers.
+Predicting: 0it [00:00, ?it/s]Predicting: 0it [00:00, ?it/s]Predicting DataLoader 0:   0%|          | 0/13 [00:00<?, ?it/s]Predicting DataLoader 0:   8%|▊         | 1/13 [00:00<00:00, 24.01it/s]Predicting DataLoader 0:  15%|█▌        | 2/13 [00:00<00:00, 24.14it/s]Predicting DataLoader 0:  23%|██▎       | 3/13 [00:00<00:00, 24.69it/s]Predicting DataLoader 0:  31%|███       | 4/13 [00:00<00:00, 24.73it/s]Predicting DataLoader 0:  38%|███▊      | 5/13 [00:00<00:00, 24.81it/s]Predicting DataLoader 0:  46%|████▌     | 6/13 [00:00<00:00, 24.48it/s]Predicting DataLoader 0:  54%|█████▍    | 7/13 [00:00<00:00, 24.31it/s]Predicting DataLoader 0:  62%|██████▏   | 8/13 [00:00<00:00, 23.90it/s]Predicting DataLoader 0:  69%|██████▉   | 9/13 [00:00<00:00, 23.85it/s]Predicting DataLoader 0:  77%|███████▋  | 10/13 [00:00<00:00, 23.39it/s]Predicting DataLoader 0:  85%|████████▍ | 11/13 [00:00<00:00, 23.06it/s]Predicting DataLoader 0:  92%|█████████▏| 12/13 [00:00<00:00, 22.72it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 22.40it/s]Predicting DataLoader 0: 100%|██████████| 13/13 [00:00<00:00, 22.07it/s]
+2025-12-01 21:38:41,304 - pipeline - INFO - Computing MCD scores...
+2025-12-01 21:38:41,305 - pipeline - INFO - Comparing predicted audio against ground truth audio
+2025-12-01 21:41:54,950 - pipeline - INFO - Computing BLASER scores...
+2025-12-01 21:41:54,954 - pipeline - INFO - Using predicted audio for BLASER evaluation
+2025-12-01 21:41:54,955 - scripts.blaser_evaluator - INFO - Running BLASER evaluation for 100 samples...
+2025-12-01 21:42:37,030 - scripts.blaser_evaluator - INFO - BLASER evaluation complete. Corpus score: 3.3820
+2025-12-01 21:42:37,050 - pipeline - INFO - Saved summary to results/eval_20251201_212648/xhosa/summary.json
+2025-12-01 21:42:37,061 - pipeline - INFO - Saved detailed results to results/eval_20251201_212648/xhosa/detailed_results.csv
+2025-12-01 21:42:37,074 - pipeline - INFO - Saved full results to results/eval_20251201_212648/xhosa/per_sample_results.json
+2025-12-01 21:42:37,074 - pipeline - INFO - Generating visualizations...
+2025-12-01 21:42:37,074 - pipeline - INFO - Using primary metric for quality categorization: blaser
+/home/vacl2/multimodal_translation/services/evaluation/scripts/visualizations.py:301: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.violinplot(data=plot_df, x='Metric', y='Normalized Score',
+2025-12-01 21:42:37,492 - scripts.visualizations - INFO - Saved all-metrics overview to results/eval_20251201_212648/xhosa/visualizations/all_metrics_overview.png
+2025-12-01 21:42:39,384 - scripts.visualizations - INFO - Saved quality dashboard to results/eval_20251201_212648/xhosa/visualizations/quality_dashboard.png
+2025-12-01 21:42:39,725 - scripts.visualizations - INFO - Saved metrics comparison chart to results/eval_20251201_212648/xhosa/visualizations/metrics_comparison.png
+2025-12-01 21:42:40,159 - scripts.visualizations - INFO - Saved metrics table to results/eval_20251201_212648/xhosa/visualizations/metrics_table.png
+2025-12-01 21:42:40,653 - scripts.visualizations - INFO - Saved BLEU distribution to results/eval_20251201_212648/xhosa/visualizations/bleu_distribution.png
+2025-12-01 21:42:41,135 - scripts.visualizations - INFO - Saved CHRF distribution to results/eval_20251201_212648/xhosa/visualizations/chrf_distribution.png
+2025-12-01 21:42:41,588 - scripts.visualizations - INFO - Saved COMET distribution to results/eval_20251201_212648/xhosa/visualizations/comet_distribution.png
+2025-12-01 21:42:42,039 - scripts.visualizations - INFO - Saved MCD distribution to results/eval_20251201_212648/xhosa/visualizations/mcd_distribution.png
+2025-12-01 21:42:42,509 - scripts.visualizations - INFO - Saved BLASER distribution to results/eval_20251201_212648/xhosa/visualizations/blaser_distribution.png
+2025-12-01 21:42:42,509 - scripts.visualizations - INFO - All visualizations saved to results/eval_20251201_212648/xhosa/visualizations
+2025-12-01 21:42:42,526 - scripts.visualizations - INFO - Saved HTML report to results/eval_20251201_212648/xhosa/summary_report.html
+2025-12-01 21:42:42,526 - pipeline - INFO - Generated HTML report at results/eval_20251201_212648/xhosa/summary_report.html
+2025-12-01 21:42:42,536 - __main__ - INFO - Updated manifest: results/eval_20251201_212648/manifest.json
+
+============================================================
+EVALUATION COMPLETE - xhosa
+============================================================
+Execution ID: eval_20251201_212648
+Run ID: run_20251201_213825
+Samples evaluated: 100/100
+
+Aggregate Scores:
+  BLEU: 33.683
+  CHRF: 71.398
+  COMET: 0.655
+  MCD: 11.836
+  BLASER: 3.382
+
+Results saved to: results/eval_20251201_212648/xhosa
+2025-12-01 21:42:42,536 - __main__ - INFO - Generating overall summary across all languages...
+2025-12-01 21:42:42,545 - __main__ - INFO - Saved overall summary: results/eval_20251201_212648/overall_summary.json
+2025-12-01 21:42:42,548 - __main__ - INFO - Generating cross-language visualizations in results/eval_20251201_212648/visualizations
+/home/vacl2/multimodal_translation/services/evaluation/scripts/visualizations.py:452: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+  annot_data = df_raw.applymap(lambda x: f"{x:.2f}" if pd.notna(x) else "N/A")
+2025-12-01 21:42:42,901 - scripts.visualizations - INFO - Saved language×metric heatmap to results/eval_20251201_212648/visualizations/language_metric_heatmap.png
+
+======================================================================
+OVERALL SUMMARY - ALL LANGUAGES
+======================================================================
+Execution ID: eval_20251201_212648
+Languages evaluated: 4
+Total samples: 400
+Total valid samples: 400
+
+Aggregate Statistics Across Languages:
+  COMET:
+    Mean:   0.638
+    Median: 0.644
+    Std:    0.042
+    Range:  0.583 - 0.682
+  BLASER:
+    Mean:   3.118
+    Median: 3.101
+    Std:    1.077
+    Range:  1.846 - 4.422
+  CHRF:
+    Mean:   66.395
+    Median: 67.342
+    Std:    8.325
+    Range:  56.190 - 74.706
+  MCD:
+    Mean:   12.502
+    Median: 12.375
+    Std:    0.860
+    Range:  11.741 - 13.515
+  BLEU:
+    Mean:   37.009
+    Median: 36.140
+    Std:    11.135
+    Range:  24.519 - 51.236
+
+Per-Language Breakdown:
+  EFIK:
+    Samples: 100/100
+    BLEU: 24.519
+    CHRF: 56.190
+    COMET: 0.583
+    MCD: 12.914
+    BLASER: 1.846
+  IGBO:
+    Samples: 100/100
+    BLEU: 38.597
+    CHRF: 63.286
+    COMET: 0.634
+    MCD: 11.741
+    BLASER: 2.820
+  SWAHILI:
+    Samples: 100/100
+    BLEU: 51.236
+    CHRF: 74.706
+    COMET: 0.682
+    MCD: 13.515
+    BLASER: 4.422
+  XHOSA:
+    Samples: 100/100
+    BLEU: 33.683
+    CHRF: 71.398
+    COMET: 0.655
+    MCD: 11.836
+    BLASER: 3.382
+
+Results directory: results/eval_20251201_212648
+Overall summary: results/eval_20251201_212648/overall_summary.json
+
+Cross-language visualizations:
+  - Language×Metric Heatmap: results/eval_20251201_212648/visualizations/language_metric_heatmap.png
+
+============================================================
+ALL EVALUATIONS COMPLETE
+============================================================
+Results directory: results/eval_20251201_212648
+
+=========================================================
+Evaluation finished for efik
+=========================================================

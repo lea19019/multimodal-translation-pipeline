@@ -201,6 +201,24 @@ async def get_evaluation(execution_id: str):
         )
 
 
+@app.get("/evaluations/{execution_id}/visualizations")
+async def get_evaluation_visualizations(execution_id: str):
+    """Proxy: Get list of execution-level visualizations from Evaluation Service"""
+    try:
+        async with httpx.AsyncClient(timeout=10.0, verify=False, trust_env=False) as client:
+            response = await client.get(f"{EVALUATION_SERVICE_URL}/executions/{execution_id}/visualizations")
+            response.raise_for_status()
+            return response.json()
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error fetching visualizations for {execution_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Could not fetch visualizations: {str(e)}"
+        )
+
+
 @app.get("/evaluations/{execution_id}/languages/{language}")
 async def get_evaluation_language(execution_id: str, language: str):
     """Proxy: Get language-specific evaluation results from Evaluation Service"""
