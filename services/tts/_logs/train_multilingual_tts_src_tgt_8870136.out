@@ -1,0 +1,143 @@
+=========================================================
+SLURM JOB ID: 8870136
+JOB NAME: train_multilingual_tts_src_tgt
+Running on nodes: cs-1-2
+Number of GPUs allocated: 2
+=========================================================
+Activating environment...
+--- Python and Torch Diagnostics ---
+/usr/bin/python
+PyTorch version: 2.8.0+cu128
+CUDA available: True
+Number of GPUs: 2
+------------------------------------
+--- GPU Diagnostics ---
+Sun Dec  7 07:01:25 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          Off |   00000000:0A:00.0 Off |                    0 |
+| N/A   27C    P0             58W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-80GB          Off |   00000000:46:00.0 Off |                    0 |
+| N/A   28C    P0             60W /  400W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+-----------------------
+Starting distributed training on 2 GPUs...
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_12_07-070138', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_eval.csv,swa', '/home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_eval.csv,ibo', '--num_epochs', '20', '--batch_size', '24', '--grad_acumm', '2', '--max_text_length', '300', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '2e-6', '--save_step', '2000', '--run_name', 'Multilingual_Src_Tgt_6_12', '--rank=0']
+['/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py', '--continue_path=', '--restore_path=', '--group_id=group_2025_12_07-070138', '--use_ddp=true', '--output_path', 'checkpoints/', '--metadatas', '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_eval.csv,swa', '/home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_eval.csv,xho', '/home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_eval.csv,efi', '/home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_train.csv,/home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_eval.csv,ibo', '--num_epochs', '20', '--batch_size', '24', '--grad_acumm', '2', '--max_text_length', '300', '--max_audio_length', '330750', '--weight_decay', '1e-2', '--lr', '2e-6', '--save_step', '2000', '--run_name', 'Multilingual_Src_Tgt_6_12', '--rank=1']
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/librosa/core/intervals.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+ > Training Environment:
+ | > Backend: Torch
+ | > Mixed precision: False
+ | > Precision: float32
+ | > Current device: 0
+ | > Num. of GPUs: 2
+ | > Num. of CPUs: 256
+ | > Num. of Torch Threads: 1
+ | > Torch seed: 54321
+ | > Torch CUDNN: True
+ | > Torch CUDNN deterministic: False
+ | > Torch CUDNN benchmark: False
+ | > Torch TF32 MatMul: False
+ > Start Tensorboard: tensorboard --logdir=checkpoints/Multilingual_Src_Tgt_6_12-December-07-2025_07+03AM-b2b8254
+ > Using PyTorch DDP
+/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_eval.csv swa
+/home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_eval.csv ibo
+ > Loading checkpoint with 6221 additional tokens.
+>> DVAE weights restored from: checkpoints/base/dvae.pth
+ > Missing column in line 14259 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=15617_User=7_Language=swa.wav|"<eng>Youll be skipping down memory lane in no time.Try FamilySearch Memories on your computer or mobile device: iOS | Android <swa>Utakuwa umeacha kumbukumbu za familia katika dakika chache. Jaribu FamilySearch Memories kwenye kompyuta yako au simu ya mkononi: iOS | Android"|7
+ > Missing column in line 14420 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"<eng>Title Page | Introduction | The Testimony of Three Witnesses | The Testimony of Eight Witnesses | Testimony of the Prophet Joseph Smith | A Brief Explanation about the Book of Mormon | <swa>Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > [!] 1 files not found
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio
+ | > Found 15160 files in /home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio
+ | > Found 25991 files in /home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio
+ | > [!] 8 files not found
+ | > Found 23580 files in /home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio
+✅ Found 79649 training samples and 9955 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': '<eng>When I finished, I heard the door close at the back of our house and looked to see my father calling me to join him. <swa>Nilipomaliza, nilisikia milango ikifunga nyuma ya nyumba yetu na niliona baba yangu akiniita niungane naye.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16671_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': '7', 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio', 'language': 'swa', 'audio_unique_name': 'ft_dataset#../processed_audio_normalized/Segment=16671_User=7_Language=swa'}
+Sample 2: {'text': '<eng>Also display the descriptions, but in random order, making sure the scripture references are not listed next to their correct descriptions. <swa>Pia onyesha maelezo, lakini bila taratibu maalumu, kwa kuhakikisha marejeleo ya maandiko hayajaorodheshwa karibu na maelezo yake sahihi.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=17103_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': '7', 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio', 'language': 'swa', 'audio_unique_name': 'ft_dataset#../processed_audio_normalized/Segment=17103_User=7_Language=swa'}
+Sample 3: {'text': '<eng>Our students cannot know of God, and so love as they must love, unless they are taught by the Holy Spirit. <swa>Wanafunzi wetu hawawezi kumjua Mungu, na kisha wapende kama wanavyopaswa wapende, ila wafunzwe na Roho Mtakatifu.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16991_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': '7', 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio', 'language': 'swa', 'audio_unique_name': 'ft_dataset#../processed_audio_normalized/Segment=16991_User=7_Language=swa'}
+--- END OF PREVIEW ---
+
+Traceback (most recent call last):
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 247, in <module>
+    trainer_out_path = train_gpt(
+  File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 213, in train_gpt
+    trainer = Trainer(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 511, in __init__
+    init_distributed(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/utils/distributed.py", line 65, in init_distributed
+    dist.init_process_group(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+    return func(*args, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/c10d_logger.py", line 95, in wrapper
+    func_return = func(*args, **kwargs)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 1757, in init_process_group
+    store, rank, world_size = next(rendezvous_iterator)
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/rendezvous.py", line 230, in _tcp_rendezvous_handler
+    store = _create_c10d_store(
+  File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/rendezvous.py", line 198, in _create_c10d_store
+    return TCPStore(
+torch.distributed.DistNetworkError: The server socket has failed to listen on any local network address. port: 54321, useIpv6: false, code: -98, name: EADDRINUSE, message: address already in use
+/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio/metadata_eval.csv swa
+/home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio/metadata_eval.csv xho
+/home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio/metadata_eval.csv efi
+/home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_train.csv /home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio/metadata_eval.csv ibo
+ > Loading checkpoint with 6221 additional tokens.
+>> DVAE weights restored from: checkpoints/base/dvae.pth
+ > Missing column in line 14259 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=15617_User=7_Language=swa.wav|"<eng>Youll be skipping down memory lane in no time.Try FamilySearch Memories on your computer or mobile device: iOS | Android <swa>Utakuwa umeacha kumbukumbu za familia katika dakika chache. Jaribu FamilySearch Memories kwenye kompyuta yako au simu ya mkononi: iOS | Android"|7
+ > Missing column in line 14420 -> /home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=26192_User=7_Language=swa.wav|"<eng>Title Page | Introduction | The Testimony of Three Witnesses | The Testimony of Eight Witnesses | Testimony of the Prophet Joseph Smith | A Brief Explanation about the Book of Mormon | <swa>Jina la Ukurasa|Utangulizi|Ushuhuda wa Mashahidi Watatu|Ushuhuda wa Mashahidi Nane|Ushuhuda wa Nabii Joseph Smith|Maelezo mafupi kuhusu Kitabu cha Mormoni|"|7
+ | > [!] 1 files not found
+ | > Found 14918 files in /home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio
+ | > Found 15160 files in /home/vacl2/multimodal_translation/services/data/languages/xhosa/src_tgt_text_to_tgt_audio
+ | > Found 25991 files in /home/vacl2/multimodal_translation/services/data/languages/efik/src_tgt_text_to_tgt_audio
+ | > [!] 8 files not found
+ | > Found 23580 files in /home/vacl2/multimodal_translation/services/data/languages/igbo/src_tgt_text_to_tgt_audio
+✅ Found 79649 training samples and 9955 evaluation samples.
+
+--- PREVIEWING FIRST 3 TRAINING SAMPLES ---
+Sample 1: {'text': '<eng>When I finished, I heard the door close at the back of our house and looked to see my father calling me to join him. <swa>Nilipomaliza, nilisikia milango ikifunga nyuma ya nyumba yetu na niliona baba yangu akiniita niungane naye.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16671_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': '7', 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio', 'language': 'swa', 'audio_unique_name': 'ft_dataset#../processed_audio_normalized/Segment=16671_User=7_Language=swa'}
+Sample 2: {'text': '<eng>Also display the descriptions, but in random order, making sure the scripture references are not listed next to their correct descriptions. <swa>Pia onyesha maelezo, lakini bila taratibu maalumu, kwa kuhakikisha marejeleo ya maandiko hayajaorodheshwa karibu na maelezo yake sahihi.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=17103_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': '7', 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio', 'language': 'swa', 'audio_unique_name': 'ft_dataset#../processed_audio_normalized/Segment=17103_User=7_Language=swa'}
+Sample 3: {'text': '<eng>Our students cannot know of God, and so love as they must love, unless they are taught by the Holy Spirit. <swa>Wanafunzi wetu hawawezi kumjua Mungu, na kisha wapende kama wanavyopaswa wapende, ila wafunzwe na Roho Mtakatifu.', 'audio_file': '/home/vacl2/multimodal_translation/services/data/languages/swahili/processed_audio_normalized/Segment=16991_User=7_Language=swa.wav', 'ref_file': 'null', 'speaker_name': '7', 'emotion_name': 'neutral', 'root_path': '/home/vacl2/multimodal_translation/services/data/languages/swahili/src_tgt_text_to_tgt_audio', 'language': 'swa', 'audio_unique_name': 'ft_dataset#../processed_audio_normalized/Segment=16991_User=7_Language=swa'}
+--- END OF PREVIEW ---
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 247, in <module>
+[rank1]:     trainer_out_path = train_gpt(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/train_gpt_xtts.py", line 213, in train_gpt
+[rank1]:     trainer = Trainer(
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/trainer/trainer.py", line 571, in __init__
+[rank1]:     self.model = DDP_th(self.model, device_ids=[args.rank], output_device=args.rank)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/nn/parallel/distributed.py", line 845, in __init__
+[rank1]:     _verify_param_shape_across_processes(self.process_group, parameters)
+[rank1]:   File "/home/vacl2/multimodal_translation/services/tts/.venv/lib64/python3.9/site-packages/torch/distributed/utils.py", line 281, in _verify_param_shape_across_processes
+[rank1]:     return dist._verify_params_across_processes(process_group, tensors, logger)
+[rank1]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:77, remote process exited or there was a network error, NCCL version 2.27.3
+[rank1]: ncclRemoteError: A call failed possibly due to a network error or a remote process exiting prematurely.
+[rank1]: Last error:
+[rank1]: socketPollConnect: connect to 192.168.216.31<39445> returned Connection refused, exceeded error retry count after 35 attempts
+=========================================================
+Training script finished.
+=========================================================
