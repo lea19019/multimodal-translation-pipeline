@@ -21,7 +21,7 @@ services/*/recipes/
 services/*/TTS/
 
 # Ignore logs
-services/_logs/
+services/*/_logs/
 services/*/archive/
 
 # Ignore environment and lock files
