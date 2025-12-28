@@ -444,3 +444,108 @@ def load_predictions(
         logger.warning(f"Encountered {len(errors)} errors")
 
     return samples, errors
+
+
+def load_pipeline_predictions(
+    pipeline_id: int,
+    pipeline_config: dict,
+    language: str,
+    iso_code: str,
+    execution_id: str,
+    data_base_dir: Path,
+    synthesized_audio_base_dir: Path,
+    sample_manifest_path: Path
+) -> List[TranslationSample]:
+    """
+    Load samples for a specific pipeline evaluation.
+
+    This function loads samples based on a manifest file (which tracks which
+    samples were selected) and constructs TranslationSample objects with paths
+    to synthesized audio from the pipeline.
+
+    Args:
+        pipeline_id: Pipeline ID (1-8)
+        pipeline_config: Pipeline configuration dictionary
+        language: Language name (e.g., 'efik', 'igbo', 'swahili', 'xhosa')
+        iso_code: ISO language code (e.g., 'efi', 'ibo', 'swa', 'xho')
+        execution_id: Execution ID for this evaluation run
+        data_base_dir: Base directory for language data
+        synthesized_audio_base_dir: Base directory for synthesized audio
+        sample_manifest_path: Path to sample manifest JSON file
+
+    Returns:
+        List of TranslationSample objects with:
+        - source_text, target_text (ground truth), predicted_tgt_text (if uses_nllb)
+        - source_audio_path, target_audio_path, predicted_tgt_audio_path
+
+    Raises:
+        FileNotFoundError: If sample manifest doesn't exist
+    """
+    if not sample_manifest_path.exists():
+        raise FileNotFoundError(f"Sample manifest not found: {sample_manifest_path}")
+
+    # Load sample manifest
+    with open(sample_manifest_path) as f:
+        manifest = json.load(f)
+
+    sample_ids = manifest['sample_ids']
+    user_ids = manifest['user_ids']
+
+    logger.info(f"Loading {len(sample_ids)} samples for pipeline {pipeline_id} - {language}")
+
+    # Load NMT predictions if pipeline uses NLLB
+    samples = []
+    nmt_df = None
+    if pipeline_config['uses_nllb']:
+        nmt_csv = data_base_dir / language / 'nmt_predictions_multilang_finetuned_final.csv'
+        if not nmt_csv.exists():
+            logger.warning(f"NMT predictions file not found: {nmt_csv}")
+        else:
+            nmt_df = pd.read_csv(nmt_csv, sep='|')
+            logger.info(f"Loaded NMT predictions: {len(nmt_df)} rows")
+
+    for segment_id, user_id in zip(sample_ids, user_ids):
+        try:
+            # Get texts
+            src_text = None
+            tgt_text = None
+            pred_text = None
+
+            if nmt_df is not None:
+                # Find the row for this sample
+                row_match = nmt_df[(nmt_df['segment_id'] == segment_id) & (nmt_df['user_id'] == user_id)]
+                if len(row_match) > 0:
+                    row = row_match.iloc[0]
+                    src_text = row['src_text']
+                    tgt_text = row['ground_truth_tgt_text']
+                    pred_text = row['predicted_tgt_text']
+                else:
+                    logger.warning(f"Sample not found in NMT predictions: segment_id={segment_id}, user_id={user_id}")
+
+            # Audio paths
+            src_audio = data_base_dir / language / 'src_audio' / f"Segment={segment_id}_User={user_id}_Language=en_src.wav"
+            tgt_audio = data_base_dir / language / 'processed_audio_normalized' / f"Segment={segment_id}_User={user_id}_Language={iso_code}.wav"
+            pred_audio = synthesized_audio_base_dir / execution_id / f"pipeline_{pipeline_id}" / iso_code / \
+                         f"Segment={segment_id}_User={user_id}_Language={iso_code}_Pipeline={pipeline_id}_pred.wav"
+
+            sample = TranslationSample(
+                uuid=f"{segment_id}_{user_id}",
+                translation_type="text_to_audio",
+                source_language="eng",
+                target_language=iso_code,
+                timestamp="",
+                source_text=src_text,
+                target_text=tgt_text,
+                predicted_tgt_text=pred_text,
+                source_audio_path=src_audio if src_audio.exists() else None,
+                target_audio_path=tgt_audio if tgt_audio.exists() else None,
+                predicted_tgt_audio_path=pred_audio if pred_audio.exists() else None
+            )
+            samples.append(sample)
+
+        except Exception as e:
+            logger.error(f"Failed to load sample segment_id={segment_id}, user_id={user_id}: {e}")
+
+    logger.info(f"Successfully loaded {len(samples)} samples")
+
+    return samples

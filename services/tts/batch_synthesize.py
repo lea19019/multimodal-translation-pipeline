@@ -60,8 +60,10 @@ class TTSBatchSynthesizer:
         self,
         model_path: str,
         reference_audio: str,
+        descriptor: str = None,
         device: str = "auto",
         sample_rate: int = 16000,
+        pipeline_id: int = None,
     ):
         """
         Initialize the batch synthesizer.
@@ -69,12 +71,16 @@ class TTSBatchSynthesizer:
         Args:
             model_path: Path to the fine-tuned XTTS model checkpoint
             reference_audio: Path to reference speaker audio for voice cloning
+            descriptor: Descriptor for output directory naming (e.g., "nllb_tgt", "src", "custom_lang")
             device: Device to use ("cuda", "cpu", or "auto")
             sample_rate: Output sample rate (16000 for evaluation compatibility)
+            pipeline_id: Optional pipeline ID (1-8) for filename generation
         """
         self.model_path = Path(model_path)
         self.reference_audio = Path(reference_audio)
+        self.descriptor = descriptor
         self.target_sample_rate = sample_rate
+        self.pipeline_id = pipeline_id
 
         # Determine device
         if device == "auto":
@@ -222,7 +228,7 @@ class TTSBatchSynthesizer:
     def process_csv(
         self,
         csv_path: Path,
-        output_dir: Path,
+        output_base_dir: Path,
         language: str,
         text_column: str = "text",
         max_samples: Optional[int] = None,
@@ -233,11 +239,11 @@ class TTSBatchSynthesizer:
 
         Args:
             csv_path: Path to input CSV file
-            output_dir: Directory to save output audio files
+            output_base_dir: Base directory for data (e.g., /path/to/data/languages)
             language: Language code for TTS (e.g., 'efi', 'ibo', 'swa', 'xho')
             text_column: Name of the column containing text to synthesize
             max_samples: Maximum number of samples to process (None = all)
-            model_name: Model name to include in output folder name
+            model_name: Model name (auto-extracted from model_path)
 
         Returns:
             Dictionary with processing statistics
@@ -250,15 +256,38 @@ class TTSBatchSynthesizer:
             logger.error(f"Available language codes: {list(ISO_TO_XTTS.keys())}")
             return {"csv_path": str(csv_path), "status": "error", "samples": 0}
 
-        output_dir = Path(output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
+        # Extract model checkpoint name
+        model_checkpoint = self.model_path.name
+
+        # Construct output directory: /path/to/data/languages/{lang}/predicted_{descriptor}_{checkpoint}/
+        output_base_dir = Path(output_base_dir)
+
+        # Map to full language name if needed
+        full_lang_name = {
+            'efi': 'efik',
+            'ibo': 'igbo',
+            'swa': 'swahili',
+            'swh': 'swahili',
+            'xho': 'xhosa'
+        }.get(language, language)
+
+        if self.descriptor:
+            audio_output_dir = output_base_dir / full_lang_name / f"predicted_{self.descriptor}_{model_checkpoint}"
+            metadata_csv_path = output_base_dir / full_lang_name / f"predicted_{self.descriptor}_{model_checkpoint}.csv"
+        else:
+            # Fallback if no descriptor provided
+            audio_output_dir = output_base_dir / full_lang_name / f"predicted_{model_checkpoint}"
+            metadata_csv_path = output_base_dir / full_lang_name / f"predicted_{model_checkpoint}.csv"
+
+        audio_output_dir.mkdir(parents=True, exist_ok=True)
 
         logger.info(f"\n{'='*60}")
         logger.info(f"Processing {language.upper()} -> {xtts_lang}")
         logger.info(f"{'='*60}")
         logger.info(f"Input CSV: {csv_path}")
         logger.info(f"Text column: {text_column}")
-        logger.info(f"Output: {output_dir}")
+        logger.info(f"Audio output: {audio_output_dir}")
+        logger.info(f"Metadata CSV: {metadata_csv_path}")
         logger.info(f"Max samples: {max_samples if max_samples else 'all'}")
 
         # Check if input exists
@@ -288,6 +317,7 @@ class TTSBatchSynthesizer:
         successful = 0
         failed = 0
         errors = []
+        metadata_rows = []  # Track metadata for CSV generation
 
         logger.info(f"Synthesizing audio for {total_samples} samples...")
 
@@ -299,25 +329,45 @@ class TTSBatchSynthesizer:
             for idx, row in df.iterrows():
                 text = row[text_column]
 
+                # Extract segment_id and user_id if available
+                segment_id = row.get('segment_id', idx)
+                user_id = row.get('user_id', '')
+
                 # Skip empty text
                 if pd.isna(text) or not str(text).strip():
                     logger.warning(f"Skipping empty text at index {idx}")
                     failed += 1
+                    # Track in metadata even if failed
+                    metadata_rows.append({
+                        'segment_id': segment_id,
+                        'user_id': user_id,
+                        'text': '',
+                        'audio_filename': '',
+                        'language': language,
+                        'success': False,
+                        'error': 'Empty text'
+                    })
                     pbar.update(1)
                     continue
 
                 # Generate output filename
                 if has_segment_id and has_user_id:
-                    segment_id = row['segment_id']
-                    user_id = row['user_id']
-                    output_filename = f"Segment={segment_id}_User={user_id}_Language={language}_pred.wav"
+                    if self.pipeline_id:
+                        output_filename = f"Segment={segment_id}_User={user_id}_Language={language}_Pipeline={self.pipeline_id}_pred.wav"
+                    else:
+                        output_filename = f"Segment={segment_id}_User={user_id}_Language={language}_pred.wav"
                 elif has_segment_id:
-                    segment_id = row['segment_id']
-                    output_filename = f"Segment={segment_id}_Language={language}_pred.wav"
+                    if self.pipeline_id:
+                        output_filename = f"Segment={segment_id}_Language={language}_Pipeline={self.pipeline_id}_pred.wav"
+                    else:
+                        output_filename = f"Segment={segment_id}_Language={language}_pred.wav"
                 else:
-                    output_filename = f"sample_{idx:05d}_Language={language}_pred.wav"
+                    if self.pipeline_id:
+                        output_filename = f"sample_{idx:05d}_Language={language}_Pipeline={self.pipeline_id}_pred.wav"
+                    else:
+                        output_filename = f"sample_{idx:05d}_Language={language}_pred.wav"
 
-                output_path = output_dir / output_filename
+                output_path = audio_output_dir / output_filename
 
                 # Synthesize audio
                 wav = self.synthesize(str(text), xtts_lang)
@@ -332,6 +382,16 @@ class TTSBatchSynthesizer:
                             subtype='PCM_16'
                         )
                         successful += 1
+                        # Track successful synthesis in metadata
+                        metadata_rows.append({
+                            'segment_id': segment_id,
+                            'user_id': user_id,
+                            'text': str(text),
+                            'audio_filename': output_filename,
+                            'language': language,
+                            'success': True,
+                            'error': ''
+                        })
                     except Exception as e:
                         logger.error(f"Failed to save audio for {output_filename}: {e}")
                         failed += 1
@@ -340,11 +400,31 @@ class TTSBatchSynthesizer:
                             'filename': output_filename,
                             'error': str(e)
                         })
+                        # Track failure in metadata
+                        metadata_rows.append({
+                            'segment_id': segment_id,
+                            'user_id': user_id,
+                            'text': str(text),
+                            'audio_filename': output_filename,
+                            'language': language,
+                            'success': False,
+                            'error': f'Save failed: {str(e)}'
+                        })
                 else:
                     failed += 1
                     errors.append({
                         'index': idx,
                         'filename': output_filename,
+                        'error': 'Synthesis failed'
+                    })
+                    # Track failure in metadata
+                    metadata_rows.append({
+                        'segment_id': segment_id,
+                        'user_id': user_id,
+                        'text': str(text),
+                        'audio_filename': output_filename,
+                        'language': language,
+                        'success': False,
                         'error': 'Synthesis failed'
                     })
 
@@ -360,6 +440,13 @@ class TTSBatchSynthesizer:
         logger.info(f"  Failed: {failed}")
         logger.info(f"  Success rate: {successful/total_samples*100:.2f}%")
 
+        # Write metadata CSV
+        if metadata_rows:
+            logger.info(f"Writing metadata CSV to: {metadata_csv_path}")
+            metadata_df = pd.DataFrame(metadata_rows)
+            metadata_df.to_csv(metadata_csv_path, sep='|', index=False)
+            logger.info(f"Metadata CSV saved with {len(metadata_rows)} rows")
+
         return {
             'csv_path': str(csv_path),
             'language': language,
@@ -368,6 +455,8 @@ class TTSBatchSynthesizer:
             'successful': successful,
             'failed': failed,
             'errors': len(errors),
+            'metadata_csv': str(metadata_csv_path),
+            'audio_output_dir': str(audio_output_dir),
         }
 
 
@@ -454,6 +543,18 @@ Examples:
         default=16000,
         help='Output sample rate in Hz (default: 16000)'
     )
+    parser.add_argument(
+        '--pipeline-id',
+        type=int,
+        default=None,
+        help='Pipeline ID (1-8) for multi-pipeline evaluation (optional)'
+    )
+    parser.add_argument(
+        '--descriptor',
+        type=str,
+        default=None,
+        help='Descriptor for output directory naming (e.g., "nllb_tgt", "src", "custom_lang")'
+    )
 
     args = parser.parse_args()
 
@@ -491,14 +592,16 @@ Examples:
         synthesizer = TTSBatchSynthesizer(
             model_path=args.model_path,
             reference_audio=args.reference_audio,
+            descriptor=args.descriptor,
             device=args.device,
             sample_rate=args.sample_rate,
+            pipeline_id=args.pipeline_id,
         )
 
         # Process CSV
         result = synthesizer.process_csv(
             csv_path=csv_path,
-            output_dir=Path(args.output_dir),
+            output_base_dir=Path(args.output_dir),
             language=args.language,
             text_column=args.text_column,
             max_samples=args.max_samples,

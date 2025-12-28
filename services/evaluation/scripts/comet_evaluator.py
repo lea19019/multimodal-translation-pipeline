@@ -63,11 +63,30 @@ class CometEvaluator:
             from comet import download_model, load_from_checkpoint
 
             logger.info(f"Loading COMET model: {self.model_name}")
+            
+            # Offline mode should already be set globally, but ensure it here too
+            # Try to download model first (will use local cache in offline mode)
+            try:
+                model_path = download_model(self.model_name, saving_directory=str(self.cache_dir))
+            except Exception as download_error:
+                logger.warning(f"download_model failed: {download_error}")
 
-            # Download model if needed
-            model_path = download_model(self.model_name, saving_directory=str(self.cache_dir))
+                # Fall back to loading from local checkpoint if it exists
+                if self.model_name == "McGill-NLP/ssa-comet-qe":
+                    # Try to find local checkpoint
+                    import glob
+                    pattern = str(self.cache_dir / "models--McGill-NLP--ssa-comet-qe" / "snapshots" / "*" / "checkpoints" / "model.ckpt")
+                    checkpoints = glob.glob(pattern)
 
-            # Load checkpoint
+                    if checkpoints:
+                        model_path = checkpoints[0]
+                        logger.info(f"Loading from local checkpoint: {model_path}")
+                    else:
+                        raise RuntimeError(f"Model download failed and no local checkpoint found at {pattern}")
+                else:
+                    raise
+
+            # Load checkpoint with offline mode enabled
             self.model = load_from_checkpoint(model_path)
 
             # Try to move to device, fall back to CPU if CUDA is unavailable

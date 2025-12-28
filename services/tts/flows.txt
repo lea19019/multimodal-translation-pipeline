@@ -1,0 +1,107 @@
+Hey! Help me create a plan for the following
+
+NNLB Model
+
+multilang_finetuned_final
+    - /home/vacl2/multimodal_translation/services/nmt/checkpoints/multilang_finetuned_final
+
+
+TTS Models
+
+MULTILINGUAL_TRAINING (tgt_text_to_tgt_audio)
+    - {lang_txt} -----> (lang_tgt_audio)
+    - /home/vacl2/multimodal_translation/services/tts/checkpoints/MULTILINGUAL_TRAINING_11_5-November-05-2025_10+57AM-cc09632
+
+Multilingual_Src_{_date_} (data_format: src_text_to_tgt_audio)
+    - {eng_txt} -----> {lang_tgt_audio}
+    - /home/vacl2/multimodal_translation/services/tts/checkpoints/Multilingual_Src_6_12-December-06-2025_10+30PM-b2b8254
+
+Translate_Src_Tgt (data_format: translate_src_tgt_text_to_tgt_audio)
+    - <translate> <eng> {eng_text} <{lang}> {lang_text} -----> {lang_tgt_audio}
+    - /home/vacl2/multimodal_translation/services/tts/checkpoints/Translate_Src_Tgt_8_12-December-08-2025_03+54PM-b2b8254
+
+Src_Tgt (data_format: src_tgt_text_to_tgt_audio)
+    - {eng_txt} {lang_text} -----> {lang_tgt_audio}
+    - /home/vacl2/multimodal_translation/services/tts/checkpoints/Src_Tgt_8_12-December-09-2025_10+15PM-1e192a8
+
+
+# Still not done
+Translate_Src (data_format: translate_src_text_to_tgt_audio)
+    - <translate|eng->{lang}> {eng_text} -----> {lang_tgt_audio}
+
+lang = [efik, igbo, swahili, xhosa]
+iso_codes = [efi, ibo, swa, xho]
+
+
+Format of metadata_eval.csv
+audio_file|text|speaker_name
+
+Format of mapped_metadata_test.csv
+segment_id|user_id|speaker_id|src_text|tgt_text|tgt_audio|iso_code
+
+The goal for this Project was to experiment and simulate with translation pipelines
+I have several fintuned XTTS models and a finetune NLLB model
+We have several metrics to evaluate the quality of the translation
+BLEU, chrF, and COMET for the translations. 
+BLEU and chrF will receive as input the target and predicted text
+COMET will receive the predicted, target, and source text
+For audio we have MCD and BLASER
+MCD will evaluate the target audio and predicted audio
+BLASER will evaluate the source audio and predicted audio
+
+So now, how are we going to simulate the pipelines?
+There are several TTS models that were trained to receive the source text and produce the predicted audio
+and of course receive the predicted text and produce the predicted audio
+The possible combinations based on the models
+
+src_txt ---> NLLB ---> pred_txt ---> MULTILINGUAL_TRAINING ---> pred_wav
+src_txt ---> Multilingual_Src ---> pred_wav
+src_txt ---> NLLB ---> pred_txt ---> Translate_Src_Tgt ---> pred_wav
+src_txt ---> Translate_Src_Tgt ---> pred_wav
+src_txt ---> NLLB ---> pred_txt ---> Src_Tgt ---> pred_wav
+src_txt ---> Src_Tgt ---> pred_wav
+
+The file
+/home/vacl2/multimodal_translation/services/data/languages/{lang}/nmt_predictions_multilang_finetuned_final.csv
+contains all the data we need
+segment_id|user_id|speaker_id|src_text|predicted_tgt_text|ground_truth_tgt_text|iso_code
+We will need the segment_id and those other id's to find the wav files for eventually evaluating.
+
+pred_txt ---> MULTILINGUAL_TRAINING
+pred_txt ---> Src_Tgt
+src_txt ---> Src_Tgt
+pred_txt ---> Translate_Src_Tgt
+src_txt ---> Translate_Src_Tgt
+src_txt ---> Multilingual_Src
+
+So for now we need to run 7 synthesizes with 300 samples each.
+We want to use the same text src and predicted samples for all synthesizes cause why not.
+We want to save the predictions in a folder that is recognizable, something like:
+/home/vacl2/multimodal_translation/services/data/languages/{lang}/predicted_{src_or_pred_data}_{model}
+
+We also want to have a CSV that maps the predicted audio with the used text
+/home/vacl2/multimodal_translation/services/data/languages/{lang}/predicted_{src_or_pred_data}_{model}.csv
+
+
+# Example script to run synthesize locally
+uv run python batch_synthesize.py \
+    --csv-file /home/vacl2/multimodal_translation/services/data/languages/swahili/src_text_to_tgt_audio/metadata_test.csv \
+    --output-dir /home/vacl2/multimodal_translation/services/data/languages/swahili/predicted_src_text_tgt_audio_test \
+    --language swa \
+    --max-samples 10 \
+    --model-path /home/vacl2/multimodal_translation/services/tts/checkpoints/Multilingual_Src_6_12-December-06-2025_10+30PM-b2b8254 \
+    --device cpu
+
+Read the files
+/home/vacl2/multimodal_translation/services/tts/batch_synthesize.py
+/home/vacl2/multimodal_translation/services/tts/batch_synthesize.sh
+
+We will mostlikely need to modify them to make work this plan.
+
+You might want to see the evaluation files we will eventually will use and may have to modify to execute
+this pipeline evaluations, specially to make them fit a visual story of the results
+
+/home/vacl2/multimodal_translation/services/evaluation/evaluation.py
+/home/vacl2/multimodal_translation/services/evaluation/pipeline.py
+
+Let me know if you have questions or need more of my input. Please read the related code.

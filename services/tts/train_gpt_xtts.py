@@ -211,9 +211,6 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
 
     #model.train(train_samples=train_samples, eval_samples=eval_samples)
 
-    # Get port from environment or use random
-    ddp_port = os.environ.get('MASTER_PORT', str(54321 + os.getpid() % 10000))
-
     # init the trainer and 🚀
     trainer = Trainer(
         TrainerArgs(
@@ -221,8 +218,6 @@ def train_gpt(metadatas, num_epochs, batch_size, grad_acumm, output_path, max_au
             skip_train_epoch=False,
             start_with_eval=START_WITH_EVAL,
             grad_accum_steps=GRAD_ACUMM_STEPS,
-            distributed_backend='nccl',  # Explicitly set
-            distributed_url=f'tcp://127.0.0.1:{ddp_port}'  # Use our port
         ),
         config,
         output_path=os.path.join(output_path, "run", "training"),

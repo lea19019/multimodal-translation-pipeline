@@ -122,14 +122,6 @@ class BlaserEvaluator:
             for path in target_audio_paths:
                 cmd.extend(['--target-audio', path])
 
-            # Add source texts
-            for text in source_texts:
-                cmd.extend(['--source-text', text])
-
-            # Add reference texts
-            for text in reference_texts:
-                cmd.extend(['--reference-text', text])
-
             # Run BLASER evaluation in subprocess
             logger.info(f"Running BLASER evaluation for {len(source_audio_paths)} samples...")
             logger.debug(f"Command: {' '.join(cmd)}")
