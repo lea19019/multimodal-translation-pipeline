@@ -16,24 +16,7 @@ This repository documents a research and engineering effort focused on building,
 
 ## System Overview
 
-```mermaid
-graph TD;
-    Client[Web Client / API User]
-    Gateway[API Gateway]
-    ASR[ASR Service<br>(Whisper)]
-    NMT[NMT Service<br>(NLLB)]
-    TTS[TTS Service<br>(XTTS)]
-    Eval[Evaluation Service<br>(BLASER, COMET, etc.)]
-    Client-->|REST/HTTP|Gateway
-    Gateway-->|Audio/Text|ASR
-    Gateway-->|Text|NMT
-    Gateway-->|Text|TTS
-    Gateway-->|Results|Eval
-    ASR-->|Transcription|Gateway
-    NMT-->|Translation|Gateway
-    TTS-->|Speech|Gateway
-    Eval-->|Metrics/Visuals|Gateway
-```
+![System Overview](./project_report/sys_diagram.png)
 
 - **API Gateway**: Orchestrates the full translation pipeline, exposing a unified API for all services.
 - **ASR Service**: Speech-to-text using Whisper (OpenAI), with support for African accents.
