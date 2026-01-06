@@ -20,10 +20,10 @@ This repository documents a research and engineering effort focused on building,
 graph TD;
     Client[Web Client / API User]
     Gateway[API Gateway]
-    ASR[ASR Service\n(Whisper)]
-    NMT[NMT Service\n(NLLB)]
-    TTS[TTS Service\n(XTTS)]
-    Eval[Evaluation Service\n(BLASER, COMET, etc.)]
+    ASR[ASR Service<br>(Whisper)]
+    NMT[NMT Service<br>(NLLB)]
+    TTS[TTS Service<br>(XTTS)]
+    Eval[Evaluation Service<br>(BLASER, COMET, etc.)]
     Client-->|REST/HTTP|Gateway
     Gateway-->|Audio/Text|ASR
     Gateway-->|Text|NMT
