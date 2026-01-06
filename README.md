@@ -1,332 +1,104 @@
-# Multimodal Translation System
+# Multimodal Translation Pipelines for Low-Resource African Languages
 
-A complete speech-to-speech translation system with microservices architecture and a modern web interface.
+## Project Summary
+This repository documents a research and engineering effort focused on building, evaluating, and scaling speech-to-speech translation pipelines for four low-resource African languages: Efik, Igbo, Swahili, and Xhosa. The project blends hands-on deep learning, large-scale experimentation, and robust engineering:
 
-## 🌟 Features
+- Fine-tuned multiple versions of Coqui XTTS for TTS on African languages
+- Fine-tuned Meta NLLB-600M for neural machine translation (NMT)
+- Developed and integrated custom BLASER 2.0 encoders for speech-to-speech evaluation
+- Designed and benchmarked 10+ pipeline combinations (ASR, NMT, TTS)
+- Built a modular microservice architecture for scalable, reproducible experiments
+- Ran and debugged experiments on supercomputing clusters (SLURM, multi-GPU)
+- Automated data processing, model training, and evaluation workflows
+- Explored different data types, model architectures, and evaluation strategies
 
-- **Text-to-Text Translation**: Translate written text between 200+ languages
-- **Audio-to-Text Translation**: Transcribe and translate speech
-- **Text-to-Audio Translation**: Generate translated speech from text
-- **Audio-to-Audio Translation**: Complete speech-to-speech translation pipeline
-- **Web Client**: Modern TypeScript/Next.js interface with audio recording
-- **Microservices**: Scalable architecture with independent services
-- **REST API**: Well-documented RESTful API
+**Full technical report:** [project_report/main.tex](project_report/main.pdf)
 
-## 🏗️ Architecture
+## System Overview
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Web Client (Next.js)                     │
-│              http://localhost:3000                           │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 API Gateway (Port 8075)                      │
-│           Orchestrates Translation Pipeline                  │
-└───────────────┬──────────────┬──────────────┬───────────────┘
-                │              │              │
-        ┌───────▼─────┐  ┌────▼─────┐  ┌────▼──────┐
-        │ ASR Service │  │   NMT    │  │    TTS    │
-        │  (Whisper)  │  │ (NLLB)   │  │  (XTTS)   │
-        │   Port 8076 │  │Port 8077 │  │ Port 8078 │
-        └─────────────┘  └──────────┘  └───────────┘
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Backend**: Python 3.9+, uv package manager
-- **Client**: Node.js 18+, npm
-
-### 1. Start Backend Services
-
-```bash
-cd services
-bash start_all_services.sh
+```mermaid
+graph TD;
+    Client[Web Client / API User]
+    Gateway[API Gateway]
+    ASR[ASR Service\n(Whisper)]
+    NMT[NMT Service\n(NLLB)]
+    TTS[TTS Service\n(XTTS)]
+    Eval[Evaluation Service\n(BLASER, COMET, etc.)]
+    Client-->|REST/HTTP|Gateway
+    Gateway-->|Audio/Text|ASR
+    Gateway-->|Text|NMT
+    Gateway-->|Text|TTS
+    Gateway-->|Results|Eval
+    ASR-->|Transcription|Gateway
+    NMT-->|Translation|Gateway
+    TTS-->|Speech|Gateway
+    Eval-->|Metrics/Visuals|Gateway
 ```
 
-This will start:
-- API Gateway on port 8075
-- ASR Service on port 8076
-- NMT Service on port 8077
-- TTS Service on port 8078
+- **API Gateway**: Orchestrates the full translation pipeline, exposing a unified API for all services.
+- **ASR Service**: Speech-to-text using Whisper (OpenAI), with support for African accents.
+- **NMT Service**: Text-to-text translation using fine-tuned NLLB-600M.
+- **TTS Service**: Text-to-speech using multiple fine-tuned XTTS models, including language-specific and cross-lingual variants.
+- **Evaluation Service**: Computes BLEU, chrF, COMET, MCD, and BLASER 2.0 metrics; supports custom BLASER encoders for African languages.
 
-### 2. Start Web Client
+## Pipeline Variants & Model Details
 
-```bash
-cd client
-bash start.sh
-```
+| Model Name   | Input                | Output         |
+|-------------|----------------------|----------------|
+| Native      | African text         | African audio  |
+| Eng2Multi   | English text         | African audio  |
+| Eng2Efik    | English text         | Efik audio     |
+| Eng2Swa     | English text         | Swahili audio  |
+| BiTag       | <eng>{eng} <lang>{lang} | African audio  |
+| TransTag    | <translate> <eng>{eng} <lang>{lang} | African audio  |
 
-Or manually:
-```bash
-npm install
-npm run dev
-```
+## Pipeline Combinations
 
-### 3. Access the Application
+| Pipeline   | Translation         | TTS Model      |
+|------------|---------------------|----------------|
+| Pipeline 1 | NLLB                | Native         |
+| Pipeline 2 | NLLB                | BiTag          |
+| Pipeline 3 | None                | BiTag          |
+| Pipeline 4 | NLLB (custom format)| BiTag          |
+| Pipeline 5 | NLLB                | TransTag       |
+| Pipeline 6 | None                | TransTag       |
+| Pipeline 7 | NLLB (custom format)| TransTag       |
+| Pipeline 8 | None                | Eng2Multi      |
+| Pipeline 9 | None                | Eng2Efik       |
+| Pipeline 10| None                | Eng2Swa        |
 
-Open your browser to **http://localhost:3000**
+## Evaluation Metrics
+- **Text**: BLEU, chrF, COMET (McGill-NLP/ssa-comet-qe)
+- **Audio**: MCD (Mel-Cepstral Distance), BLASER 2.0 (custom encoders for African languages)
 
-## 📁 Project Structure
+## Results
 
-```
-multimodal_translation/
-├── client/                      # Web client application
-│   ├── src/
-│   │   ├── app/                # Next.js pages
-│   │   ├── components/         # React components
-│   │   ├── hooks/              # Custom React hooks
-│   │   └── lib/                # API client library
-│   ├── package.json
-│   ├── README.md               # Client documentation
-│   └── start.sh                # Quick start script
-│
-├── services/                    # Backend microservices
-│   ├── api_gateway/            # Main API gateway
-│   │   └── api.py
-│   ├── asr/                    # Automatic Speech Recognition
-│   │   ├── service.py
-│   │   ├── whisper_asr.py
-│   │   └── models/
-│   ├── nmt/                    # Neural Machine Translation
-│   │   ├── service.py
-│   │   ├── nllb_nmt.py
-│   │   └── models/
-│   ├── tts/                    # Text-to-Speech
-│   │   ├── service.py
-│   │   └── models/
-│   ├── logs/                   # Service logs
-│   ├── API_DOCUMENTATION.md    # Complete API reference
-│   ├── README.md               # Services documentation
-│   ├── start_all_services.sh
-│   ├── stop_all_services.sh
-│   └── check_services.sh
-│
-└── evaluation/                  # Evaluation tools
-    └── blaser.py
-```
+### NLLB Translation Quality
+| Language | BLEU | chrF | COMET |
+|----------|---------------------|---------------------|-------------------|
+| Efik     | 29.8 ± 18.6         | 59.0 ± 14.2         | 0.603 ± 0.068     |
+| Igbo     | 33.0 ± 23.5         | 60.6 ± 17.8         | 0.641 ± 0.068     |
+| Swahili  | 49.2 ± 18.5         | 76.0 ± 10.5         | 0.676 ± 0.051     |
+| Xhosa    | 32.4 ± 20.7         | 71.1 ± 12.8         | 0.649 ± 0.048     |
+| **Overall** | **36.1 ± 7.7**   | **66.7 ± 7.1**      | **0.642 ± 0.026** |
 
-## 🛠️ Technology Stack
+### Audio & Speech Quality (MCD, BLASER)
+| Metric | Pipeline | Efik | Igbo | Swahili | Xhosa | Overall |
+|--------|----------|------|------|---------|-------|---------|
+| **MCD** | NLLB → Native | **13.12 ± 1.35** | **12.96 ± 1.21** | **13.40 ± 0.95** | **11.89 ± 1.06** | **12.84 ± 0.57** |
+| **BLASER** | Source → Eng2Multi | 2.72 ± 0.21 | 3.07 ± 0.25 | **2.84 ± 0.24** | **2.85 ± 0.24** | **2.87 ± 0.13** |
 
-### Backend
-- **Framework**: FastAPI
-- **ASR**: OpenAI Whisper (via transformers)
-- **NMT**: Meta NLLB (No Language Left Behind)
-- **TTS**: Coqui XTTS
-- **Package Manager**: uv
+## What You'll Find Here
+- End-to-end code for training, evaluation, and deployment of translation pipelines
+- Scripts for data preprocessing, model finetuning, and evaluation
+- Modular microservices for each pipeline component (ASR, NMT, TTS, Evaluation)
+- Reproducible experiments and results, with clear documentation
 
-### Frontend
-- **Framework**: Next.js 14
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **HTTP Client**: Axios
-- **Audio**: Web Audio API
+## Professional/Technical Highlights
+- 140+ hours of hands-on engineering and research
+- Experience with supercomputing (SLURM, multi-GPU jobs, debugging at scale)
+- Deep learning: model finetuning, transfer learning, and custom evaluation
+- Data engineering: cleaning, aligning, and managing multilingual/multimodal datasets
+- Experimentation: rapid prototyping, ablation studies, and pipeline benchmarking
+- Robust, production-style codebase with clear separation of concerns
 
-## 📚 Documentation
-
-- **[API Documentation](services/API_DOCUMENTATION.md)** - Complete REST API reference
-- **[Services README](services/README.md)** - Backend services guide
-- **[Client README](client/README.md)** - Web client documentation
-- **[Client Architecture](client/ARCHITECTURE.md)** - Technical details
-- **[Quick Start](client/QUICKSTART.md)** - Get started quickly
-
-## 🌍 Supported Languages
-
-The system supports translation between 200+ languages including:
-
-- English, Spanish, French, German, Italian, Portuguese
-- Chinese (Simplified/Traditional), Japanese, Korean
-- Arabic, Russian, Hindi, Turkish, Polish
-- Dutch, Swedish, Danish, Norwegian, Finnish
-- And many more...
-
-## 📖 Usage Examples
-
-### Text-to-Text Translation
-
-```bash
-curl -X POST http://localhost:8075/translate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "input": "Hello, how are you?",
-    "input_type": "text",
-    "source_language": "en",
-    "target_language": "es",
-    "output_type": "text"
-  }'
-```
-
-### Using the TypeScript Client
-
-```typescript
-import { MultimodalTranslationClient } from '@/lib/api-client';
-
-const client = new MultimodalTranslationClient();
-
-// Translate text
-const result = await client.translateText(
-  'Hello, world!',
-  'en',
-  'es'
-);
-console.log(result); // "¡Hola, mundo!"
-
-// Check service health
-const health = await client.healthCheck();
-```
-
-## 🔧 Development
-
-### Backend Development
-
-```bash
-cd services/asr
-uv run python service.py
-```
-
-### Frontend Development
-
-```bash
-cd client
-npm run dev       # Development server
-npm run build     # Production build
-npm run lint      # Code quality check
-```
-
-## 📊 Service Management
-
-```bash
-cd services
-
-# Start all services
-bash start_all_services.sh
-
-# Check service status
-bash check_services.sh
-
-# View logs
-bash view_logs.sh
-
-# Stop all services
-bash stop_all_services.sh
-
-# Restart specific service
-bash restart_service.sh asr
-```
-
-## 🐛 Troubleshooting
-
-### Backend Issues
-
-1. **Services won't start**
-   ```bash
-   # Check if ports are in use
-   lsof -i :8075
-   lsof -i :8076
-   lsof -i :8077
-   lsof -i :8078
-   ```
-
-2. **Model loading fails**
-   - Check model directories exist
-   - Ensure sufficient disk space
-   - Check logs in `services/logs/`
-
-3. **Service not responding**
-   ```bash
-   cd services
-   bash check_services.sh
-   bash restart_service.sh <service_name>
-   ```
-
-### Client Issues
-
-1. **Cannot connect to services**
-   - Ensure backend services are running
-   - Check `.env.local` for correct URLs
-   - Verify firewall settings
-
-2. **Microphone not working**
-   - Grant browser permissions
-   - Use HTTPS or localhost
-   - Check browser console for errors
-
-3. **Build errors**
-   ```bash
-   cd client
-   rm -rf .next node_modules
-   npm install
-   npm run build
-   ```
-
-## 🎯 Performance Tips
-
-1. **First request is slower** - Models load on first use
-2. **Keep audio short** - < 30 seconds recommended
-3. **Use appropriate models** - Base models are faster
-4. **Monitor resources** - Check CPU/memory usage
-5. **Use API Gateway** - Handles service coordination
-
-## 🔒 Security Considerations
-
-- Use HTTPS in production
-- Implement authentication for public deployments
-- Configure CORS properly
-- Add rate limiting
-- Monitor API usage
-
-## 🚀 Deployment
-
-### Docker (Coming Soon)
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-```
-
-### Production Deployment
-
-1. **Backend**: Deploy services on separate servers/containers
-2. **Frontend**: Deploy to Vercel, Netlify, or similar
-3. **Configure**: Update environment variables
-4. **Monitor**: Set up logging and monitoring
-
-## 📝 License
-
-This project uses several open-source technologies:
-- Whisper: Apache 2.0
-- NLLB: CC-BY-NC
-- Coqui XTTS: MPL 2.0
-- FastAPI: MIT
-- Next.js: MIT
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📬 Support
-
-- **Issues**: Check documentation first
-- **Logs**: Review service logs in `services/logs/`
-- **Health**: Use health check endpoints
-- **Community**: Open GitHub issues for questions
-
-## 🎓 Acknowledgments
-
-- **OpenAI Whisper** - Speech recognition
-- **Meta NLLB** - Neural translation
-- **Coqui XTTS** - Speech synthesis
-- **FastAPI** - Web framework
-- **Next.js** - React framework
-
----
-
-**Built with ❤️ for multilingual communication**

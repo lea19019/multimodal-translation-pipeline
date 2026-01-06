@@ -1,0 +1,187 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage[margin=1in]{geometry}
+
+\title{Multimodal Translation Pipelines for Low-Resource African Languages}
+\author{Adrian Castillo\\CS 697R}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This project evaluates ten speech-to-speech translation pipelines for four low-resource African languages: Efik, Igbo, Swahili, and Xhosa. We fine-tuned NLLB-600M for machine translation and XTTS models for text-to-speech synthesis. The pipelines were evaluated using BLEU, chrF, and COMET for translation quality, and MCD and BLASER 2.0 \cite{blasermetric2024} for audio quality.
+
+\end{abstract}
+
+\section{Introduction}
+
+This project explores speech and text translation pipelines for low-resource African languages. The goal is to evaluate different pipeline architectures that combine neural machine translation and text-to-speech synthesis for four African languages: Efik, Igbo, Swahili, and Xhosa.
+
+\section{Methodology}
+
+\subsection{Datasets}
+
+The datasets for all four African languages—Efik, Igbo, Swahili, and Xhosa—were provided by the Pathsay program. Synthetic English audio was generated from the source English text of the dataset to be used as the input for audio-to-audio pipeline evaluations. The model used for generation was Whisper (openai/whisper-medium).
+
+\subsection{Models}
+
+The model used for machine translation was NLLB-600M \cite{nllb2022}. For text-to-speech, we fine-tuned six XTTS \cite{xtts2023} model variants. Some of these variants receive as input text in the corresponding output language, while for others we experimented with using English text as input and the target audio in the African language. The XTTS variants are as follows:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Model Name} & \textbf{Input} & \textbf{Output} \\
+\midrule
+Native & African text & African audio \\
+Eng2Multi & English text & African audio \\
+Eng2Efik & English text & Efik audio \\
+Eng2Swa & English text & Swahili audio \\
+BiTag & \texttt{<eng>\{eng\} <lang>\{lang\}} & African audio \\
+TransTag & \texttt{<translate> <eng>\{eng\} <lang>\{lang\}} & African audio \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Pipeline Architectures}
+
+Using NLLB and the TTS variants, several translation pipelines were constructed. Since some of the TTS variants used the raw English text as input, we treat them as audio-to-audio pipelines.  
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Pipeline} & \textbf{Translation} & \textbf{TTS Model} \\
+\midrule
+Pipeline 1 & NLLB & Native \\
+Pipeline 2 & NLLB & BiTag \\
+Pipeline 3 & None & BiTag \\
+Pipeline 4 & NLLB (custom format) & BiTag \\
+Pipeline 5 & NLLB & TransTag \\
+Pipeline 6 & None & TransTag \\
+Pipeline 7 & NLLB (custom format) & TransTag \\
+Pipeline 8 & None & Eng2Multi \\
+Pipeline 9 & None & Eng2Efik (Efik only) \\
+Pipeline 10 & None & Eng2Swa (Swahili only) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Evaluation Metrics}
+
+The text metrics used for NLLB are BLEU, chrF, and COMET (McGill-NLP/ssa-comet-qe). For audio metrics, we used Mel-Cepstral Distance (MCD) and BLASER 2.0 (facebook/blaser-2.0-qe). MCD measures spectral distance between predicted and reference audio; lower values are better. BLASER 2.0 evaluates semantic similarity between source and predicted audio, with scores ranging from 1 to 5. BLASER does not support Efik, Igbo, and Xhosa out of the box; speech encoders were fine-tuned (including Swahili) for evaluation purposes.
+
+\subsection{Framework}
+
+The fine-tuned NLLB model generated translations for 300 samples. Using these samples, we either took the translation or the English source text to generate audio using the XTTS models. Once the audio was generated, we evaluated it using the audio metrics.
+
+\section{Results}
+
+\subsection{Translation Quality}
+
+Table~\ref{tab:translation_quality} shows NLLB translation quality for the samples used. Swahili achieves the highest BLEU (49.2), chrF (76.0), and COMET (0.676) scores. Efik has the lowest scores (BLEU: 29.8), which is expected since it was the only language not originally supported by NLLB.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Language} & \textbf{BLEU} & \textbf{chrF} & \textbf{COMET} \\
+\midrule
+Efik & 29.842 $\pm$ 18.580 & 58.958 $\pm$ 14.244 & 0.603 $\pm$ 0.068 \\
+Igbo & 32.953 $\pm$ 23.539 & 60.635 $\pm$ 17.772 & 0.641 $\pm$ 0.068 \\
+Swahili & 49.217 $\pm$ 18.507 & 76.009 $\pm$ 10.479 & 0.676 $\pm$ 0.051 \\
+Xhosa & 32.422 $\pm$ 20.713 & 71.084 $\pm$ 12.767 & 0.649 $\pm$ 0.048 \\
+Overall & 36.109 $\pm$ 7.659 & 66.671 $\pm$ 7.117 & 0.642 $\pm$ 0.026 \\
+\bottomrule
+\end{tabular}
+\caption{Translation Quality Metrics for NLLB. Values are Mean $\pm$ Std. Higher is better for all metrics.}
+\label{tab:translation_quality}
+\end{table}
+
+\subsection{Audio Quality}
+
+Table~\ref{tab:audio_quality} shows MCD and BLASER scores across all pipelines.  
+
+For MCD, Pipeline 1 (NLLB → Native) achieves the best scores across all languages with an overall MCD of 12.841. Xhosa has the lowest MCD (11.887) in Pipeline 1.  
+
+For BLASER, Pipeline 8 (Source → Eng2Multi) achieves the best overall score (2.873). Pipeline 2 (NLLB → BiTag) has the highest BLASER scores for Efik (2.750) and Igbo (3.090). Pipeline 6 (Source → TransTag) has the highest scores for Swahili (2.851) and Xhosa (2.879).
+
+\begin{table*}[t]
+\centering
+\small
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{Pipeline} & \textbf{Efik} & \textbf{Igbo} & \textbf{Swahili} & \textbf{Xhosa} & \textbf{Overall} \\
+\midrule
+\textbf{MCD} & NLLB → Native & \textbf{13.123 $\pm$ 1.348} & \textbf{12.956 $\pm$ 1.212} & \textbf{13.398 $\pm$ 0.950} & \textbf{11.887 $\pm$ 1.058} & \textbf{12.841 $\pm$ 0.573} \\
+ & NLLB → BiTag & 13.334 $\pm$ 1.365 & 13.297 $\pm$ 1.212 & 13.793 $\pm$ 0.903 & 12.474 $\pm$ 0.972 & 13.224 $\pm$ 0.475 \\
+ & Source → BiTag & 13.814 $\pm$ 1.299 & 13.968 $\pm$ 1.141 & 14.256 $\pm$ 0.813 & 13.042 $\pm$ 0.808 & 13.770 $\pm$ 0.449 \\
+ & Custom Lang → BiTag & 13.169 $\pm$ 1.392 & 13.051 $\pm$ 1.177 & 13.407 $\pm$ 0.946 & 11.969 $\pm$ 1.084 & 12.899 $\pm$ 0.552 \\
+ & NLLB → TransTag & 13.331 $\pm$ 1.328 & 13.445 $\pm$ 1.262 & 13.878 $\pm$ 0.893 & 12.482 $\pm$ 1.037 & 13.284 $\pm$ 0.506 \\
+ & Source → TransTag & 13.776 $\pm$ 1.278 & 13.947 $\pm$ 1.213 & 14.271 $\pm$ 0.832 & 12.991 $\pm$ 0.830 & 13.746 $\pm$ 0.471 \\
+ & Custom Translate → TransTag & 13.171 $\pm$ 1.339 & 13.088 $\pm$ 1.199 & 13.444 $\pm$ 0.986 & 11.901 $\pm$ 1.098 & 12.901 $\pm$ 0.592 \\
+ & Source → Eng2Multi & 13.643 $\pm$ 1.200 & 13.870 $\pm$ 1.132 & 14.043 $\pm$ 0.832 & 12.875 $\pm$ 0.825 & 13.608 $\pm$ 0.446 \\
+ & XTTS Eng2Efik & 13.716 $\pm$ 1.189 & --- & --- & --- & --- \\
+ & XTTS Eng2Swa & --- & --- & 13.949 $\pm$ 0.789 & --- & --- \\
+\midrule
+\textbf{BLASER} & NLLB → Native & 2.728 $\pm$ 0.221 & 3.087 $\pm$ 0.239 & 2.585 $\pm$ 0.281 & 2.600 $\pm$ 0.292 & 2.750 $\pm$ 0.202 \\
+ & NLLB → BiTag & \textbf{2.750 $\pm$ 0.218} & \textbf{3.090 $\pm$ 0.254} & 2.561 $\pm$ 0.281 & 2.763 $\pm$ 0.290 & 2.791 $\pm$ 0.190 \\
+ & Source → BiTag & 2.682 $\pm$ 0.213 & 2.906 $\pm$ 0.282 & 2.756 $\pm$ 0.261 & 2.778 $\pm$ 0.273 & 2.781 $\pm$ 0.081 \\
+ & Custom Lang → BiTag & 2.723 $\pm$ 0.221 & 3.086 $\pm$ 0.242 & 2.574 $\pm$ 0.281 & 2.599 $\pm$ 0.293 & 2.746 $\pm$ 0.204 \\
+ & NLLB → TransTag & 2.749 $\pm$ 0.217 & 3.086 $\pm$ 0.254 & 2.568 $\pm$ 0.284 & 2.748 $\pm$ 0.289 & 2.788 $\pm$ 0.187 \\
+ & Source → TransTag & 2.708 $\pm$ 0.209 & 2.983 $\pm$ 0.267 & \textbf{2.851 $\pm$ 0.238} & \textbf{2.879 $\pm$ 0.270} & 2.855 $\pm$ 0.098 \\
+ & Custom Translate → TransTag & 2.725 $\pm$ 0.224 & 3.088 $\pm$ 0.241 & 2.575 $\pm$ 0.276 & 2.597 $\pm$ 0.302 & 2.746 $\pm$ 0.205 \\
+ & Source → Eng2Multi & 2.722 $\pm$ 0.214 & 3.074 $\pm$ 0.249 & 2.844 $\pm$ 0.236 & 2.850 $\pm$ 0.236 & \textbf{2.873 $\pm$ 0.127} \\
+ & XTTS Eng2Efik & 2.715 $\pm$ 0.207 & --- & --- & --- & --- \\
+ & XTTS Eng2Swa & --- & --- & 2.813 $\pm$ 0.244 & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Audio and Speech Quality Metrics Across All Pipelines. Values are Mean $\pm$ Std. \textbf{Bold} indicates best performance per language. MCD: lower is better; BLASER: higher is better.}
+\label{tab:audio_quality}
+\end{table*}
+
+\section{Discussion}
+
+The results showed that BLASER scores across all pipelines were very similar. This raises some questions: it could be related to the fact that the same samples were used for all evaluations, or it might be due to the way the speech encoders were fine-tuned. It's also possible that some part of the evaluation did not work as intended, though this would require further investigation.
+
+An additional evaluation, not included in the main results, used the target text from the Pathsay datasets directly. For Swahili, the audio quality in this evaluation reached scores above 4. However, when using translations generated by NLLB, the scores decreased to around 2–3. This suggests that the quality of machine translation directly impacts the audio quality, and future work should explore ways to improve translation accuracy and study its effect on the final audio output.
+
+On a practical note, this project provided valuable hands-on experience. I learned to work with a supercomputer in multiple scenarios, processed large amounts of data, fine-tuned several models, and built an application to run the pipelines. While I spent more time than expected on the application, it gave me insights into how ML models interact with servers for inference. The application followed a microservice architecture with an API gateway orchestrating audio generation, allowing actual translations using the trained models. This experience helped me understand the end-to-end workflow of deploying ML systems.
+
+\section{Conclusion}
+
+This project evaluated ten speech-to-speech translation pipelines for four low-resource African languages. Swahili consistently achieved the highest translation and audio quality, while Efik was the most challenging due to limited support in NLLB. BLASER scores were very similar across pipelines, possibly due to shared evaluation samples or the fine-tuning of speech encoders.
+
+The additional evaluation using target text highlighted that audio quality is strongly influenced by translation accuracy. This underscores the importance of improving machine translation for low-resource languages to achieve better end-to-end speech translation.
+
+Overall, the results demonstrate that combining NLLB with fine-tuned XTTS models can produce intelligible and semantically accurate speech translations. Future work should focus on improving translation quality, refining evaluation methods, and exploring more robust pipeline architectures for low-resource languages.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{nllb2022}
+NLLB Team et al.,
+\textit{No Language Left Behind: Scaling Human-Centered Machine Translation},
+arXiv preprint arXiv:2207.04672, 2022.
+
+\bibitem{xtts2023}
+Casanova, E., et al.,
+\textit{XTTS: Massively Multilingual Zero-Shot Text-to-Speech},
+Coqui.ai Technical Report, 2023.
+
+\bibitem{blasermetric2024}
+David Dale and Marta R. Costa‑jussà,
+\textit{BLASER 2.0: a metric for evaluation and quality estimation of massively multilingual speech and text translation},
+Findings of the Association for Computational Linguistics: EMNLP 2024, 2024.
+
+
+\end{thebibliography}
+
+\end{document}
