@@ -12,7 +12,7 @@ This repository documents a research and engineering effort focused on building,
 - Automated data processing, model training, and evaluation workflows
 - Explored different data types, model architectures, and evaluation strategies
 
-**Full technical report:** [project_report/main.tex](project_report/main.pdf)
+**Full technical report:** [Project Report](project_report/main.pdf)
 
 ## System Overview
 
