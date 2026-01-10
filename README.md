@@ -4,10 +4,11 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.8.0-red.svg)](https://pytorch.org/)
 [![Transformers](https://img.shields.io/badge/Transformers-4.56.2-orange.svg)](https://huggingface.co/transformers/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.119.0-green.svg)](https://fastapi.tiangolo.com/)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Models-Hugging%20Face-yellow.svg)](https://huggingface.co/adrianMT56/multimodal-translation)
 
 ## Executive Summary
 
-A research project exploring speech-to-speech translation for four low-resource African languages (Efik, Igbo, Swahili, Xhosa) through model fine-tuning and comprehensive evaluation.
+A research project exploring speech-to-speech translation for four low-resource African languages (Efik, Igbo, Swahili, Xhosa) through model fine-tuning and comprehensive evaluation. All fine-tuned models are publicly available on [Hugging Face](https://huggingface.co/adrianMT56/multimodal-translation).
 
 **Core Technologies:** PyTorch • Hugging Face Transformers • Whisper (ASR) • NLLB-600M (NMT) • Coqui XTTS (TTS) • FastAPI • BLASER 2.0
 
